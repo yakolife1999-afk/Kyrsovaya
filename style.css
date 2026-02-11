@@ -1,0 +1,386 @@
+/* Общие стили */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    color: #333;
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Шапка */
+.header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 0 20px;
+    height: 70px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 100;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-left, .nav-right {
+    display: flex;
+    gap: 25px;
+}
+
+.nav a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav a:hover {
+    color: #3498db;
+}
+
+/* Основной контент */
+.main-content {
+    padding: 50px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    margin-top: 30px;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 10;
+    flex: 1 0 auto;
+}
+
+.text-section {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.title {
+    font-size: 3rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    font-size: 1.4rem;
+    color: #7f8c8d;
+    margin-bottom: 40px;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.text-content {
+    text-align: left;
+    column-count: 2;
+    column-gap: 50px;
+    line-height: 1.8;
+}
+
+.text-content p {
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+    color: #34495e;
+    text-align: justify;
+}
+
+/* Дополнительный раздел */
+.additional-section {
+    padding: 40px 0;
+    border-top: 2px solid #ecf0f1;
+}
+
+.additional-section h2 {
+    font-size: 2.2rem;
+    color: #2c3e50;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.feature {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+}
+
+.feature:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    border-color: #3498db;
+}
+
+.feature i {
+    font-size: 2.8rem;
+    color: #3498db;
+    margin-bottom: 25px;
+}
+
+.feature h3 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.feature p {
+    color: #6c757d;
+    line-height: 1.7;
+}
+
+/* Изображение */
+.full-image {
+    height: 85vh;
+    min-height: 600px;
+    margin-top: 0;
+    background-image: url('Курсовая закрыто.png');
+    background-image: url('C:/Users/yakol/OneDrive/Desktop/Курсовая/Курсовая закрыто.png');
+    background-image: url('Курсовая закрыто.png'), 
+                      url('C:/Users/yakol/OneDrive/Desktop/Курсовая/Курсовая закрыто.png'),
+                      url('https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(44, 62, 80, 0.4);
+}
+
+/* Кнопки авторизации */
+.auth-buttons {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    padding: 20px;
+}
+
+.auth-buttons a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-btn {
+    padding: 14px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 200px;
+    background-color: white;
+    color: #2c3e50;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.5px;
+    text-decoration: none;
+}
+
+.auth-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    background-color: #f8f9fa;
+}
+
+.auth-btn:active {
+    transform: translateY(-2px);
+}
+
+.auth-btn i {
+    font-size: 1.1rem;
+}
+
+.login-btn {
+    border-left: 5px solid #2980b9;
+}
+
+.register-btn {
+    border-left: 5px solid #3498db;
+}
+
+/* Подвал - ИСПРАВЛЕН */
+.footer {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 25px 20px;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    width: 100%;
+    margin-top: auto;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.footer-left span {
+    font-size: 15px;
+    color: #bdc3c7;
+}
+
+.footer-right {
+    display: flex;
+    gap: 25px;
+}
+
+.footer-right a {
+    color: #bdc3c7;
+    font-size: 16px;
+    text-decoration: none;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer-right a:hover {
+    color: #3498db;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    body {
+        min-height: 100vh;
+    }
+    
+    .text-content {
+        column-count: 1;
+    }
+    
+    .title {
+        font-size: 2.2rem;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .main-content {
+        padding: 30px 15px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .auth-btn {
+        width: 180px;
+        padding: 12px 30px;
+    }
+    
+    .nav-left, .nav-right {
+        gap: 15px;
+    }
+    
+    .nav a span {
+        display: none;
+    }
+    
+    .nav a i {
+        font-size: 18px;
+    }
+    
+    .full-image {
+        height: 70vh;
+        min-height: 500px;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .additional-section h2 {
+        font-size: 1.8rem;
+    }
+    
+    .footer-right {
+        display: none;
+    }
+    
+    .footer-content {
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .footer {
+        padding: 20px 15px;
+        min-height: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .full-image {
+        height: 60vh;
+        min-height: 400px;
+    }
+    
+    .footer {
+        min-height: 70px;
+        padding: 15px 10px;
+    }
+    
+    .auth-buttons {
+        gap: 12px;
+    }
+    
+    .title {
+        font-size: 1.9rem;
+    }
+    
+    .subtitle {
+        font-size: 1.1rem;
+    }
+}
