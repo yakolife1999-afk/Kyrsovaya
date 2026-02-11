@@ -111,15 +111,31 @@
             color: #2980b9;
         }
         
-        .register-image {
+        /* Контейнер для автоматически меняющихся изображений */
+        .rotating-background {
             height: 80vh;
-            min-height: 400px;
-            background-image: url('C:/Users/yakol/OneDrive/Desktop/Курсовая/Не горит.png');
-            background-size: cover;
-            background-position: center;
+            min-height: 500px;
             position: relative;
             margin-top: 30px;
             flex: 0 0 auto;
+            overflow: hidden;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            z-index: 1;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            z-index: 2;
         }
         
         .image-overlay {
@@ -128,7 +144,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(44, 62, 80, 0.4);
+            background: rgba(44, 62, 80, 0.3);
+            z-index: 3;
         }
         
         .password-requirements {
@@ -181,9 +198,9 @@
                 gap: 0;
             }
             
-            .register-image {
-                height: 40vh;
-                min-height: 300px;
+            .rotating-background {
+                height: 50vh;
+                min-height: 350px;
             }
         }
     </style>
@@ -195,9 +212,10 @@
             <div class="nav-left">
                 <a href="index.html"><i class="fas fa-home"></i> Главная</a>
                 <a href="locations.html"><i class="fas fa-map-marker-alt"></i> Локации</a>
-                <a href="#"><i class="fas fa-chart-line"></i> Прогресс</a>
+                <a href="progress.html"><i class="fas fa-chart-line"></i> Прогресс</a>
             </div>
             <div class="nav-right">
+                <a href="settings.html"><i class="fas fa-cog"></i> Настройки</a>
                 <a href="login.html"><i class="fas fa-user"></i> Войти</a>
                 <a href="register.html" style="color: #3498db;"><i class="fas fa-user-plus"></i> Регистрация</a>
             </div>
@@ -275,19 +293,25 @@
         </div>
     </main>
 
-    <!-- Изображение -->
-    <div class="register-image">
+    <!-- Автоматически меняющиеся изображения без плавного перехода -->
+    <div class="rotating-background">
         <div class="image-overlay"></div>
+        
+        <!-- 3 автоматически сменяемых изображения -->
+        <div id="slide1" class="slide active"></div>
+        <div id="slide2" class="slide"></div>
+        <div id="slide3" class="slide"></div>
     </div>
 
     <!-- Подвал сайта -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
-                <span>© 2023 Цифровой коуч для саморазвития. Помогаем расти и развиваться.</span>
+                <span>© 2026 Цифровой коуч для саморазвития. Помогаем расти и развиваться.</span>
             </div>
             <div class="footer-right">
                 <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+                <a href="#"><i class="fas fa-shield-alt"></i> Безопасность</a>
                 <a href="#"><i class="fas fa-user-friends"></i> Сообщество</a>
             </div>
         </div>
@@ -295,41 +319,83 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const registerForm = document.getElementById('registerForm');
-            const registerImage = document.querySelector('.register-image');
+            // Пути к 3 изображениям для автоматической смены
+            const imagePaths = [
+                'C:/Users/yakol/OneDrive/Desktop/Курсовая/Не горит.png',
+                'C:/Users/yakol/OneDrive/Desktop/Курсовая/Не горит2.png',
+                'C:/Users/yakol/OneDrive/Desktop/Курсовая/Не горит3.png'
+            ];
             
-            // Проверка доступности изображения
+            // Резервные изображения
+            const fallbackImages = [
+                'Не горит.png',
+                'Не горит2.png',
+                'Не горит3.png',
+                'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+            ];
+            
+            // Получаем элементы
+            const slides = [
+                document.getElementById('slide1'),
+                document.getElementById('slide2'),
+                document.getElementById('slide3')
+            ];
+            
+            let currentIndex = 0;
+            
+            // Функция проверки доступности изображения
             function checkImageAvailability(url, callback) {
                 const img = new Image();
-                img.onload = function() {
-                    callback(true, url);
-                };
-                img.onerror = function() {
-                    callback(false, url);
-                };
+                img.onload = () => callback(true, url);
+                img.onerror = () => callback(false, url);
                 img.src = url;
             }
             
-            // Проверяем доступность основного изображения
-            const mainImagePath = 'C:/Users/yakol/OneDrive/Desktop/Курсовая/Не горит.png';
-            const fallbackImages = [
-                'Не горит.png',
-                'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'
-            ];
-            
-            checkImageAvailability(mainImagePath, function(isAvailable, url) {
-                if (!isAvailable) {
-                    checkImageAvailability(fallbackImages[0], function(isAvailable2, url2) {
-                        if (isAvailable2) {
-                            registerImage.style.backgroundImage = `url('${url2}')`;
+            // Загрузка всех изображений
+            function loadImages() {
+                imagePaths.forEach((path, index) => {
+                    checkImageAvailability(path, (isAvailable, url) => {
+                        if (isAvailable) {
+                            console.log(`Слайд ${index + 1} загружен:`, url);
+                            slides[index].style.backgroundImage = `url('${url}')`;
                         } else {
-                            registerImage.style.backgroundImage = `url('${fallbackImages[1]}')`;
+                            const fallbackUrl = fallbackImages[index] || fallbackImages[fallbackImages.length - 1];
+                            console.log(`Слайд ${index + 1} использует резерв:`, fallbackUrl);
+                            slides[index].style.backgroundImage = `url('${fallbackUrl}')`;
                         }
                     });
-                }
-            });
+                });
+            }
             
-            // Функция проверки пароля
+            // Функция смены слайда - МГНОВЕННО, без плавности
+            function changeSlide(index) {
+                // Убираем активный класс у всех слайдов
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                });
+                
+                // Добавляем активный класс выбранному слайду
+                slides[index].classList.add('active');
+                
+                currentIndex = index;
+            }
+            
+            // Функция для автоматического переключения каждые 0.5 секунды
+            function startAutoSlide() {
+                setInterval(() => {
+                    const nextIndex = (currentIndex + 1) % slides.length;
+                    changeSlide(nextIndex);
+                }, 500); // Меняем каждые 0.5 секунды
+            }
+            
+            // Инициализация
+            loadImages();
+            changeSlide(0);
+            startAutoSlide();
+            
+            // Форма регистрации
+            const registerForm = document.getElementById('registerForm');
+            
             function validatePassword(password) {
                 const minLength = 8;
                 const hasUpperCase = /[A-Z]/.test(password);
@@ -344,7 +410,6 @@
                        hasSpecialChar;
             }
             
-            // Обработка формы регистрации
             registerForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
@@ -354,7 +419,6 @@
                 const password = document.getElementById('regPassword').value;
                 const confirmPassword = document.getElementById('confirmPassword').value;
                 
-                // Простая валидация
                 if (!firstName || !lastName || !email || !password || !confirmPassword) {
                     alert('Пожалуйста, заполните все обязательные поля');
                     return;
@@ -370,27 +434,20 @@
                     return;
                 }
                 
-                // Имитация успешной регистрации
                 alert('Регистрация прошла успешно!\n\nДобро пожаловать в систему цифрового коучинга!');
                 
-                // Перенаправление на главную страницу
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 1000);
             });
             
-            // Валидация пароля в реальном времени
             const passwordInput = document.getElementById('regPassword');
             passwordInput.addEventListener('input', function() {
                 const password = this.value;
                 const isValid = validatePassword(password);
                 
                 if (password.length > 0) {
-                    if (isValid) {
-                        this.style.borderColor = '#2ecc71';
-                    } else {
-                        this.style.borderColor = '#e74c3c';
-                    }
+                    this.style.borderColor = isValid ? '#2ecc71' : '#e74c3c';
                 } else {
                     this.style.borderColor = '#ddd';
                 }
