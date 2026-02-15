@@ -102,26 +102,6 @@
             color: #2980b9;
         }
         
-        .login-image {
-            height: 80vh;
-            min-height: 400px;
-            background-image: url('C:/Users/yakol/OneDrive/Desktop/Курсовая/Горит.png');
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            margin-top: 30px;
-            flex: 0 0 auto;
-        }
-        
-        .image-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(44, 62, 80, 0.4);
-        }
-        
         .checkbox-group {
             display: flex;
             align-items: center;
@@ -139,6 +119,45 @@
             cursor: pointer;
         }
         
+        /* Контейнер для автоматически меняющихся изображений */
+        .rotating-background {
+            height: 80vh;
+            min-height: 500px;
+            position: relative;
+            margin-top: 30px;
+            flex: 0 0 auto;
+            overflow: hidden;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            z-index: 1;
+            /* Единая цветокоррекция для всех слайдов */
+            filter: brightness(1.05) contrast(1.05) saturate(1.1);
+        }
+        
+        .slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
+        
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 62, 80, 0.3);
+            z-index: 3;
+        }
+        
         @media (max-width: 768px) {
             .login-container {
                 margin: 30px 20px;
@@ -149,23 +168,24 @@
                 font-size: 2rem;
             }
             
-            .login-image {
-                height: 40vh;
-                min-height: 300px;
+            .rotating-background {
+                height: 50vh;
+                min-height: 350px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Шапка сайта -->
+    <!-- Шапка сайта (как в регистрации) -->
     <header class="header">
         <nav class="nav">
             <div class="nav-left">
                 <a href="index.html"><i class="fas fa-home"></i> Главная</a>
                 <a href="locations.html"><i class="fas fa-map-marker-alt"></i> Локации</a>
-                <a href="#"><i class="fas fa-chart-line"></i> Прогресс</a>
+                <a href="progress.html"><i class="fas fa-chart-line"></i> Прогресс</a>
             </div>
             <div class="nav-right">
+                <a href="settings.html"><i class="fas fa-cog"></i> Настройки</a>
                 <a href="login.html" style="color: #3498db;"><i class="fas fa-user"></i> Войти</a>
                 <a href="register.html"><i class="fas fa-user-plus"></i> Регистрация</a>
             </div>
@@ -211,19 +231,25 @@
         </div>
     </main>
 
-    <!-- Изображение -->
-    <div class="login-image">
+    <!-- Автоматически меняющиеся изображения (Горит) с возвратной анимацией -->
+    <div class="rotating-background">
         <div class="image-overlay"></div>
+        
+        <!-- 3 слайда для изображений Горит, Горит2, Горит3 -->
+        <div id="slide1" class="slide active"></div>
+        <div id="slide2" class="slide"></div>
+        <div id="slide3" class="slide"></div>
     </div>
 
     <!-- Подвал сайта -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
-                <span>© 2023 Цифровой коуч для саморазвития. Помогаем расти и развиваться.</span>
+                <span>© 2026 Цифровой коуч для саморазвития. Помогаем расти и развиваться.</span>
             </div>
             <div class="footer-right">
                 <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+                <a href="#"><i class="fas fa-shield-alt"></i> Безопасность</a>
                 <a href="#"><i class="fas fa-user-friends"></i> Сообщество</a>
             </div>
         </div>
@@ -231,57 +257,113 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const loginForm = document.getElementById('loginForm');
-            const loginImage = document.querySelector('.login-image');
+            // Пути к 3 изображениям для автоматической смены (Горит)
+            const imagePaths = [
+                'C:/Users/yakol/OneDrive/Desktop/Курсовая/Горит.png',
+                'C:/Users/yakol/OneDrive/Desktop/Курсовая/Горит2.png',
+                'C:/Users/yakol/OneDrive/Desktop/Курсовая/Горит3.png'
+            ];
             
-            // Проверка доступности изображения
+            // Резервные изображения
+            const fallbackImages = [
+                'Горит.png',
+                'Горит2.png',
+                'Горит3.png',
+                'https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+            ];
+            
+            // Получаем элементы
+            const slides = [
+                document.getElementById('slide1'),
+                document.getElementById('slide2'),
+                document.getElementById('slide3')
+            ];
+            
+            let currentIndex = 0;
+            let direction = 1; // 1 - вперед, -1 - назад
+            
+            // Функция проверки доступности изображения
             function checkImageAvailability(url, callback) {
                 const img = new Image();
-                img.onload = function() {
-                    callback(true, url);
-                };
-                img.onerror = function() {
-                    callback(false, url);
-                };
+                img.onload = () => callback(true, url);
+                img.onerror = () => callback(false, url);
                 img.src = url;
             }
             
-            // Проверяем доступность основного изображения
-            const mainImagePath = 'C:/Users/yakol/OneDrive/Desktop/Курсовая/Горит.png';
-            const fallbackImages = [
-                'Горит.png',
-                'https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'
-            ];
-            
-            checkImageAvailability(mainImagePath, function(isAvailable, url) {
-                if (!isAvailable) {
-                    checkImageAvailability(fallbackImages[0], function(isAvailable2, url2) {
-                        if (isAvailable2) {
-                            loginImage.style.backgroundImage = `url('${url2}')`;
+            // Загрузка всех изображений
+            function loadImages() {
+                imagePaths.forEach((path, index) => {
+                    checkImageAvailability(path, (isAvailable, url) => {
+                        if (isAvailable) {
+                            console.log(`Слайд ${index + 1} загружен:`, url);
+                            slides[index].style.backgroundImage = `url('${url}')`;
                         } else {
-                            loginImage.style.backgroundImage = `url('${fallbackImages[1]}')`;
+                            const fallbackUrl = fallbackImages[index] || fallbackImages[fallbackImages.length - 1];
+                            console.log(`Слайд ${index + 1} использует резерв:`, fallbackUrl);
+                            slides[index].style.backgroundImage = `url('${fallbackUrl}')`;
                         }
                     });
-                }
-            });
+                });
+            }
             
-            // Обработка формы входа
+            // Функция смены слайда - МГНОВЕННО, без плавности
+            function changeSlide(index) {
+                // Убираем активный класс у всех слайдов
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                });
+                
+                // Добавляем активный класс выбранному слайду
+                slides[index].classList.add('active');
+                
+                currentIndex = index;
+            }
+            
+            // Функция для автоматического переключения с возвратным движением
+            function startAutoSlide() {
+                setInterval(() => {
+                    // Если дошли до конца, меняем направление
+                    if (currentIndex === 2) {
+                        direction = -1;
+                    } 
+                    // Если дошли до начала, меняем направление
+                    else if (currentIndex === 0) {
+                        direction = 1;
+                    }
+                    
+                    const nextIndex = currentIndex + direction;
+                    changeSlide(nextIndex);
+                }, 500); // Меняем каждые 0.5 секунды
+            }
+            
+            // Инициализация
+            loadImages();
+            changeSlide(0); // начинаем с первого изображения (Горит)
+            startAutoSlide();
+            
+            // Обработка формы входа (имитация)
+            const loginForm = document.getElementById('loginForm');
+            
             loginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
                 
-                // Простая валидация
                 if (!email || !password) {
                     alert('Пожалуйста, заполните все поля');
                     return;
                 }
                 
-                // Имитация успешного входа
+                // Простейшая валидация email
+                if (!email.includes('@') || !email.includes('.')) {
+                    alert('Введите корректный email адрес');
+                    return;
+                }
+                
                 alert('Вход выполнен успешно!\n\nДобро пожаловать в систему цифрового коучинга!');
                 
-                // Перенаправление на главную страницу (в реальном приложении здесь была бы проверка)
+                // Перенаправление на главную
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 1000);
