@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карта локаций - Цифровой коуч</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Стили для страницы с картой */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .map-container {
+            flex: 1 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecf0 100%);
+        }
+        
+        .map-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .map-title h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .map-title p {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+        
+        /* Контейнер с картой */
+        .map-wrapper {
+            position: relative;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border: 5px solid white;
+        }
+        
+        .map-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            background-color: #f0f0f0;
+        }
+        
+        /* Увеличенные кружки заданий (65px) */
+        .task-dot {
+            position: absolute;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
+            z-index: 20;
+            border: 4px solid white;
+            font-weight: bold;
+            color: white;
+            pointer-events: auto;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .task-dot:hover {
+            transform: scale(1.15);
+            z-index: 30;
+            box-shadow: 0 0 35px rgba(255, 255, 255, 1);
+        }
+        
+        /* Выполненное задание */
+        .task-dot.completed {
+            opacity: 0.9;
+            box-shadow: 0 0 30px gold;
+        }
+        
+        .task-dot.completed:hover {
+            opacity: 1;
+        }
+        
+        .task-dot.completed i {
+            font-size: 2rem;
+        }
+        
+        /* Цвета для разных локаций */
+        .dot-forest {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+        }
+        
+        .dot-hills {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+        }
+        
+        .dot-beach {
+            background: linear-gradient(135deg, #3498db, #f1c40f);
+        }
+        
+        /* РАСПОЛОЖЕНИЕ КРУЖКОВ НА ДОРОЖКЕ */
+        /* Лес (верхняя часть дорожки) */
+        .forest-1 { top: 11%; left: 32%; }  /* Первый кружок в лесу */
+        .forest-2 { top: 23%; left: 25%; }  /* Второй кружок */
+        .forest-3 { top: 32%; left: 44%; }  /* Третий кружок */
+        
+        /* Холмы (средняя часть дорожки) */
+        .hills-1 { top: 45%; left: 45%; }   /* Первый кружок в холмах */
+        .hills-2 { top: 57%; left: 22%; }   /* Второй кружок */
+        .hills-3 { top: 73%; left: 33%; }   /* Третий кружок */
+        
+        /* Пляж (нижняя часть дорожки) */
+        .beach-1 { top: 79%; left: 45%; }   /* Первый кружок на пляже */
+        .beach-2 { top: 87%; left: 57%; }   /* Второй кружок */
+        .beach-3 { top: 95%; left: 44%; }   /* Третий кружок */
+        
+        /* Подписи локаций (убрал, так как кружки сами говорят за себя) */
+        
+        /* Прогресс-бары локаций под картой */
+        .locations-progress {
+            width: 100%;
+            max-width: 900px;
+            margin: 30px auto 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .progress-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .progress-card.forest {
+            border-top: 4px solid #27ae60;
+        }
+        
+        .progress-card.hills {
+            border-top: 4px solid #e67e22;
+        }
+        
+        .progress-card.beach {
+            border-top: 4px solid #3498db;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .card-header i {
+            font-size: 1.5rem;
+        }
+        
+        .card-header i.fa-tree { color: #27ae60; }
+        .card-header i.fa-mountain { color: #e67e22; }
+        .card-header i.fa-umbrella-beach { color: #3498db; }
+        
+        .card-header h3 {
+            flex: 1;
+            color: #2c3e50;
+            font-size: 1.2rem;
+        }
+        
+        .card-progress {
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .card-progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-fill-forest { background: linear-gradient(to right, #27ae60, #2ecc71); }
+        .progress-fill-hills { background: linear-gradient(to right, #e67e22, #d35400); }
+        .progress-fill-beach { background: linear-gradient(to right, #3498db, #f1c40f); }
+        
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        
+        .completed-count {
+            color: #27ae60;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        /* Модальное окно с заданием */
+        .task-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: modalPop 0.3s ease;
+        }
+        
+        @keyframes modalPop {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .modal-close:hover {
+            color: #e74c3c;
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-icon i {
+            color: white;
+            font-size: 2.2rem;
+        }
+        
+        .modal-title {
+            flex: 1;
+        }
+        
+        .modal-title h2 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.5rem;
+        }
+        
+        .modal-title p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        
+        .task-description {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        
+        .task-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .task-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0f0f0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            color: #2c3e50;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .task-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .task-btn.complete {
+            color: white;
+        }
+        
+        .task-btn.complete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .task-btn.later {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 1px solid #ddd;
+        }
+        
+        .task-btn.later:hover {
+            background: #edf2f7;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 40px;
+            padding: 12px 30px;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .map-title h1 {
+                font-size: 2rem;
+            }
+            
+            .task-dot {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+                border-width: 3px;
+            }
+            
+            .locations-progress {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .modal-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка сайта -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-left">
+                <a href="index.html"><i class="fas fa-home"></i> Главная</a>
+                <a href="locations.html" style="color: #3498db;"><i class="fas fa-map-marked-alt"></i> Карта</a>
+                <a href="progress.html"><i class="fas fa-chart-line"></i> Прогресс</a>
+            </div>
+            <div class="nav-right">
+                <a href="settings.html"><i class="fas fa-cog"></i> Настройки</a>
+                <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
+                <a href="login.html"><i class="fas fa-sign-in-alt"></i> Войти</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Основной контент - карта -->
+    <main class="map-container">
+        <div class="map-title">
+            <h1><i class="fas fa-map-marked-alt"></i> Карта локаций</h1>
+            <p>Следуйте по дорожке и выполняйте задания</p>
+        </div>
+        
+        <!-- Контейнер с картой и 9 кружками на дорожке -->
+        <div class="map-wrapper">
+            <img src="C:/Users/yakol/OneDrive/Desktop/Курсовая/Карта.png" 
+                 alt="Карта локаций: Лес, Холмы, Пляж" 
+                 class="map-image"
+                 onerror="this.onerror=null; this.src='https://via.placeholder.com/800x600?text=Карта+локаций'">
+            
+            <!-- 3 кружка для леса (на дорожке в верхней части) -->
+            <div class="task-dot dot-forest forest-1" id="forest-task-1" onclick="openTaskModal('forest', 0)">
+                <span>1</span>
+            </div>
+            <div class="task-dot dot-forest forest-2" id="forest-task-2" onclick="openTaskModal('forest', 1)">
+                <span>2</span>
+            </div>
+            <div class="task-dot dot-forest forest-3" id="forest-task-3" onclick="openTaskModal('forest', 2)">
+                <span>3</span>
+            </div>
+            
+            <!-- 3 кружка для холмов (на дорожке в средней части) -->
+            <div class="task-dot dot-hills hills-1" id="hills-task-1" onclick="openTaskModal('hills', 0)">
+                <span>1</span>
+            </div>
+            <div class="task-dot dot-hills hills-2" id="hills-task-2" onclick="openTaskModal('hills', 1)">
+                <span>2</span>
+            </div>
+            <div class="task-dot dot-hills hills-3" id="hills-task-3" onclick="openTaskModal('hills', 2)">
+                <span>3</span>
+            </div>
+            
+            <!-- 3 кружка для пляжа (на дорожке в нижней части) -->
+            <div class="task-dot dot-beach beach-1" id="beach-task-1" onclick="openTaskModal('beach', 0)">
+                <span>1</span>
+            </div>
+            <div class="task-dot dot-beach beach-2" id="beach-task-2" onclick="openTaskModal('beach', 1)">
+                <span>2</span>
+            </div>
+            <div class="task-dot dot-beach beach-3" id="beach-task-3" onclick="openTaskModal('beach', 2)">
+                <span>3</span>
+            </div>
+        </div>
+        
+        <!-- Прогресс всех локаций -->
+        <div class="locations-progress">
+            <!-- Лес -->
+            <div class="progress-card forest">
+                <div class="card-header">
+                    <i class="fas fa-tree"></i>
+                    <h3>Лес</h3>
+                    <span id="forestPercent">0%</span>
+                </div>
+                <div class="card-progress">
+                    <div class="card-progress-fill progress-fill-forest" id="forestProgress" style="width: 0%"></div>
+                </div>
+                <div class="card-stats">
+                    <span>Выполнено:</span>
+                    <span class="completed-count" id="forestCount">0/3</span>
+                </div>
+            </div>
+            
+            <!-- Холмы -->
+            <div class="progress-card hills">
+                <div class="card-header">
+                    <i class="fas fa-mountain"></i>
+                    <h3>Холмы</h3>
+                    <span id="hillsPercent">0%</span>
+                </div>
+                <div class="card-progress">
+                    <div class="card-progress-fill progress-fill-hills" id="hillsProgress" style="width: 0%"></div>
+                </div>
+                <div class="card-stats">
+                    <span>Выполнено:</span>
+                    <span class="completed-count" id="hillsCount">0/3</span>
+                </div>
+            </div>
+            
+            <!-- Пляж -->
+            <div class="progress-card beach">
+                <div class="card-header">
+                    <i class="fas fa-umbrella-beach"></i>
+                    <h3>Пляж</h3>
+                    <span id="beachPercent">0%</span>
+                </div>
+                <div class="card-progress">
+                    <div class="card-progress-fill progress-fill-beach" id="beachProgress" style="width: 0%"></div>
+                </div>
+                <div class="card-stats">
+                    <span>Выполнено:</span>
+                    <span class="completed-count" id="beachCount">0/3</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Кнопка возврата -->
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Вернуться на главную
+        </a>
+    </main>
+
+    <!-- Модальное окно с заданием от нейросети -->
+    <div class="task-modal" id="taskModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeTaskModal()">&times;</button>
+            
+            <div class="modal-header">
+                <div class="modal-icon" id="modalIcon">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <div class="modal-title">
+                    <h2 id="modalTaskTitle">Задание</h2>
+                    <p id="modalTaskLocation">Локация: Лес</p>
+                </div>
+            </div>
+            
+            <div class="ai-badge">
+                <i class="fas fa-brain"></i> Сгенерировано нейросетью
+            </div>
+            
+            <div class="task-description" id="modalTaskDescription">
+                Описание задания будет здесь...
+            </div>
+            
+            <div class="task-meta">
+                <div class="task-meta-item">
+                    <i class="fas fa-clock"></i> <span id="modalTaskTime">5-10 минут</span>
+                </div>
+                <div class="task-meta-item">
+                    <i class="fas fa-star"></i> <span id="modalTaskDifficulty">Средняя сложность</span>
+                </div>
+            </div>
+            
+            <div class="task-actions">
+                <button class="task-btn complete" id="completeBtn" onclick="completeTask()">
+                    <i class="fas fa-check-circle"></i> Отметить выполненным
+                </button>
+                <button class="task-btn later" onclick="closeTaskModal()">
+                    <i class="fas fa-clock"></i> Позже
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подвал сайта -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <span>© 2026 Цифровой коуч для саморазвития. Исследуйте новые локации!</span>
+            </div>
+            <div class="footer-right">
+                <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+                <a href="#"><i class="fas fa-user-friends"></i> Сообщество</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Данные о выполненных заданиях для каждой локации
+        let completedTasks = {
+            forest: [false, false, false],
+            hills: [false, false, false],
+            beach: [false, false, false]
+        };
+
+        // Текущие выбранные задание
+        let currentLocation = 'forest';
+        let currentTaskIndex = 0;
+
+        // Задания от нейросети для каждой локации
+        const aiTasks = {
+            forest: [
+                {
+                    title: "Медитация под деревом",
+                    description: "Найдите уединенное место, сядьте под деревом и закройте глаза. Слушайте звуки природы в течение 10 минут. Почувствуйте связь с природой.",
+                    time: "10 минут",
+                    difficulty: "Легкая"
+                },
+                {
+                    title: "Лесной дневник",
+                    description: "Запишите все, что вы видите вокруг: деревья, растения, звуки, запахи. Найдите 3 вещи, за которые вы благодарны природе.",
+                    time: "15 минут",
+                    difficulty: "Средняя"
+                },
+                {
+                    title: "Дыхательная практика",
+                    description: "Сделайте глубокий вдох. На вдохе представьте, что вдыхаете энергию леса. На выдохе отпускайте тревоги. Повторите 10 раз.",
+                    time: "5-7 минут",
+                    difficulty: "Легкая"
+                }
+            ],
+            hills: [
+                {
+                    title: "Восхождение на холм",
+                    description: "Найдите холм и поднимитесь на его вершину. Во время подъема концентрируйтесь на дыхании. На вершине задержитесь на 5 минут.",
+                    time: "30 минут",
+                    difficulty: "Средняя"
+                },
+                {
+                    title: "Энергетическая практика",
+                    description: "Встаньте на вершине лицом к ветру. Раскиньте руки и закройте глаза. Представьте, что ветер наполняет вас новой энергией.",
+                    time: "10 минут",
+                    difficulty: "Легкая"
+                },
+                {
+                    title: "Дневник достижений",
+                    description: "Запишите 5 своих самых больших достижений. Почувствуйте гордость за себя. Напишите одну цель на ближайший месяц.",
+                    time: "15 минут",
+                    difficulty: "Легкая"
+                }
+            ],
+            beach: [
+                {
+                    title: "Медитация у воды",
+                    description: "Сядьте на берегу, слушайте шум волн. Следите за дыханием в ритме прибоя. Проведите так 15 минут.",
+                    time: "15 минут",
+                    difficulty: "Легкая"
+                },
+                {
+                    title: "Рисунок на песке",
+                    description: "Нарисуйте на песке мандалу или символ, отражающий ваше внутреннее состояние. Сфотографируйте и позвольте волне смыть его.",
+                    time: "20 минут",
+                    difficulty: "Средняя"
+                },
+                {
+                    title: "Сбор природных материалов",
+                    description: "Соберите 5 красивых камней или ракушек. Для каждого найдите качество, которое вы хотите развить в себе.",
+                    time: "15 минут",
+                    difficulty: "Легкая"
+                }
+            ]
+        };
+
+        // Загрузка данных из localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('tasksProgress');
+            if (saved) {
+                completedTasks = JSON.parse(saved);
+            }
+            updateAllDots();
+            updateAllProgress();
+        }
+
+        // Сохранение данных в localStorage
+        function saveProgress() {
+            localStorage.setItem('tasksProgress', JSON.stringify(completedTasks));
+        }
+
+        // Обновление внешнего вида всех кружков
+        function updateAllDots() {
+            // Лес
+            for (let i = 0; i < 3; i++) {
+                const dot = document.getElementById(`forest-task-${i+1}`);
+                if (completedTasks.forest[i]) {
+                    dot.classList.add('completed');
+                    dot.innerHTML = '<i class="fas fa-check" style="font-size: 2rem;"></i>';
+                } else {
+                    dot.classList.remove('completed');
+                    dot.innerHTML = `<span>${i+1}</span>`;
+                }
+            }
+            
+            // Холмы
+            for (let i = 0; i < 3; i++) {
+                const dot = document.getElementById(`hills-task-${i+1}`);
+                if (completedTasks.hills[i]) {
+                    dot.classList.add('completed');
+                    dot.innerHTML = '<i class="fas fa-check" style="font-size: 2rem;"></i>';
+                } else {
+                    dot.classList.remove('completed');
+                    dot.innerHTML = `<span>${i+1}</span>`;
+                }
+            }
+            
+            // Пляж
+            for (let i = 0; i < 3; i++) {
+                const dot = document.getElementById(`beach-task-${i+1}`);
+                if (completedTasks.beach[i]) {
+                    dot.classList.add('completed');
+                    dot.innerHTML = '<i class="fas fa-check" style="font-size: 2rem;"></i>';
+                } else {
+                    dot.classList.remove('completed');
+                    dot.innerHTML = `<span>${i+1}</span>`;
+                }
+            }
+        }
+
+        // Обновление прогресс-баров и статистики
+        function updateAllProgress() {
+            // Лес
+            const forestCompleted = completedTasks.forest.filter(v => v).length;
+            const forestPercent = (forestCompleted / 3) * 100;
+            document.getElementById('forestProgress').style.width = forestPercent + '%';
+            document.getElementById('forestPercent').textContent = Math.round(forestPercent) + '%';
+            document.getElementById('forestCount').textContent = forestCompleted + '/3';
+            
+            // Холмы
+            const hillsCompleted = completedTasks.hills.filter(v => v).length;
+            const hillsPercent = (hillsCompleted / 3) * 100;
+            document.getElementById('hillsProgress').style.width = hillsPercent + '%';
+            document.getElementById('hillsPercent').textContent = Math.round(hillsPercent) + '%';
+            document.getElementById('hillsCount').textContent = hillsCompleted + '/3';
+            
+            // Пляж
+            const beachCompleted = completedTasks.beach.filter(v => v).length;
+            const beachPercent = (beachCompleted / 3) * 100;
+            document.getElementById('beachProgress').style.width = beachPercent + '%';
+            document.getElementById('beachPercent').textContent = Math.round(beachPercent) + '%';
+            document.getElementById('beachCount').textContent = beachCompleted + '/3';
+        }
+
+        // Открытие модального окна для задания
+        function openTaskModal(location, taskIndex) {
+            // Если задание уже выполнено, показываем сообщение
+            if (completedTasks[location][taskIndex]) {
+                alert('✅ Это задание уже выполнено!');
+                return;
+            }
+            
+            currentLocation = location;
+            currentTaskIndex = taskIndex;
+            
+            const task = aiTasks[location][taskIndex];
+            
+            // Настраиваем модальное окно под локацию
+            const modalIcon = document.getElementById('modalIcon');
+            const completeBtn = document.getElementById('completeBtn');
+            
+            // Устанавливаем цвета в зависимости от локации
+            if (location === 'forest') {
+                modalIcon.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+                completeBtn.style.background = 'linear-gradient(to right, #27ae60, #2ecc71)';
+                document.querySelector('.task-description').style.borderLeftColor = '#27ae60';
+            } else if (location === 'hills') {
+                modalIcon.style.background = 'linear-gradient(135deg, #e67e22, #d35400)';
+                completeBtn.style.background = 'linear-gradient(to right, #e67e22, #d35400)';
+                document.querySelector('.task-description').style.borderLeftColor = '#e67e22';
+            } else if (location === 'beach') {
+                modalIcon.style.background = 'linear-gradient(135deg, #3498db, #f1c40f)';
+                completeBtn.style.background = 'linear-gradient(to right, #3498db, #f1c40f)';
+                document.querySelector('.task-description').style.borderLeftColor = '#3498db';
+            }
+            
+            // Устанавливаем иконку
+            const iconMap = {
+                forest: 'fa-tree',
+                hills: 'fa-mountain',
+                beach: 'fa-umbrella-beach'
+            };
+            modalIcon.innerHTML = `<i class="fas ${iconMap[location]}"></i>`;
+            
+            // Заполняем данные
+            document.getElementById('modalTaskTitle').textContent = `Задание ${taskIndex + 1}: ${task.title}`;
+            document.getElementById('modalTaskLocation').textContent = 'Локация: ' + 
+                (location === 'forest' ? 'Лес' : location === 'hills' ? 'Холмы' : 'Пляж');
+            document.getElementById('modalTaskDescription').textContent = task.description;
+            document.getElementById('modalTaskTime').textContent = task.time;
+            document.getElementById('modalTaskDifficulty').textContent = task.difficulty + ' сложность';
+            
+            // Показываем модальное окно
+            document.getElementById('taskModal').style.display = 'flex';
+        }
+
+        // Закрытие модального окна
+        function closeTaskModal() {
+            document.getElementById('taskModal').style.display = 'none';
+        }
+
+        // Отметка задания как выполненного
+        function completeTask() {
+            if (!completedTasks[currentLocation][currentTaskIndex]) {
+                completedTasks[currentLocation][currentTaskIndex] = true;
+                saveProgress();
+                updateAllDots();
+                updateAllProgress();
+                
+                alert('✅ Задание выполнено!');
+                closeTaskModal();
+                
+                // Проверяем, выполнены ли все задания в локации
+                const allInLocation = completedTasks[currentLocation].every(v => v);
+                if (allInLocation) {
+                    setTimeout(() => {
+                        alert(`🎉 Поздравляем! Вы выполнили все задания в локации ${
+                            currentLocation === 'forest' ? 'Лес' : 
+                            currentLocation === 'hills' ? 'Холмы' : 'Пляж'
+                        }!`);
+                    }, 300);
+                }
+                
+                // Проверяем, выполнены ли все 9 заданий
+                const allTasks = [
+                    ...completedTasks.forest,
+                    ...completedTasks.hills,
+                    ...completedTasks.beach
+                ].every(v => v);
+                
+                if (allTasks) {
+                    setTimeout(() => {
+                        alert('🏆 Грандиозно! Вы выполнили ВСЕ задания на карте! Вы настоящий исследователь!');
+                    }, 600);
+                }
+            }
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgress();
+            
+            // Проверка изображения карты
+            const mapImage = document.querySelector('.map-image');
+            mapImage.addEventListener('error', function() {
+                console.log('Не удалось загрузить изображение карты');
+            });
+        });
+
+        // Закрытие модального окна по клику вне его
+        window.onclick = function(event) {
+            const modal = document.getElementById('taskModal');
+            if (event.target === modal) {
+                closeTaskModal();
+            }
+        };
+    </script>
+</body>
+</html>

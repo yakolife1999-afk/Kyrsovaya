@@ -8,17 +8,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Шапка сайта -->
+    <!-- Шапка сайта (обновленная) -->
     <header class="header">
         <nav class="nav">
             <div class="nav-left">
-                <a href="index.html"><i class="fas fa-home"></i> Главная</a>
-                <a href="locations.html"><i class="fas fa-map-marker-alt"></i> Локации</a>
-                <a href="#"><i class="fas fa-chart-line"></i> Прогресс</a>
+                <a href="index.html" style="color: #3498db;"><i class="fas fa-home"></i> Главная</a>
+                <a href="locations.html"><i class="fas fa-map-marked-alt"></i> Карта</a>
+                <a href="progress.html"><i class="fas fa-chart-line"></i> Прогресс</a>
             </div>
             <div class="nav-right">
-                <a href="login.html"><i class="fas fa-user"></i> Войти</a>
-                <a href="register.html"><i class="fas fa-user-plus"></i> Регистрация</a>
+                <a href="settings.html"><i class="fas fa-cog"></i> Настройки</a>
+                <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
+                <a href="login.html"><i class="fas fa-sign-in-alt"></i> Войти</a>
             </div>
         </nav>
     </header>
@@ -64,6 +65,13 @@
                     <h3>Мотивация и поддержка</h3>
                     <p>Регулярные напоминания и слова поддержки, которые помогают не сбиться с пути.</p>
                 </div>
+            </div>
+            
+            <!-- Кнопка перехода к карте локаций -->
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="locations.html" class="auth-btn" style="display: inline-flex; background: linear-gradient(to right, #27ae60, #2ecc71); color: white; border: none; padding: 15px 40px; font-size: 1.2rem;">
+                    <i class="fas fa-map-marked-alt"></i> Исследовать локации
+                </a>
             </div>
         </section>
     </main>
