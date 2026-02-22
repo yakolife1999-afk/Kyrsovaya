@@ -613,7 +613,7 @@
                 
                 // Загружаем все уровни (1-9)
                 for (let level = 1; level <= 9; level++) {
-                    const response = await fetch(`http://localhost:3000/api/levels/${level}/task`, {
+                    const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
@@ -738,3 +738,4 @@
     </script>
 </body>
 </html>
+
