@@ -159,6 +159,16 @@
             pointer-events: none;
         }
         
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+        
         @media (max-width: 768px) {
             .login-container {
                 margin: 30px 20px;
@@ -194,6 +204,8 @@
                 <p>Войдите в свой аккаунт для доступа к персонализированному коучингу</p>
             </div>
             
+            <div id="errorMessage" class="error-message"></div>
+            
             <form id="loginForm">
                 <div class="form-group">
                     <label for="email">Email адрес</label>
@@ -210,7 +222,7 @@
                     <label for="remember">Запомнить меня</label>
                 </div>
                 
-                <button type="submit" class="login-btn">
+                <button type="submit" class="login-btn" id="submitBtn">
                     <i class="fas fa-sign-in-alt"></i> Войти в систему
                 </button>
                 
@@ -248,6 +260,7 @@
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // ========== КОД ДЛЯ КАРТИНОК (оставил как было) ==========
             const imagePaths = [
                 'images/gorit.png',
                 'images/gorit2.png',
@@ -337,32 +350,84 @@
                 startAutoSlide();
             }, 500);
             
+            // ========== НОВЫЙ КОД ДЛЯ ЛОГИНА (РАБОТА С СЕРВЕРОМ) ==========
             const loginForm = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const submitBtn = document.getElementById('submitBtn');
             
-            loginForm.addEventListener('submit', function(e) {
+            loginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
+                const remember = document.getElementById('remember').checked;
                 
+                // Простейшая валидация
                 if (!email || !password) {
-                    alert('Пожалуйста, заполните все поля');
+                    showError('Пожалуйста, заполните все поля');
                     return;
                 }
                 
-                if (!email.includes('@') || !email.includes('.')) {
-                    alert('Введите корректный email адрес');
-                    return;
+                // Блокируем кнопку, чтобы не спамили
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
+                
+                try {
+                    // Отправляем запрос на сервер
+                    const response = await fetch('http://localhost:3000/api/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        // Если сервер вернул ошибку (статус 400 или 500)
+                        throw new Error(data.error || 'Ошибка при входе');
+                    }
+                    
+                    // Всё хорошо - сохраняем токен
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Если выбрано "Запомнить меня", сохраняем дольше (но в localStorage и так долго)
+                    if (remember) {
+                        // Можно ничего не делать, localStorage и так навсегда
+                    }
+                    
+                    // Показываем успех и редиректим
+                    alert('Вход выполнен успешно!\n\nДобро пожаловать, ' + (data.user.name || email));
+                    
+                    // Перенаправляем на карту с уровнями
+                    window.location.href = 'map.html';
+                    
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                    showError(error.message);
+                    
+                    // Разблокируем кнопку
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти в систему';
                 }
-                
-                localStorage.setItem('isLoggedIn', 'true');
-                
-                alert('Вход выполнен успешно!\n\nДобро пожаловать в систему цифрового коучинга!');
-                
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
             });
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                
+                // Автоматически скрываем через 5 секунд
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 5000);
+            }
+            
+            // Если уже залогинен - кидаем сразу на карту
+            if (localStorage.getItem('token')) {
+                window.location.href = 'map.html';
+            }
         });
     </script>
 </body>
