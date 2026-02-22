@@ -362,18 +362,15 @@
                 const password = document.getElementById('password').value;
                 const remember = document.getElementById('remember').checked;
                 
-                // Простейшая валидация
                 if (!email || !password) {
                     showError('Пожалуйста, заполните все поля');
                     return;
                 }
                 
-                // Блокируем кнопку, чтобы не спамили
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
                 
                 try {
-                    // Отправляем запрос на сервер
                     const response = await fetch('http://localhost:3000/api/auth/login', {
                         method: 'POST',
                         headers: {
@@ -385,30 +382,21 @@
                     const data = await response.json();
                     
                     if (!response.ok) {
-                        // Если сервер вернул ошибку (статус 400 или 500)
                         throw new Error(data.error || 'Ошибка при входе');
                     }
                     
-                    // Всё хорошо - сохраняем токен
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
                     
-                    // Если выбрано "Запомнить меня", сохраняем дольше (но в localStorage и так долго)
-                    if (remember) {
-                        // Можно ничего не делать, localStorage и так навсегда
-                    }
-                    
-                    // Показываем успех и редиректим
                     alert('Вход выполнен успешно!\n\nДобро пожаловать, ' + (data.user.name || email));
                     
-                    // Перенаправляем на карту с уровнями
-                    window.location.href = 'map.html';
+                    // ПЕРЕКИДЫВАЕМ НА LOCATIONS.HTML
+                    window.location.href = 'locations.html';
                     
                 } catch (error) {
                     console.error('Ошибка:', error);
                     showError(error.message);
                     
-                    // Разблокируем кнопку
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти в систему';
                 }
@@ -418,7 +406,6 @@
                 errorMessage.textContent = message;
                 errorMessage.style.display = 'block';
                 
-                // Автоматически скрываем через 5 секунд
                 setTimeout(() => {
                     errorMessage.style.display = 'none';
                 }, 5000);
@@ -426,7 +413,7 @@
             
             // Если уже залогинен - кидаем сразу на карту
             if (localStorage.getItem('token')) {
-                window.location.href = 'map.html';
+                window.location.href = 'locations.html';
             }
         });
     </script>
