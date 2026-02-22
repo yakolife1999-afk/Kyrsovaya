@@ -6,20 +6,24 @@
     <title>Цифровой коуч для саморазвития</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Дополнительные стили для главной страницы */
+        .full-image {
+            transition: opacity 0.5s ease;
+        }
+    </style>
 </head>
 <body>
-    <!-- Шапка сайта (обновленная) -->
+    <!-- Шапка сайта -->
     <header class="header">
         <nav class="nav">
             <div class="nav-left">
-                <a href="index.html" style="color: #3498db;"><i class="fas fa-home"></i> Главная</a>
+                <a href="index.html" class="active"><i class="fas fa-home"></i> Главная</a>
                 <a href="locations.html"><i class="fas fa-map-marked-alt"></i> Карта</a>
-                <a href="progress.html"><i class="fas fa-chart-line"></i> Прогресс</a>
             </div>
             <div class="nav-right">
-                <a href="settings.html"><i class="fas fa-cog"></i> Настройки</a>
+                <a href="progress.html"><i class="fas fa-chart-line"></i> Прогресс</a>
                 <a href="profile.html"><i class="fas fa-user"></i> Профиль</a>
-                <a href="login.html"><i class="fas fa-sign-in-alt"></i> Войти</a>
             </div>
         </nav>
     </header>
@@ -66,18 +70,11 @@
                     <p>Регулярные напоминания и слова поддержки, которые помогают не сбиться с пути.</p>
                 </div>
             </div>
-            
-            <!-- Кнопка перехода к карте локаций -->
-            <div style="text-align: center; margin-top: 40px;">
-                <a href="locations.html" class="auth-btn" style="display: inline-flex; background: linear-gradient(to right, #27ae60, #2ecc71); color: white; border: none; padding: 15px 40px; font-size: 1.2rem;">
-                    <i class="fas fa-map-marked-alt"></i> Исследовать локации
-                </a>
-            </div>
         </section>
     </main>
 
-    <!-- Изображение на большую часть страницы -->
-    <div class="full-image">
+    <!-- Изображение на большую часть страницы с кнопками входа и регистрации -->
+    <div class="full-image" id="fullImage">
         <div class="image-overlay"></div>
         <div class="auth-buttons">
             <a href="login.html" id="loginBtn" class="auth-btn login-btn">

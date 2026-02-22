@@ -14,7 +14,6 @@
             padding: 20px;
         }
         
-        /* Фон профиля с изображением локации - БЕЗ ОВЕРЛЕЯ */
         .profile-background {
             position: relative;
             min-height: 250px;
@@ -35,7 +34,7 @@
             position: relative;
             z-index: 2;
             width: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Легкая затемняющая подложка для текста */
+            background: rgba(0, 0, 0, 0.5);
             padding: 30px;
             border-radius: 10px;
             backdrop-filter: blur(5px);
@@ -136,7 +135,6 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        /* Горизонтальные секции */
         .horizontal-sections {
             display: grid;
             grid-template-columns: 1fr;
@@ -165,7 +163,6 @@
             color: #3498db;
         }
         
-        /* Статистика */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -191,7 +188,6 @@
             font-size: 0.85rem;
         }
         
-        /* Последние достижения */
         .achievements-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -245,7 +241,6 @@
             margin-top: 5px;
         }
         
-        /* Модальные окна */
         .modal {
             display: none;
             position: fixed;
@@ -316,7 +311,6 @@
             border-color: #3498db;
         }
         
-        /* Стили для красивой кнопки загрузки файла */
         .file-upload-container {
             position: relative;
             margin-bottom: 15px;
@@ -347,14 +341,6 @@
             box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
         }
         
-        .file-upload-label:active {
-            transform: translateY(0);
-        }
-        
-        .file-upload-label i {
-            font-size: 1.1rem;
-        }
-        
         .file-upload-input {
             position: absolute;
             left: 0;
@@ -370,11 +356,6 @@
             font-size: 0.85rem;
             color: #7f8c8d;
             text-align: center;
-        }
-        
-        .file-info i {
-            color: #3498db;
-            margin-right: 5px;
         }
         
         .modal-btn {
@@ -398,15 +379,6 @@
             box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
         }
         
-        .modal-btn:active {
-            transform: translateY(0);
-        }
-        
-        .modal-btn i {
-            margin-right: 8px;
-        }
-        
-        /* Предпросмотр аватара */
         .avatar-preview-container {
             text-align: center;
             margin: 20px 0;
@@ -436,7 +408,6 @@
             object-fit: cover;
         }
         
-        /* Адаптивность */
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -492,13 +463,10 @@
         <nav class="nav">
             <div class="nav-left">
                 <a href="index.html"><i class="fas fa-home"></i> Главная</a>
-                <a href="locations.html"><i class="fas fa-map-marker-alt"></i> Локации</a>
-                <a href="progress.html"><i class="fas fa-chart-line"></i> Прогресс</a>
+                <a href="locations.html"><i class="fas fa-map-marked-alt"></i> Карта</a>
             </div>
-            <div class="nav-right">
-                <a href="settings.html"><i class="fas fa-cog"></i> Настройки</a>
-                <a href="profile.html" style="color: #3498db;"><i class="fas fa-user"></i> Профиль</a>
-                <a href="index.html"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+            <div class="nav-right" id="navRight">
+                <!-- Навигация будет обновлена через script.js -->
             </div>
         </nav>
     </header>
@@ -506,10 +474,8 @@
     <!-- Основной контент -->
     <main class="main-content">
         <div class="profile-container">
-            <!-- Фон с изображением текущей локации - БЕЗ СИНЕГО ОВЕРЛЕЯ -->
             <div class="profile-background" id="profileBackground">
                 <div class="profile-header">
-                    <!-- Аватар с кнопкой изменения -->
                     <div class="profile-avatar-container" onclick="openAvatarModal()">
                         <div class="profile-avatar" id="userAvatar">
                             <i class="fas fa-user"></i>
@@ -519,7 +485,6 @@
                         </div>
                     </div>
                     
-                    <!-- Имя пользователя с кнопкой редактирования -->
                     <h1 id="userName">
                         Иван Петров
                         <button class="edit-name-btn" onclick="openNameModal()" title="Изменить имя">
@@ -529,17 +494,13 @@
                     
                     <p>Профиль саморазвития</p>
                     
-                    <!-- Текущая локация -->
                     <div class="current-location" id="currentLocation">
                         <i class="fas fa-map-marker-alt"></i> Лес
                     </div>
                 </div>
             </div>
             
-            <!-- Горизонтальные секции -->
             <div class="horizontal-sections">
-                
-                <!-- Статистика -->
                 <div class="section-card">
                     <h2><i class="fas fa-chart-bar"></i> Статистика</h2>
                     <div class="stats-grid">
@@ -570,7 +531,6 @@
                     </div>
                 </div>
                 
-                <!-- Последние достижения -->
                 <div class="section-card">
                     <h2><i class="fas fa-trophy"></i> Последние достижения</h2>
                     <div class="achievements-container">
@@ -592,7 +552,7 @@
                             </div>
                             <div class="achievement-content">
                                 <h4>Горы пройдены</h4>
-                                <p>Все 3 локации успешно выполнены</p>
+                                <p>Все задания в горах выполнены</p>
                                 <div class="achievement-date">
                                     <i class="far fa-calendar"></i> 22 октября
                                 </div>
@@ -604,7 +564,7 @@
                             </div>
                             <div class="achievement-content">
                                 <h4>Лес пройден</h4>
-                                <p>Все 3 локации успешно выполнены</p>
+                                <p>Все задания в лесу выполнены</p>
                                 <div class="achievement-date">
                                     <i class="far fa-calendar"></i> 15 октября
                                 </div>
@@ -612,9 +572,7 @@
                         </div>
                     </div>
                 </div>
-                
             </div>
-            
         </div>
     </main>
 
@@ -631,7 +589,6 @@
         </div>
     </footer>
 
-    <!-- Модальное окно изменения имени -->
     <div class="modal" id="nameModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeNameModal()">&times;</button>
@@ -646,7 +603,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно изменения аватара -->
     <div class="modal" id="avatarModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeAvatarModal()">&times;</button>
@@ -678,11 +634,11 @@
         </div>
     </div>
 
+    <script src="script.js"></script>
     <script>
-        // Данные профиля
         const profileData = {
             name: "Иван Петров",
-            avatar: "default", // 'default' или data URL изображения
+            avatar: "default",
             currentLocation: "forest",
             stats: {
                 totalDays: 47,
@@ -694,7 +650,6 @@
             }
         };
 
-        // Данные локаций с путями к локальным изображениям
         const locationsData = {
             forest: {
                 name: "Лес",
@@ -708,27 +663,22 @@
             }
         };
 
-        // Резервные изображения на случай, если локальные не загрузятся
         const fallbackImages = {
-            forest: "Лес.png",
-            mountains: "Горы.png"
+            forest: "https://images.unsplash.com/photo-1448375240586-882707db888b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+            mountains: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
         };
 
-        // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             loadProfileData();
             setupLocationBackground();
             
-            // Настройка загрузки файла аватара
             const fileInput = document.getElementById('avatarUpload');
             if (fileInput) {
                 fileInput.addEventListener('change', handleAvatarUpload);
             }
         });
 
-        // Загрузка данных профиля
         function loadProfileData() {
-            // Загрузка из localStorage
             const savedName = localStorage.getItem('coachUserName');
             const savedAvatar = localStorage.getItem('coachUserAvatar');
             const savedLocation = localStorage.getItem('coachCurrentLocation');
@@ -737,10 +687,8 @@
             if (savedAvatar) profileData.avatar = savedAvatar;
             if (savedLocation) profileData.currentLocation = savedLocation;
             
-            // Установка имени
             document.getElementById('userName').firstChild.textContent = profileData.name;
             
-            // Обновление статистики
             const stats = profileData.stats;
             document.getElementById('totalDays').textContent = stats.totalDays;
             document.getElementById('completedTasks').textContent = stats.completedTasks;
@@ -749,14 +697,10 @@
             document.getElementById('successRate').textContent = `${stats.successRate}%`;
             document.getElementById('goalsAchieved').textContent = stats.goalsAchieved;
             
-            // Установка аватара
             updateAvatarDisplay();
-            
-            // Установка локации
             updateLocationDisplay();
         }
 
-        // Проверка доступности изображения
         function checkImageAvailability(url, callback) {
             const img = new Image();
             img.onload = function() {
@@ -768,48 +712,32 @@
             img.src = url;
         }
 
-        // Настройка фона локации - БЕЗ СИНЕГО ОВЕРЛЕЯ
         function setupLocationBackground() {
             const location = locationsData[profileData.currentLocation];
             const backgroundDiv = document.getElementById('profileBackground');
             
             if (location && location.backgroundImage) {
-                // Сначала проверяем доступность основного изображения
                 checkImageAvailability(location.backgroundImage, function(isAvailable, url) {
                     if (isAvailable) {
-                        console.log(`Загружаем локальное изображение: ${url}`);
                         backgroundDiv.style.backgroundImage = `url('${url}')`;
                     } else {
-                        // Если локальное изображение недоступно, пробуем резервное
                         const fallbackUrl = fallbackImages[profileData.currentLocation];
-                        checkImageAvailability(fallbackUrl, function(isAvailable2, url2) {
-                            if (isAvailable2) {
-                                console.log(`Загружаем резервное изображение: ${url2}`);
-                                backgroundDiv.style.backgroundImage = `url('${url2}')`;
-                            } else {
-                                console.log(`Не удалось загрузить изображение для локации: ${location.name}`);
-                                // Устанавливаем градиент как запасной вариант
-                                backgroundDiv.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                            }
-                        });
+                        backgroundDiv.style.backgroundImage = `url('${fallbackUrl}')`;
                     }
                 });
             }
         }
 
-        // Обновление отображения аватара
         function updateAvatarDisplay() {
             const avatarDiv = document.getElementById('userAvatar');
-            avatarDiv.innerHTML = ''; // Очищаем содержимое
+            avatarDiv.innerHTML = '';
             
             if (profileData.avatar === "default") {
-                // Показать иконку по умолчанию
                 const icon = document.createElement('i');
                 icon.className = "fas fa-user";
                 avatarDiv.appendChild(icon);
                 avatarDiv.style.background = "linear-gradient(135deg, #3498db, #2980b9)";
             } else {
-                // Показать загруженное изображение
                 const img = document.createElement('img');
                 img.src = profileData.avatar;
                 img.alt = "Аватар";
@@ -818,31 +746,25 @@
             }
         }
 
-        // Обновление отображения локации
         function updateLocationDisplay() {
             const location = locationsData[profileData.currentLocation];
             if (!location) return;
             
-            // Обновление текста
             document.getElementById('currentLocation').innerHTML = 
                 `<i class="fas fa-map-marker-alt"></i> ${location.name}`;
             
-            // Обновление фона
             setupLocationBackground();
         }
 
-        // Открытие модального окна изменения имени
         function openNameModal() {
             document.getElementById('newName').value = profileData.name;
             document.getElementById('nameModal').style.display = 'flex';
         }
 
-        // Закрытие модального окна изменения имени
         function closeNameModal() {
             document.getElementById('nameModal').style.display = 'none';
         }
 
-        // Сохранение имени
         function saveName() {
             const newName = document.getElementById('newName').value.trim();
             if (newName && newName !== profileData.name) {
@@ -854,17 +776,13 @@
             }
         }
 
-        // Открытие модального окна изменения аватара
         function openAvatarModal() {
-            // Сброс предпросмотра
             const previewDiv = document.getElementById('avatarPreview');
             previewDiv.innerHTML = '<i class="fas fa-user"></i>';
             previewDiv.style.background = 'linear-gradient(135deg, #f8f9fa, #e9ecef)';
             
-            // Сброс поля загрузки
             document.getElementById('avatarUpload').value = '';
             
-            // Показать текущий аватар в предпросмотре
             if (profileData.avatar !== "default") {
                 const img = document.createElement('img');
                 img.src = profileData.avatar;
@@ -880,13 +798,11 @@
             document.getElementById('avatarModal').style.display = 'flex';
         }
 
-        // Закрытие модального окна изменения аватара
         function closeAvatarModal() {
             document.getElementById('avatarModal').style.display = 'none';
             document.getElementById('avatarUpload').value = '';
         }
 
-        // Обработка загрузки аватара
         function handleAvatarUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -897,7 +813,7 @@
                 return;
             }
             
-            if (file.size > 2 * 1024 * 1024) { // 2MB limit
+            if (file.size > 2 * 1024 * 1024) {
                 alert('Размер файла не должен превышать 2 МБ.');
                 document.getElementById('avatarUpload').value = '';
                 return;
@@ -905,7 +821,6 @@
             
             const reader = new FileReader();
             reader.onload = function(e) {
-                // Показать предпросмотр
                 const previewDiv = document.getElementById('avatarPreview');
                 previewDiv.innerHTML = '';
                 
@@ -919,13 +834,11 @@
                 previewDiv.appendChild(img);
                 previewDiv.style.background = 'none';
                 
-                // Сохранить временный выбор
                 window.selectedAvatar = e.target.result;
             };
             reader.readAsDataURL(file);
         }
 
-        // Сохранение аватара
         function saveAvatar() {
             const newAvatar = window.selectedAvatar;
             
@@ -945,7 +858,6 @@
             }
         }
         
-        // Функция для смены локации (для использования из других страниц)
         function changeLocation(locationId) {
             if (locationsData[locationId]) {
                 profileData.currentLocation = locationId;

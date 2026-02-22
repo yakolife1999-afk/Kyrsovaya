@@ -1,4 +1,64 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // ========== ФУНКЦИИ ДЛЯ АВТОРИЗАЦИИ ==========
+    
+    // Проверка, авторизован ли пользователь
+    function isUserLoggedIn() {
+        return localStorage.getItem('isLoggedIn') === 'true';
+    }
+    
+    // Вход пользователя
+    function loginUser() {
+        localStorage.setItem('isLoggedIn', 'true');
+        updateNavigation();
+    }
+    
+    // Выход из аккаунта
+    function logoutUser() {
+        localStorage.setItem('isLoggedIn', 'false');
+        updateNavigation();
+        // Перенаправляем на главную после выхода
+        window.location.href = 'index.html';
+    }
+    
+    // Обновление навигации в зависимости от статуса авторизации
+    function updateNavigation() {
+        const navRight = document.querySelector('.nav-right');
+        if (!navRight) return;
+        
+        const isLoggedIn = isUserLoggedIn();
+        const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+        
+        if (isLoggedIn) {
+            // Пользователь авторизован - показываем только Прогресс и Профиль
+            navRight.innerHTML = `
+                <a href="progress.html" class="${currentPath === 'progress.html' ? 'active' : ''}"><i class="fas fa-chart-line"></i> Прогресс</a>
+                <a href="profile.html" class="${currentPath === 'profile.html' ? 'active' : ''}"><i class="fas fa-user"></i> Профиль</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+            `;
+            
+            // Добавляем обработчик для кнопки выхода
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logoutUser();
+                });
+            }
+        } else {
+            // Пользователь не авторизован - показываем Прогресс, Вход и Регистрацию
+            navRight.innerHTML = `
+                <a href="progress.html" class="${currentPath === 'progress.html' ? 'active' : ''}"><i class="fas fa-chart-line"></i> Прогресс</a>
+                <a href="login.html" class="${currentPath === 'login.html' ? 'active' : ''}"><i class="fas fa-sign-in-alt"></i> Вход</a>
+                <a href="register.html" class="${currentPath === 'register.html' ? 'active' : ''}"><i class="fas fa-user-plus"></i> Регистрация</a>
+            `;
+        }
+    }
+    
+    // Вызываем обновление навигации при загрузке страницы
+    updateNavigation();
+    
+    // ========== ОСТАЛЬНОЙ КОД (БЕЗ ИЗМЕНЕНИЙ) ==========
+    
     // Пути к изображениям - 3 изображения
     const imagePaths = [
         'C:/Users/yakol/OneDrive/Desktop/Курсовая/Курсовая закрыто.png',       // 1. Начальное - закрытое
@@ -129,76 +189,76 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Обработчик для кнопки "Вход" - наведение
-    loginBtn.addEventListener('mouseenter', function() {
-        this.style.backgroundColor = '#2980b9';
-        this.style.color = 'white';
-        this.style.boxShadow = '0 10px 30px rgba(41, 128, 185, 0.3)';
-        console.log('Наведение на кнопку "Вход" - начинаем последовательность');
-        startForwardSequence();
-    });
-    
-    // Обработчик для кнопки "Вход" - уход курсора
-    loginBtn.addEventListener('mouseleave', function() {
-        this.style.backgroundColor = 'white';
-        this.style.color = '#2c3e50';
-        this.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
-        console.log('Уход с кнопки "Вход" - начинаем обратную последовательность');
-        startBackwardSequence();
-    });
+    if (loginBtn) {
+        loginBtn.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = '#2980b9';
+            this.style.color = 'white';
+            this.style.boxShadow = '0 10px 30px rgba(41, 128, 185, 0.3)';
+            console.log('Наведение на кнопку "Вход" - начинаем последовательность');
+            startForwardSequence();
+        });
+        
+        loginBtn.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = 'white';
+            this.style.color = '#2c3e50';
+            this.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
+            console.log('Уход с кнопки "Вход" - начинаем обратную последовательность');
+            startBackwardSequence();
+        });
+        
+        loginBtn.addEventListener('click', function(e) {
+            // Отменяем стандартное поведение ссылки на короткое время для анимации
+            e.preventDefault();
+            
+            // Анимация нажатия
+            this.style.transform = 'scale(0.95)';
+            
+            // Запускаем последовательность изображений
+            startForwardSequence();
+            
+            // Ждем 300мс для завершения анимации, затем переходим
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+                window.location.href = this.getAttribute('href');
+            }, 300);
+        });
+    }
     
     // Обработчик для кнопки "Регистрация" - наведение
-    registerBtn.addEventListener('mouseenter', function() {
-        this.style.backgroundColor = '#3498db';
-        this.style.color = 'white';
-        this.style.boxShadow = '0 10px 30px rgba(52, 152, 219, 0.3)';
-        console.log('Наведение на кнопку "Регистрация" - начинаем последовательность');
-        startForwardSequence();
-    });
-    
-    // Обработчик для кнопки "Регистрация" - уход курсора
-    registerBtn.addEventListener('mouseleave', function() {
-        this.style.backgroundColor = 'white';
-        this.style.color = '#2c3e50';
-        this.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
-        console.log('Уход с кнопки "Регистрация" - начинаем обратную последовательность');
-        startBackwardSequence();
-    });
-    
-    // Обработчик для клика на кнопку "Вход"
-    loginBtn.addEventListener('click', function(e) {
-        // Отменяем стандартное поведение ссылки на короткое время для анимации
-        e.preventDefault();
+    if (registerBtn) {
+        registerBtn.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = '#3498db';
+            this.style.color = 'white';
+            this.style.boxShadow = '0 10px 30px rgba(52, 152, 219, 0.3)';
+            console.log('Наведение на кнопку "Регистрация" - начинаем последовательность');
+            startForwardSequence();
+        });
         
-        // Анимация нажатия
-        this.style.transform = 'scale(0.95)';
+        registerBtn.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = 'white';
+            this.style.color = '#2c3e50';
+            this.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
+            console.log('Уход с кнопки "Регистрация" - начинаем обратную последовательность');
+            startBackwardSequence();
+        });
         
-        // Запускаем последовательность изображений
-        startForwardSequence();
-        
-        // Ждем 300мс для завершения анимации, затем переходим
-        setTimeout(() => {
-            this.style.transform = 'scale(1)';
-            window.location.href = this.getAttribute('href');
-        }, 300);
-    });
-    
-    // Обработчик для клика на кнопку "Регистрация"
-    registerBtn.addEventListener('click', function(e) {
-        // Отменяем стандартное поведение ссылки на короткое время для анимации
-        e.preventDefault();
-        
-        // Анимация нажатия
-        this.style.transform = 'scale(0.95)';
-        
-        // Запускаем последовательность изображений
-        startForwardSequence();
-        
-        // Ждем 300мс для завершения анимации, затем переходим
-        setTimeout(() => {
-            this.style.transform = 'scale(1)';
-            window.location.href = this.getAttribute('href');
-        }, 300);
-    });
+        registerBtn.addEventListener('click', function(e) {
+            // Отменяем стандартное поведение ссылки на короткое время для анимации
+            e.preventDefault();
+            
+            // Анимация нажатия
+            this.style.transform = 'scale(0.95)';
+            
+            // Запускаем последовательность изображений
+            startForwardSequence();
+            
+            // Ждем 300мс для завершения анимации, затем переходим
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+                window.location.href = this.getAttribute('href');
+            }, 300);
+        });
+    }
     
     // Анимация элементов при скролле
     window.addEventListener('scroll', function() {
@@ -227,9 +287,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Инициализация анимации текста
     const textSection = document.querySelector('.text-section');
-    textSection.style.opacity = '0';
-    textSection.style.transform = 'translateY(20px)';
-    textSection.style.transition = 'opacity 0.8s, transform 0.8s';
+    if (textSection) {
+        textSection.style.opacity = '0';
+        textSection.style.transform = 'translateY(20px)';
+        textSection.style.transition = 'opacity 0.8s, transform 0.8s';
+    }
     
     // Инициализация анимации features
     features.forEach(feature => {
@@ -240,20 +302,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Запуск анимации после загрузки страницы
     setTimeout(() => {
-        textSection.style.opacity = '1';
-        textSection.style.transform = 'translateY(0)';
+        if (textSection) {
+            textSection.style.opacity = '1';
+            textSection.style.transform = 'translateY(0)';
+        }
     }, 300);
     
     // Анимация для кнопок
     const authButtons = document.querySelector('.auth-buttons');
-    authButtons.style.opacity = '0';
-    authButtons.style.transform = 'translateY(30px)';
-    authButtons.style.transition = 'opacity 1s, transform 1s';
-    
-    setTimeout(() => {
-        authButtons.style.opacity = '1';
-        authButtons.style.transform = 'translateY(0)';
-    }, 600);
+    if (authButtons) {
+        authButtons.style.opacity = '0';
+        authButtons.style.transform = 'translateY(30px)';
+        authButtons.style.transition = 'opacity 1s, transform 1s';
+        
+        setTimeout(() => {
+            authButtons.style.opacity = '1';
+            authButtons.style.transform = 'translateY(0)';
+        }, 600);
+    }
     
     // Устанавливаем начальное закрытое изображение при загрузке
     console.log('Загрузка начального изображения...');

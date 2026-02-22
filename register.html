@@ -111,7 +111,6 @@
             color: #2980b9;
         }
         
-        /* Контейнер для автоматически меняющихся изображений */
         .rotating-background {
             height: 80vh;
             min-height: 500px;
@@ -119,6 +118,7 @@
             margin-top: 30px;
             flex: 0 0 auto;
             overflow: hidden;
+            background-color: #2c3e50;
         }
         
         .slide {
@@ -131,6 +131,8 @@
             background-position: center;
             opacity: 0;
             z-index: 1;
+            transition: opacity 0.5s ease-in-out;
+            will-change: opacity;
         }
         
         .slide.active {
@@ -146,6 +148,7 @@
             height: 100%;
             background: rgba(44, 62, 80, 0.3);
             z-index: 3;
+            pointer-events: none;
         }
         
         .password-requirements {
@@ -211,13 +214,10 @@
         <nav class="nav">
             <div class="nav-left">
                 <a href="index.html"><i class="fas fa-home"></i> Главная</a>
-                <a href="locations.html"><i class="fas fa-map-marker-alt"></i> Локации</a>
-                <a href="progress.html"><i class="fas fa-chart-line"></i> Прогресс</a>
+                <a href="locations.html"><i class="fas fa-map-marked-alt"></i> Карта</a>
             </div>
-            <div class="nav-right">
-                <a href="settings.html"><i class="fas fa-cog"></i> Настройки</a>
-                <a href="login.html"><i class="fas fa-user"></i> Войти</a>
-                <a href="register.html" style="color: #3498db;"><i class="fas fa-user-plus"></i> Регистрация</a>
+            <div class="nav-right" id="navRight">
+                <!-- Навигация будет обновлена через script.js -->
             </div>
         </nav>
     </header>
@@ -293,12 +293,12 @@
         </div>
     </main>
 
-    <!-- Автоматически меняющиеся изображения без плавного перехода -->
+    <!-- Автоматически меняющиеся изображения -->
     <div class="rotating-background">
         <div class="image-overlay"></div>
         
-        <!-- 3 автоматически сменяемых изображения -->
-        <div id="slide1" class="slide active"></div>
+        <!-- 3 слайда для изображений Не горит -->
+        <div id="slide1" class="slide"></div>
         <div id="slide2" class="slide"></div>
         <div id="slide3" class="slide"></div>
     </div>
@@ -317,24 +317,21 @@
         </div>
     </footer>
 
+    <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Пути к 3 изображениям для автоматической смены
             const imagePaths = [
                 'C:/Users/yakol/OneDrive/Desktop/Курсовая/Не горит.png',
                 'C:/Users/yakol/OneDrive/Desktop/Курсовая/Не горит2.png',
                 'C:/Users/yakol/OneDrive/Desktop/Курсовая/Не горит3.png'
             ];
             
-            // Резервные изображения
             const fallbackImages = [
-                'Не горит.png',
-                'Не горит2.png',
-                'Не горит3.png',
-                'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+                'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+                'https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
             ];
             
-            // Получаем элементы
             const slides = [
                 document.getElementById('slide1'),
                 document.getElementById('slide2'),
@@ -342,8 +339,8 @@
             ];
             
             let currentIndex = 0;
+            let isTransitioning = false;
             
-            // Функция проверки доступности изображения
             function checkImageAvailability(url, callback) {
                 const img = new Image();
                 img.onload = () => callback(true, url);
@@ -351,49 +348,60 @@
                 img.src = url;
             }
             
-            // Загрузка всех изображений
-            function loadImages() {
-                imagePaths.forEach((path, index) => {
-                    checkImageAvailability(path, (isAvailable, url) => {
-                        if (isAvailable) {
-                            console.log(`Слайд ${index + 1} загружен:`, url);
-                            slides[index].style.backgroundImage = `url('${url}')`;
-                        } else {
-                            const fallbackUrl = fallbackImages[index] || fallbackImages[fallbackImages.length - 1];
-                            console.log(`Слайд ${index + 1} использует резерв:`, fallbackUrl);
-                            slides[index].style.backgroundImage = `url('${fallbackUrl}')`;
-                        }
+            function preloadImages() {
+                const promises = imagePaths.map((path, index) => {
+                    return new Promise((resolve) => {
+                        checkImageAvailability(path, (isAvailable, url) => {
+                            if (isAvailable) {
+                                slides[index].style.backgroundImage = `url('${url}')`;
+                            } else {
+                                const fallbackUrl = fallbackImages[index % fallbackImages.length];
+                                slides[index].style.backgroundImage = `url('${fallbackUrl}')`;
+                            }
+                            resolve();
+                        });
                     });
+                });
+                
+                Promise.all(promises).then(() => {
+                    setTimeout(() => {
+                        changeSlide(0);
+                    }, 100);
                 });
             }
             
-            // Функция смены слайда - МГНОВЕННО, без плавности
             function changeSlide(index) {
-                // Убираем активный класс у всех слайдов
+                if (isTransitioning) return;
+                
+                isTransitioning = true;
+                
                 slides.forEach(slide => {
                     slide.classList.remove('active');
                 });
                 
-                // Добавляем активный класс выбранному слайду
                 slides[index].classList.add('active');
-                
                 currentIndex = index;
+                
+                setTimeout(() => {
+                    isTransitioning = false;
+                }, 500);
             }
             
-            // Функция для автоматического переключения каждые 0.5 секунды
             function startAutoSlide() {
                 setInterval(() => {
+                    if (isTransitioning) return;
+                    
                     const nextIndex = (currentIndex + 1) % slides.length;
                     changeSlide(nextIndex);
-                }, 500); // Меняем каждые 0.5 секунды
+                }, 500);
             }
             
-            // Инициализация
-            loadImages();
-            changeSlide(0);
-            startAutoSlide();
+            preloadImages();
             
-            // Форма регистрации
+            setTimeout(() => {
+                startAutoSlide();
+            }, 500);
+            
             const registerForm = document.getElementById('registerForm');
             
             function validatePassword(password) {
@@ -434,11 +442,15 @@
                     return;
                 }
                 
+                // Устанавливаем статус авторизации
+                localStorage.setItem('isLoggedIn', 'true');
+                
                 alert('Регистрация прошла успешно!\n\nДобро пожаловать в систему цифрового коучинга!');
                 
+                // Перенаправление на главную страницу
                 setTimeout(() => {
                     window.location.href = 'index.html';
-                }, 1000);
+                }, 1500);
             });
             
             const passwordInput = document.getElementById('regPassword');
