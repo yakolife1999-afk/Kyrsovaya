@@ -574,46 +574,52 @@
         let currentLevel = 1;
 
         // Загрузка заданий с сервера
-        async function loadAllTasks() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'login.html';
-                return;
-            }
+async function loadAllTasks() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
 
-            try {
-                // Загружаем задания для всех уровней (с 1 по 9)
-                for (let level = 1; level <= 9; level++) {
-                    const response = await fetch(`http://localhost:3000/api/levels/${level}/task`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    if (!response.ok) {
-                        if (response.status === 401) {
-                            localStorage.removeItem('token');
-                            window.location.href = 'login.html';
-                            return;
-                        }
-                        continue;
-                    }
-
-                    const data = await response.json();
-                    tasksData[`level${level}`] = {
-                        title: data.title || `Уровень ${level}`,
-                        task: data.task || 'Задание не найдено',
-                        completed: data.completed || false
-                    };
+    try {
+        // Загружаем задания для всех уровней (с 1 по 9)
+        for (let level = 1; level <= 9; level++) {
+            const response = await fetch(`http://localhost:3000/api/levels/${level}/task`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
+            });
 
-                updateAllDots();
-                updateAllProgress();
-
-            } catch (error) {
-                console.error('Ошибка загрузки заданий:', error);
+            if (!response.ok) {
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                continue;
             }
+
+            const data = await response.json();
+
+            // ОЧИЩАЕМ НАЗВАНИЕ ОТ ЗВЕЗДОЧЕК
+            let cleanTitle = data.title || `Уровень ${level}`;
+            cleanTitle = cleanTitle.replace(/\*\*/g, ''); // убираем **
+            cleanTitle = cleanTitle.replace(/\*/g, '');   // убираем *
+
+            tasksData[`level${level}`] = {
+                title: cleanTitle,
+                task: data.task || 'Задание не найдено',
+                completed: data.completed || false
+            };
         }
+
+        updateAllDots();
+        updateAllProgress();
+
+    } catch (error) {
+        console.error('Ошибка загрузки заданий:', error);
+    }
+}
 
         // Обновление внешнего вида точек
         function updateAllDots() {
@@ -797,3 +803,4 @@
     </script>
 </body>
 </html>
+
