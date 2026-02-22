@@ -773,13 +773,13 @@
                                   currentLocation === 'hills' ? currentTaskIndex + 4 : 
                                   currentTaskIndex + 7;
                 
-                alert(`Задание ${taskNumber} выполнено!`);
+                alert(`✅ Задание ${taskNumber} выполнено!`);
                 closeTaskModal();
                 
                 const allInLocation = completedTasks[currentLocation].every(v => v);
                 if (allInLocation) {
                     setTimeout(() => {
-                        alert(`Поздравляем! Вы выполнили все задания в локации ${
+                        alert(`🎉 Поздравляем! Вы выполнили все задания в локации ${
                             currentLocation === 'forest' ? 'Лес' : 
                             currentLocation === 'hills' ? 'Холмы' : 'Пляж'
                         }!`);
@@ -794,7 +794,7 @@
                 
                 if (allTasks) {
                     setTimeout(() => {
-                        alert('Грандиозно! Вы выполнили все 9 заданий на карте!');
+                        alert('🏆 Грандиозно! Вы выполнили все 9 заданий на карте!');
                     }, 600);
                 }
             }
