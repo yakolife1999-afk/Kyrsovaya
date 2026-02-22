@@ -44,6 +44,7 @@
             position: relative;
             display: inline-block;
             margin-bottom: 20px;
+            cursor: pointer;
         }
         
         .profile-avatar {
@@ -310,53 +311,6 @@
             border-color: #3498db;
         }
         
-        .file-upload-container {
-            position: relative;
-            margin-bottom: 15px;
-        }
-        
-        .file-upload-label {
-            display: block;
-            padding: 12px 20px;
-            background: linear-gradient(to right, #3498db, #2980b9);
-            color: white;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .file-upload-label:hover {
-            background: linear-gradient(to right, #2980b9, #3498db);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
-        }
-        
-        .file-upload-input {
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-        
-        .file-info {
-            margin-top: 10px;
-            font-size: 0.85rem;
-            color: #7f8c8d;
-            text-align: center;
-        }
-        
         .modal-btn {
             width: 100%;
             padding: 12px;
@@ -469,7 +423,7 @@
 
     <main class="main-content">
         <div class="profile-container">
-            <div class="profile-background" id="profileBackground">
+            <div class="profile-background" id="profileBackground" style="background-image: linear-gradient(135deg, #2c3e50, #3498db);">
                 <div class="profile-header">
                     <div class="profile-avatar-container" onclick="openAvatarModal()">
                         <div class="profile-avatar" id="userAvatar">
@@ -481,7 +435,7 @@
                     </div>
                     
                     <h1 id="userName">
-                        Иван Петров
+                        Загрузка...
                         <button class="edit-name-btn" onclick="openNameModal()" title="Изменить имя">
                             <i class="fas fa-pencil-alt"></i>
                         </button>
@@ -489,8 +443,8 @@
                     
                     <p>Профиль саморазвития</p>
                     
-                    <div class="current-location" id="currentLocation">
-                        <i class="fas fa-map-marker-alt"></i> Лес
+                    <div class="current-location" id="userEmail">
+                        <i class="fas fa-envelope"></i> Загрузка...
                     </div>
                 </div>
             </div>
@@ -500,69 +454,63 @@
                     <h2><i class="fas fa-chart-bar"></i> Статистика</h2>
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <div class="stat-value" id="totalDays">47</div>
-                            <div class="stat-label">Дней активности</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="completedTasks">18</div>
+                            <div class="stat-value" id="totalCompleted">0</div>
                             <div class="stat-label">Выполнено заданий</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value" id="currentStreak">14</div>
-                            <div class="stat-label">Дней подряд</div>
+                            <div class="stat-value" id="totalTasks">9</div>
+                            <div class="stat-label">Всего заданий</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value" id="totalHours">67.5</div>
-                            <div class="stat-label">Часов практики</div>
+                            <div class="stat-value" id="totalPercent">0%</div>
+                            <div class="stat-label">Прогресс</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value" id="successRate">92%</div>
-                            <div class="stat-label">Успешность</div>
+                            <div class="stat-value" id="forestCompleted">0</div>
+                            <div class="stat-label">Лес (1-3)</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value" id="goalsAchieved">6</div>
-                            <div class="stat-label">Целей достигнуто</div>
+                            <div class="stat-value" id="hillsCompleted">0</div>
+                            <div class="stat-label">Холмы (4-6)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="beachCompleted">0</div>
+                            <div class="stat-label">Пляж (7-9)</div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="section-card">
-                    <h2><i class="fas fa-trophy"></i> Последние достижения</h2>
-                    <div class="achievements-container">
-                        <div class="achievement-item">
-                            <div class="achievement-icon" style="background: #2ecc71;">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="achievement-content">
-                                <h4>14 дней подряд</h4>
-                                <p>Непрерывная практика саморазвития</p>
-                                <div class="achievement-date">
-                                    <i class="far fa-calendar"></i> Сегодня
-                                </div>
-                            </div>
-                        </div>
-                        <div class="achievement-item">
-                            <div class="achievement-icon" style="background: #9b59b6;">
-                                <i class="fas fa-mountain"></i>
-                            </div>
-                            <div class="achievement-content">
-                                <h4>Холмы пройдены</h4>
-                                <p>Все задания в холмах выполнены</p>
-                                <div class="achievement-date">
-                                    <i class="far fa-calendar"></i> 22 октября
-                                </div>
-                            </div>
-                        </div>
-                        <div class="achievement-item">
-                            <div class="achievement-icon" style="background: #27ae60;">
+                    <h2><i class="fas fa-trophy"></i> Достижения</h2>
+                    <div class="achievements-container" id="achievementsList">
+                        <div class="achievement-item" id="achievementForest">
+                            <div class="achievement-icon" style="background: #95a5a6;">
                                 <i class="fas fa-tree"></i>
                             </div>
                             <div class="achievement-content">
-                                <h4>Лес пройден</h4>
-                                <p>Все задания в лесу выполнены</p>
-                                <div class="achievement-date">
-                                    <i class="far fa-calendar"></i> 15 октября
-                                </div>
+                                <h4>Лес</h4>
+                                <p>Выполните все задания в лесу</p>
+                                <div class="achievement-date" id="forestAchievementDate"></div>
+                            </div>
+                        </div>
+                        <div class="achievement-item" id="achievementHills">
+                            <div class="achievement-icon" style="background: #95a5a6;">
+                                <i class="fas fa-mountain"></i>
+                            </div>
+                            <div class="achievement-content">
+                                <h4>Холмы</h4>
+                                <p>Выполните все задания на холмах</p>
+                                <div class="achievement-date" id="hillsAchievementDate"></div>
+                            </div>
+                        </div>
+                        <div class="achievement-item" id="achievementBeach">
+                            <div class="achievement-icon" style="background: #95a5a6;">
+                                <i class="fas fa-umbrella-beach"></i>
+                            </div>
+                            <div class="achievement-content">
+                                <h4>Пляж</h4>
+                                <p>Выполните все задания на пляже</p>
+                                <div class="achievement-date" id="beachAchievementDate"></div>
                             </div>
                         </div>
                     </div>
@@ -604,13 +552,11 @@
             
             <div class="form-group">
                 <label>Выберите изображение:</label>
-                <div class="file-upload-container">
-                    <label class="file-upload-label" for="avatarUpload">
-                        <i class="fas fa-cloud-upload-alt"></i> Выбрать файл
-                    </label>
-                    <input type="file" id="avatarUpload" class="file-upload-input" accept="image/*">
-                </div>
-                <div class="file-info">
+                <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                <button class="modal-btn" onclick="document.getElementById('avatarUpload').click()">
+                    <i class="fas fa-cloud-upload-alt"></i> Выбрать файл
+                </button>
+                <div class="file-info" style="margin-top: 10px; color: #7f8c8d; font-size: 0.85rem;">
                     <i class="fas fa-info-circle"></i> Поддерживаются форматы: JPG, PNG, GIF. Максимальный размер: 2 МБ
                 </div>
             </div>
@@ -630,134 +576,114 @@
 
     <script src="script.js"></script>
     <script>
-        const profileData = {
-            name: "Иван Петров",
-            avatar: "default",
-            currentLocation: "forest",
-            stats: {
-                totalDays: 47,
-                completedTasks: 18,
-                currentStreak: 14,
-                totalHours: 67.5,
-                successRate: 92,
-                goalsAchieved: 6
-            }
+        // Данные пользователя
+        let userData = {
+            name: '',
+            email: '',
+            avatar: 'default'
         };
 
-        const locationsData = {
-            forest: {
-                name: "Лес",
-                backgroundImage: "images/les.png",
-                color: "#27ae60"
-            },
-            hills: {
-                name: "Холмы",
-                backgroundImage: "images/holmi.png",
-                color: "#e67e22"
-            },
-            beach: {
-                name: "Пляж",
-                backgroundImage: "images/plyazh.png",
-                color: "#3498db"
+        // Загрузка данных профиля
+        async function loadProfile() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
             }
-        };
 
-        const fallbackImages = {
-            forest: "https://images.unsplash.com/photo-1448375240586-882707db888b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-            hills: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-            beach: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
-        };
+            try {
+                // Получаем данные пользователя из localStorage
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                userData.name = user.name || 'Пользователь';
+                userData.email = user.email || '';
 
-        document.addEventListener('DOMContentLoaded', function() {
-            loadProfileData();
-            setupLocationBackground();
-            
-            const fileInput = document.getElementById('avatarUpload');
-            if (fileInput) {
-                fileInput.addEventListener('change', handleAvatarUpload);
+                document.getElementById('userName').firstChild.textContent = userData.name;
+                document.getElementById('userEmail').innerHTML = `<i class="fas fa-envelope"></i> ${userData.email}`;
+
+                // Загружаем прогресс заданий
+                await loadTasksProgress();
+
+            } catch (error) {
+                console.error('Ошибка загрузки профиля:', error);
             }
-        });
-
-        function loadProfileData() {
-            const savedName = localStorage.getItem('coachUserName');
-            const savedAvatar = localStorage.getItem('coachUserAvatar');
-            const savedLocation = localStorage.getItem('coachCurrentLocation');
-            
-            if (savedName) profileData.name = savedName;
-            if (savedAvatar) profileData.avatar = savedAvatar;
-            if (savedLocation) profileData.currentLocation = savedLocation;
-            
-            document.getElementById('userName').firstChild.textContent = profileData.name;
-            
-            const stats = profileData.stats;
-            document.getElementById('totalDays').textContent = stats.totalDays;
-            document.getElementById('completedTasks').textContent = stats.completedTasks;
-            document.getElementById('currentStreak').textContent = stats.currentStreak;
-            document.getElementById('totalHours').textContent = stats.totalHours;
-            document.getElementById('successRate').textContent = `${stats.successRate}%`;
-            document.getElementById('goalsAchieved').textContent = stats.goalsAchieved;
-            
-            updateAvatarDisplay();
-            updateLocationDisplay();
         }
 
-        function checkImageAvailability(url, callback) {
-            const img = new Image();
-            img.onload = function() {
-                callback(true, url);
-            };
-            img.onerror = function() {
-                callback(false, url);
-            };
-            img.src = url;
-        }
+        // Загрузка прогресса заданий
+        async function loadTasksProgress() {
+            const token = localStorage.getItem('token');
+            let forestCount = 0;
+            let hillsCount = 0;
+            let beachCount = 0;
 
-        function setupLocationBackground() {
-            const location = locationsData[profileData.currentLocation];
-            const backgroundDiv = document.getElementById('profileBackground');
-            
-            if (location && location.backgroundImage) {
-                checkImageAvailability(location.backgroundImage, function(isAvailable, url) {
-                    if (isAvailable) {
-                        backgroundDiv.style.backgroundImage = `url('${url}')`;
-                    } else {
-                        const fallbackUrl = fallbackImages[profileData.currentLocation];
-                        backgroundDiv.style.backgroundImage = `url('${fallbackUrl}')`;
+            for (let level = 1; level <= 9; level++) {
+                try {
+                    const response = await fetch(`http://localhost:3000/api/levels/${level}/task`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.completed) {
+                            if (level <= 3) forestCount++;
+                            else if (level <= 6) hillsCount++;
+                            else beachCount++;
+                        }
                     }
-                });
+                } catch (error) {
+                    console.error(`Ошибка загрузки уровня ${level}:`, error);
+                }
+            }
+
+            const totalCompleted = forestCount + hillsCount + beachCount;
+            const totalPercent = Math.round((totalCompleted / 9) * 100);
+
+            // Обновляем статистику
+            document.getElementById('totalCompleted').textContent = totalCompleted;
+            document.getElementById('forestCompleted').textContent = forestCount;
+            document.getElementById('hillsCompleted').textContent = hillsCount;
+            document.getElementById('beachCompleted').textContent = beachCount;
+            document.getElementById('totalPercent').textContent = totalPercent + '%';
+
+            // Обновляем достижения
+            updateAchievements(forestCount, hillsCount, beachCount);
+        }
+
+        // Обновление достижений
+        function updateAchievements(forestCount, hillsCount, beachCount) {
+            const forestAchieved = forestCount === 3;
+            const hillsAchieved = hillsCount === 3;
+            const beachAchieved = beachCount === 3;
+
+            // Лес
+            const forestIcon = document.querySelector('#achievementForest .achievement-icon');
+            const forestDate = document.getElementById('forestAchievementDate');
+            if (forestAchieved) {
+                forestIcon.style.background = '#27ae60';
+                forestDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+            }
+
+            // Холмы
+            const hillsIcon = document.querySelector('#achievementHills .achievement-icon');
+            const hillsDate = document.getElementById('hillsAchievementDate');
+            if (hillsAchieved) {
+                hillsIcon.style.background = '#e67e22';
+                hillsDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+            }
+
+            // Пляж
+            const beachIcon = document.querySelector('#achievementBeach .achievement-icon');
+            const beachDate = document.getElementById('beachAchievementDate');
+            if (beachAchieved) {
+                beachIcon.style.background = '#3498db';
+                beachDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
             }
         }
 
-        function updateAvatarDisplay() {
-            const avatarDiv = document.getElementById('userAvatar');
-            avatarDiv.innerHTML = '';
-            
-            if (profileData.avatar === "default") {
-                const icon = document.createElement('i');
-                icon.className = "fas fa-user";
-                avatarDiv.appendChild(icon);
-                avatarDiv.style.background = "linear-gradient(135deg, #3498db, #2980b9)";
-            } else {
-                const img = document.createElement('img');
-                img.src = profileData.avatar;
-                img.alt = "Аватар";
-                avatarDiv.appendChild(img);
-                avatarDiv.style.background = "none";
-            }
-        }
-
-        function updateLocationDisplay() {
-            const location = locationsData[profileData.currentLocation];
-            if (!location) return;
-            
-            document.getElementById('currentLocation').innerHTML = 
-                `<i class="fas fa-map-marker-alt"></i> ${location.name}`;
-            
-            setupLocationBackground();
-        }
-
+        // Модалка имени
         function openNameModal() {
-            document.getElementById('newName').value = profileData.name;
+            document.getElementById('newName').value = userData.name;
             document.getElementById('nameModal').style.display = 'flex';
         }
 
@@ -767,33 +693,25 @@
 
         function saveName() {
             const newName = document.getElementById('newName').value.trim();
-            if (newName && newName !== profileData.name) {
-                profileData.name = newName;
+            if (newName && newName !== userData.name) {
+                userData.name = newName;
                 document.getElementById('userName').firstChild.textContent = newName;
-                localStorage.setItem('coachUserName', newName);
+                
+                // Обновляем в localStorage
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                user.name = newName;
+                localStorage.setItem('user', JSON.stringify(user));
+                
                 closeNameModal();
                 alert('Имя успешно изменено!');
             }
         }
 
+        // Модалка аватара
         function openAvatarModal() {
             const previewDiv = document.getElementById('avatarPreview');
             previewDiv.innerHTML = '<i class="fas fa-user"></i>';
             previewDiv.style.background = 'linear-gradient(135deg, #f8f9fa, #e9ecef)';
-            
-            document.getElementById('avatarUpload').value = '';
-            
-            if (profileData.avatar !== "default") {
-                const img = document.createElement('img');
-                img.src = profileData.avatar;
-                img.alt = "Текущий аватар";
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
-                previewDiv.innerHTML = '';
-                previewDiv.appendChild(img);
-                previewDiv.style.background = 'none';
-            }
             
             document.getElementById('avatarModal').style.display = 'flex';
         }
@@ -803,19 +721,18 @@
             document.getElementById('avatarUpload').value = '';
         }
 
-        function handleAvatarUpload(event) {
+        // Загрузка аватара
+        document.getElementById('avatarUpload').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (!file) return;
             
             if (!file.type.startsWith('image/')) {
-                alert('Пожалуйста, выберите файл изображения (JPG, PNG или GIF).');
-                document.getElementById('avatarUpload').value = '';
+                alert('Пожалуйста, выберите файл изображения');
                 return;
             }
             
             if (file.size > 2 * 1024 * 1024) {
-                alert('Размер файла не должен превышать 2 МБ.');
-                document.getElementById('avatarUpload').value = '';
+                alert('Размер файла не должен превышать 2 МБ');
                 return;
             }
             
@@ -826,7 +743,6 @@
                 
                 const img = document.createElement('img');
                 img.src = e.target.result;
-                img.alt = "Предпросмотр аватара";
                 img.style.width = '100%';
                 img.style.height = '100%';
                 img.style.objectFit = 'cover';
@@ -837,34 +753,53 @@
                 window.selectedAvatar = e.target.result;
             };
             reader.readAsDataURL(file);
-        }
+        });
 
         function saveAvatar() {
             const newAvatar = window.selectedAvatar;
             
             if (!newAvatar) {
-                alert('Пожалуйста, выберите изображение для аватара.');
+                alert('Пожалуйста, выберите изображение для аватара');
                 return;
             }
             
-            if (newAvatar !== profileData.avatar) {
-                profileData.avatar = newAvatar;
-                localStorage.setItem('coachUserAvatar', newAvatar);
-                updateAvatarDisplay();
-                closeAvatarModal();
-                alert('Аватар успешно изменен!');
-            } else {
-                closeAvatarModal();
-            }
+            userData.avatar = newAvatar;
+            
+            // Обновляем аватар
+            const avatarDiv = document.getElementById('userAvatar');
+            avatarDiv.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = newAvatar;
+            avatarDiv.appendChild(img);
+            avatarDiv.style.background = 'none';
+            
+            localStorage.setItem('userAvatar', newAvatar);
+            
+            closeAvatarModal();
+            alert('Аватар успешно изменен!');
         }
-        
-        function changeLocation(locationId) {
-            if (locationsData[locationId]) {
-                profileData.currentLocation = locationId;
-                localStorage.setItem('coachCurrentLocation', locationId);
-                updateLocationDisplay();
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!localStorage.getItem('token')) {
+                window.location.href = 'login.html';
+                return;
             }
-        }
+
+            loadProfile();
+
+            // Загружаем аватар если есть
+            const savedAvatar = localStorage.getItem('userAvatar');
+            if (savedAvatar) {
+                userData.avatar = savedAvatar;
+                const avatarDiv = document.getElementById('userAvatar');
+                avatarDiv.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = savedAvatar;
+                avatarDiv.appendChild(img);
+                avatarDiv.style.background = 'none';
+            }
+        });
     </script>
 </body>
 </html>
