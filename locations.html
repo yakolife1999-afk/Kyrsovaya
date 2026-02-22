@@ -584,7 +584,7 @@ async function loadAllTasks() {
     try {
         // Загружаем задания для всех уровней (с 1 по 9)
         for (let level = 1; level <= 9; level++) {
-            const response = await fetch(`http://localhost:3000/api/levels/${level}/task`, {
+            const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -722,7 +722,7 @@ async function loadAllTasks() {
             }
 
             try {
-                const response = await fetch(`http://localhost:3000/api/levels/${currentLevel}/complete`, {
+                const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${currentLevel}/complete`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -803,4 +803,5 @@ async function loadAllTasks() {
     </script>
 </body>
 </html>
+
 
