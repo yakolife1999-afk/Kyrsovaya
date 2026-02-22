@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Дополнительные стили для страницы регистрации */
         body {
             min-height: 100vh;
             display: flex;
@@ -209,20 +208,16 @@
     </style>
 </head>
 <body>
-    <!-- Шапка сайта -->
     <header class="header">
         <nav class="nav">
             <div class="nav-left">
                 <a href="index.html"><i class="fas fa-home"></i> Главная</a>
                 <a href="locations.html"><i class="fas fa-map-marked-alt"></i> Карта</a>
             </div>
-            <div class="nav-right" id="navRight">
-                <!-- Навигация будет обновлена через script.js -->
-            </div>
+            <div class="nav-right" id="navRight"></div>
         </nav>
     </header>
 
-    <!-- Форма регистрации -->
     <main class="main-content">
         <div class="register-container">
             <div class="register-header">
@@ -293,17 +288,13 @@
         </div>
     </main>
 
-    <!-- Автоматически меняющиеся изображения -->
     <div class="rotating-background">
         <div class="image-overlay"></div>
-        
-        <!-- 3 слайда для изображений Не горит -->
         <div id="slide1" class="slide"></div>
         <div id="slide2" class="slide"></div>
         <div id="slide3" class="slide"></div>
     </div>
 
-    <!-- Подвал сайта -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
@@ -321,9 +312,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const imagePaths = [
-                'C:/Users/yakol/OneDrive/Desktop/Курсовая/Не горит.png',
-                'C:/Users/yakol/OneDrive/Desktop/Курсовая/Не горит2.png',
-                'C:/Users/yakol/OneDrive/Desktop/Курсовая/Не горит3.png'
+                'images/ne_gorit.png',
+                'images/ne_gorit2.png',
+                'images/ne_gorit3.png'
             ];
             
             const fallbackImages = [
@@ -442,12 +433,10 @@
                     return;
                 }
                 
-                // Устанавливаем статус авторизации
                 localStorage.setItem('isLoggedIn', 'true');
                 
                 alert('Регистрация прошла успешно!\n\nДобро пожаловать в систему цифрового коучинга!');
                 
-                // Перенаправление на главную страницу
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 1500);

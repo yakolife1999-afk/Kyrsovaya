@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Дополнительные стили для профиля */
         .profile-container {
             max-width: 1000px;
             margin: 0 auto;
@@ -458,20 +457,16 @@
     </style>
 </head>
 <body>
-    <!-- Шапка сайта -->
     <header class="header">
         <nav class="nav">
             <div class="nav-left">
                 <a href="index.html"><i class="fas fa-home"></i> Главная</a>
                 <a href="locations.html"><i class="fas fa-map-marked-alt"></i> Карта</a>
             </div>
-            <div class="nav-right" id="navRight">
-                <!-- Навигация будет обновлена через script.js -->
-            </div>
+            <div class="nav-right" id="navRight"></div>
         </nav>
     </header>
 
-    <!-- Основной контент -->
     <main class="main-content">
         <div class="profile-container">
             <div class="profile-background" id="profileBackground">
@@ -576,7 +571,6 @@
         </div>
     </main>
 
-    <!-- Подвал сайта -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
@@ -653,12 +647,12 @@
         const locationsData = {
             forest: {
                 name: "Лес",
-                backgroundImage: "C:/Users/yakol/OneDrive/Desktop/Курсовая/Лес.png",
+                backgroundImage: "images/les.png",
                 color: "#27ae60"
             },
             mountains: {
                 name: "Горы",
-                backgroundImage: "C:/Users/yakol/OneDrive/Desktop/Курсовая/Горы.png",
+                backgroundImage: "images/gori.png",
                 color: "#34495e"
             }
         };

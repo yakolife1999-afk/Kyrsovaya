@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Дополнительные стили для страницы входа */
         body {
             min-height: 100vh;
             display: flex;
@@ -178,20 +177,16 @@
     </style>
 </head>
 <body>
-    <!-- Шапка сайта -->
     <header class="header">
         <nav class="nav">
             <div class="nav-left">
                 <a href="index.html"><i class="fas fa-home"></i> Главная</a>
                 <a href="locations.html"><i class="fas fa-map-marked-alt"></i> Карта</a>
             </div>
-            <div class="nav-right" id="navRight">
-                <!-- Навигация будет обновлена через script.js -->
-            </div>
+            <div class="nav-right" id="navRight"></div>
         </nav>
     </header>
 
-    <!-- Форма входа -->
     <main class="main-content">
         <div class="login-container">
             <div class="login-header">
@@ -230,17 +225,13 @@
         </div>
     </main>
 
-    <!-- Автоматически меняющиеся изображения -->
     <div class="rotating-background">
         <div class="image-overlay"></div>
-        
-        <!-- 3 слайда для изображений Горит -->
         <div id="slide1" class="slide"></div>
         <div id="slide2" class="slide"></div>
         <div id="slide3" class="slide"></div>
     </div>
 
-    <!-- Подвал сайта -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
@@ -257,11 +248,10 @@
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Дополнительная инициализация для страницы входа
             const imagePaths = [
-                'C:/Users/yakol/OneDrive/Desktop/Курсовая/Горит.png',
-                'C:/Users/yakol/OneDrive/Desktop/Курсовая/Горит2.png',
-                'C:/Users/yakol/OneDrive/Desktop/Курсовая/Горит3.png'
+                'images/gorit.png',
+                'images/gorit2.png',
+                'images/gorit3.png'
             ];
             
             const fallbackImages = [
@@ -365,7 +355,6 @@
                     return;
                 }
                 
-                // Устанавливаем статус авторизации
                 localStorage.setItem('isLoggedIn', 'true');
                 
                 alert('Вход выполнен успешно!\n\nДобро пожаловать в систему цифрового коучинга!');

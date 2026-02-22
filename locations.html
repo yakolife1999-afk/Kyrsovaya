@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Стили для страницы с картой */
         body {
             min-height: 100vh;
             display: flex;
@@ -407,34 +406,28 @@
     </style>
 </head>
 <body>
-    <!-- Шапка сайта -->
     <header class="header">
         <nav class="nav">
             <div class="nav-left">
                 <a href="index.html"><i class="fas fa-home"></i> Главная</a>
                 <a href="locations.html" class="active"><i class="fas fa-map-marked-alt"></i> Карта</a>
             </div>
-            <div class="nav-right" id="navRight">
-                <!-- Навигация будет обновлена через script.js -->
-            </div>
+            <div class="nav-right" id="navRight"></div>
         </nav>
     </header>
 
-    <!-- Основной контент - карта -->
     <main class="map-container">
         <div class="map-title">
             <h1><i class="fas fa-map-marked-alt"></i> Карта локаций</h1>
             <p>Следуйте по дорожке и выполняйте задания</p>
         </div>
         
-        <!-- Контейнер с картой и 9 кружками -->
         <div class="map-wrapper">
-            <img src="C:/Users/yakol/OneDrive/Desktop/Курсовая/Карта.png" 
+            <img src="images/karta.png" 
                  alt="Карта локаций: Лес, Холмы, Пляж" 
                  class="map-image"
                  onerror="this.onerror=null; this.src='https://via.placeholder.com/800x600?text=Карта+локаций'">
             
-            <!-- Лес (задания 1-3) -->
             <div class="task-dot dot-forest forest-1" id="forest-task-1" onclick="openTaskModal('forest', 0)">
                 <span>1</span>
             </div>
@@ -445,7 +438,6 @@
                 <span>3</span>
             </div>
             
-            <!-- Холмы (задания 4-6) -->
             <div class="task-dot dot-hills hills-1" id="hills-task-1" onclick="openTaskModal('hills', 0)">
                 <span>4</span>
             </div>
@@ -456,7 +448,6 @@
                 <span>6</span>
             </div>
             
-            <!-- Пляж (задания 7-9) -->
             <div class="task-dot dot-beach beach-1" id="beach-task-1" onclick="openTaskModal('beach', 0)">
                 <span>7</span>
             </div>
@@ -468,9 +459,7 @@
             </div>
         </div>
         
-        <!-- Прогресс локаций -->
         <div class="locations-progress">
-            <!-- Лес -->
             <div class="progress-card forest">
                 <div class="card-header">
                     <i class="fas fa-tree"></i>
@@ -486,7 +475,6 @@
                 </div>
             </div>
             
-            <!-- Холмы -->
             <div class="progress-card hills">
                 <div class="card-header">
                     <i class="fas fa-mountain"></i>
@@ -502,7 +490,6 @@
                 </div>
             </div>
             
-            <!-- Пляж -->
             <div class="progress-card beach">
                 <div class="card-header">
                     <i class="fas fa-umbrella-beach"></i>
@@ -519,13 +506,11 @@
             </div>
         </div>
         
-        <!-- Кнопка возврата -->
         <a href="index.html" class="back-btn">
             <i class="fas fa-arrow-left"></i> Вернуться на главную
         </a>
     </main>
 
-    <!-- Модальное окно с заданием -->
     <div class="task-modal" id="taskModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeTaskModal()">&times;</button>
@@ -568,7 +553,6 @@
         </div>
     </div>
 
-    <!-- Подвал сайта -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
@@ -583,7 +567,6 @@
 
     <script src="script.js"></script>
     <script>
-        // Данные о выполненных заданиях
         let completedTasks = {
             forest: [false, false, false],
             hills: [false, false, false],
@@ -593,7 +576,6 @@
         let currentLocation = 'forest';
         let currentTaskIndex = 0;
 
-        // Задания от нейросети
         const aiTasks = {
             forest: [
                 {
@@ -657,7 +639,6 @@
             ]
         };
 
-        // Загрузка из localStorage
         function loadProgress() {
             const saved = localStorage.getItem('tasksProgress');
             if (saved) {
@@ -792,13 +773,13 @@
                                   currentLocation === 'hills' ? currentTaskIndex + 4 : 
                                   currentTaskIndex + 7;
                 
-                alert(`✅ Задание ${taskNumber} выполнено!`);
+                alert(`Задание ${taskNumber} выполнено!`);
                 closeTaskModal();
                 
                 const allInLocation = completedTasks[currentLocation].every(v => v);
                 if (allInLocation) {
                     setTimeout(() => {
-                        alert(`🎉 Поздравляем! Вы выполнили все задания в локации ${
+                        alert(`Поздравляем! Вы выполнили все задания в локации ${
                             currentLocation === 'forest' ? 'Лес' : 
                             currentLocation === 'hills' ? 'Холмы' : 'Пляж'
                         }!`);
@@ -813,7 +794,7 @@
                 
                 if (allTasks) {
                     setTimeout(() => {
-                        alert('🏆 Грандиозно! Вы выполнили ВСЕ 9 заданий на карте!');
+                        alert('Грандиозно! Вы выполнили все 9 заданий на карте!');
                     }, 600);
                 }
             }

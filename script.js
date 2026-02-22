@@ -1,26 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     // ========== ФУНКЦИИ ДЛЯ АВТОРИЗАЦИИ ==========
     
-    // Проверка, авторизован ли пользователь
     function isUserLoggedIn() {
         return localStorage.getItem('isLoggedIn') === 'true';
     }
     
-    // Вход пользователя
-    function loginUser() {
-        localStorage.setItem('isLoggedIn', 'true');
-        updateNavigation();
-    }
-    
-    // Выход из аккаунта
     function logoutUser() {
         localStorage.setItem('isLoggedIn', 'false');
         updateNavigation();
-        // Перенаправляем на главную после выхода
         window.location.href = 'index.html';
     }
     
-    // Обновление навигации в зависимости от статуса авторизации
     function updateNavigation() {
         const navRight = document.querySelector('.nav-right');
         if (!navRight) return;
@@ -29,14 +19,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentPath = window.location.pathname.split('/').pop() || 'index.html';
         
         if (isLoggedIn) {
-            // Пользователь авторизован - показываем только Прогресс и Профиль
             navRight.innerHTML = `
                 <a href="progress.html" class="${currentPath === 'progress.html' ? 'active' : ''}"><i class="fas fa-chart-line"></i> Прогресс</a>
                 <a href="profile.html" class="${currentPath === 'profile.html' ? 'active' : ''}"><i class="fas fa-user"></i> Профиль</a>
                 <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
             `;
             
-            // Добавляем обработчик для кнопки выхода
             const logoutBtn = document.getElementById('logoutBtn');
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', function(e) {
@@ -45,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         } else {
-            // Пользователь не авторизован - показываем Прогресс, Вход и Регистрацию
             navRight.innerHTML = `
                 <a href="progress.html" class="${currentPath === 'progress.html' ? 'active' : ''}"><i class="fas fa-chart-line"></i> Прогресс</a>
                 <a href="login.html" class="${currentPath === 'login.html' ? 'active' : ''}"><i class="fas fa-sign-in-alt"></i> Вход</a>
@@ -54,23 +41,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Вызываем обновление навигации при загрузке страницы
     updateNavigation();
     
-    // ========== ОСТАЛЬНОЙ КОД (БЕЗ ИЗМЕНЕНИЙ) ==========
+    // ========== АНИМАЦИЯ ИЗОБРАЖЕНИЙ НА ГЛАВНОЙ ==========
     
-    // Пути к изображениям - 3 изображения
     const imagePaths = [
-        'C:/Users/yakol/OneDrive/Desktop/Курсовая/Курсовая закрыто.png',       // 1. Начальное - закрытое
-        'C:/Users/yakol/OneDrive/Desktop/Курсовая/Курсовая почти закрыто.png', // 2. Среднее - почти закрытое  
-        'C:/Users/yakol/OneDrive/Desktop/Курсовая/Курсовая открыто.png'        // 3. Открытое
+        'images/kursovaya_zakrito.png',
+        'images/kursovaya_pochti_zakrito.png',
+        'images/kursovaya_otkrito.png'
     ];
     
     const fallbackImages = [
-        'Курсовая закрыто.png',
-        'Курсовая почти закрыто.png',
-        'Курсовая открыто.png',
-        'https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'
+        'https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+        'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
     ];
     
     const fullImage = document.querySelector('.full-image');
@@ -78,12 +62,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const registerBtn = document.getElementById('registerBtn');
     const features = document.querySelectorAll('.feature');
     
-    // Переменные для управления анимацией
     let imageChangeTimeout;
-    let currentImageIndex = 0; // Текущее изображение (0-закрытое, 1-почти, 2-открытое)
+    let currentImageIndex = 0;
     let isHovering = false;
     
-    // Функция для проверки доступности изображения
     function checkImageAvailability(url, callback) {
         const img = new Image();
         img.onload = function() {
@@ -95,41 +77,36 @@ document.addEventListener('DOMContentLoaded', function() {
         img.src = url;
     }
     
-    // Функция для смены изображения с анимацией
     function changeImage(imageIndex) {
+        if (!fullImage) return;
+        
         const imageUrl = imagePaths[imageIndex];
         currentImageIndex = imageIndex;
         
-        // Эффекты в зависимости от изображения
-        if (imageIndex === 0) { // Закрытое
+        if (imageIndex === 0) {
             fullImage.style.filter = 'brightness(1) contrast(1)';
-        } else if (imageIndex === 1) { // Почти закрытое
+        } else if (imageIndex === 1) {
             fullImage.style.filter = 'brightness(1.05) contrast(1.02)';
-        } else { // Открытое
+        } else {
             fullImage.style.filter = 'brightness(1.1) contrast(1.05)';
         }
         
-        // Плавная анимация изменения
         fullImage.style.opacity = '0.7';
         
         setTimeout(() => {
             checkImageAvailability(imageUrl, function(isAvailable, url) {
                 if (isAvailable) {
-                    console.log(`Показываем изображение ${imageIndex + 1}:`, url);
                     fullImage.style.backgroundImage = `url('${url}')`;
                 } else {
-                    // Если изображение недоступно, пробуем резервное
                     const fallbackUrl = imageIndex < fallbackImages.length - 1 
                         ? fallbackImages[imageIndex] 
                         : fallbackImages[fallbackImages.length - 1];
                     
-                    console.log(`Показываем резервное изображение ${imageIndex + 1}:`, fallbackUrl);
                     fullImage.style.backgroundImage = `url('${fallbackUrl}')`;
                 }
                 
                 setTimeout(() => {
                     fullImage.style.opacity = '1';
-                    // Плавно убираем фильтры через 0.3 секунды
                     setTimeout(() => {
                         fullImage.style.filter = 'brightness(1) contrast(1)';
                     }, 300);
@@ -138,22 +115,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 200);
     }
     
-    // Функция для запуска последовательности при наведении (закрытое → почти → открытое)
     function startForwardSequence() {
+        if (!fullImage) return;
+        
         clearTimeout(imageChangeTimeout);
         isHovering = true;
         
-        // Если уже на открытом изображении, не запускаем последовательность
         if (currentImageIndex === 2) return;
         
-        console.log('Начало последовательности: закрытое → почти → открытое');
-        
-        // 1. Сразу показываем почти закрытое (пропускаем закрытое, т.к. оно уже показано)
         setTimeout(() => {
             if (isHovering) {
                 changeImage(1);
                 
-                // 2. Через 300мс показываем открытое
                 imageChangeTimeout = setTimeout(() => {
                     if (isHovering) {
                         changeImage(2);
@@ -163,22 +136,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 0);
     }
     
-    // Функция для запуска обратной последовательности при уходе (открытое → почти → закрытое)
     function startBackwardSequence() {
+        if (!fullImage) return;
+        
         clearTimeout(imageChangeTimeout);
         isHovering = false;
         
-        console.log('Начало обратной последовательности: открытое → почти → закрытое');
-        
-        // Если уже на закрытом изображении, не запускаем последовательность
         if (currentImageIndex === 0) return;
         
-        // 1. Сразу показываем почти закрытое (открытое уже показано)
         setTimeout(() => {
             if (!isHovering) {
                 changeImage(1);
                 
-                // 2. Через 300мс показываем закрытое
                 imageChangeTimeout = setTimeout(() => {
                     if (!isHovering) {
                         changeImage(0);
@@ -188,13 +157,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 0);
     }
     
-    // Обработчик для кнопки "Вход" - наведение
     if (loginBtn) {
         loginBtn.addEventListener('mouseenter', function() {
             this.style.backgroundColor = '#2980b9';
             this.style.color = 'white';
             this.style.boxShadow = '0 10px 30px rgba(41, 128, 185, 0.3)';
-            console.log('Наведение на кнопку "Вход" - начинаем последовательность');
             startForwardSequence();
         });
         
@@ -202,21 +169,15 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.backgroundColor = 'white';
             this.style.color = '#2c3e50';
             this.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
-            console.log('Уход с кнопки "Вход" - начинаем обратную последовательность');
             startBackwardSequence();
         });
         
         loginBtn.addEventListener('click', function(e) {
-            // Отменяем стандартное поведение ссылки на короткое время для анимации
             e.preventDefault();
             
-            // Анимация нажатия
             this.style.transform = 'scale(0.95)';
-            
-            // Запускаем последовательность изображений
             startForwardSequence();
             
-            // Ждем 300мс для завершения анимации, затем переходим
             setTimeout(() => {
                 this.style.transform = 'scale(1)';
                 window.location.href = this.getAttribute('href');
@@ -224,13 +185,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Обработчик для кнопки "Регистрация" - наведение
     if (registerBtn) {
         registerBtn.addEventListener('mouseenter', function() {
             this.style.backgroundColor = '#3498db';
             this.style.color = 'white';
             this.style.boxShadow = '0 10px 30px rgba(52, 152, 219, 0.3)';
-            console.log('Наведение на кнопку "Регистрация" - начинаем последовательность');
             startForwardSequence();
         });
         
@@ -238,21 +197,15 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.backgroundColor = 'white';
             this.style.color = '#2c3e50';
             this.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
-            console.log('Уход с кнопки "Регистрация" - начинаем обратную последовательность');
             startBackwardSequence();
         });
         
         registerBtn.addEventListener('click', function(e) {
-            // Отменяем стандартное поведение ссылки на короткое время для анимации
             e.preventDefault();
             
-            // Анимация нажатия
             this.style.transform = 'scale(0.95)';
-            
-            // Запускаем последовательность изображений
             startForwardSequence();
             
-            // Ждем 300мс для завершения анимации, затем переходим
             setTimeout(() => {
                 this.style.transform = 'scale(1)';
                 window.location.href = this.getAttribute('href');
@@ -260,9 +213,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Анимация элементов при скролле
+    // Анимация при скролле
     window.addEventListener('scroll', function() {
         const textSection = document.querySelector('.text-section');
+        if (!textSection) return;
+        
         const textPosition = textSection.getBoundingClientRect().top;
         const screenPosition = window.innerHeight / 1.5;
         
@@ -271,7 +226,6 @@ document.addEventListener('DOMContentLoaded', function() {
             textSection.style.transform = 'translateY(0)';
         }
         
-        // Анимация для features
         features.forEach((feature, index) => {
             const featurePosition = feature.getBoundingClientRect().top;
             const screenFeaturePosition = window.innerHeight / 1.2;
@@ -285,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Инициализация анимации текста
+    // Инициализация анимаций
     const textSection = document.querySelector('.text-section');
     if (textSection) {
         textSection.style.opacity = '0';
@@ -293,14 +247,12 @@ document.addEventListener('DOMContentLoaded', function() {
         textSection.style.transition = 'opacity 0.8s, transform 0.8s';
     }
     
-    // Инициализация анимации features
     features.forEach(feature => {
         feature.style.opacity = '0';
         feature.style.transform = 'translateY(30px)';
         feature.style.transition = 'opacity 0.6s, transform 0.6s';
     });
     
-    // Запуск анимации после загрузки страницы
     setTimeout(() => {
         if (textSection) {
             textSection.style.opacity = '1';
@@ -308,7 +260,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 300);
     
-    // Анимация для кнопок
     const authButtons = document.querySelector('.auth-buttons');
     if (authButtons) {
         authButtons.style.opacity = '0';
@@ -321,17 +272,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 600);
     }
     
-    // Устанавливаем начальное закрытое изображение при загрузке
-    console.log('Загрузка начального изображения...');
-    setTimeout(() => {
-        changeImage(0);
-    }, 500);
-    
-    console.log('Сайт загружен!');
-    console.log('Изображения в последовательности:');
-    console.log('Наведение на кнопку:');
-    console.log('  - Закрытое → почти закрытое → открытое');
-    console.log('Уход с кнопки:');
-    console.log('  - Открытое → почти закрытое → закрытое');
-    console.log('Задержка между переходами: 300мс');
+    if (fullImage) {
+        setTimeout(() => {
+            changeImage(0);
+        }, 500);
+    }
 });

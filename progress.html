@@ -41,7 +41,6 @@
             font-size: 1.1rem;
         }
         
-        /* Общая статистика */
         .overall-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -105,7 +104,6 @@
             opacity: 0.9;
         }
         
-        /* Прогресс по локациям */
         .locations-progress {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -135,7 +133,7 @@
         }
         
         .location-header.forest {
-            background: #2980b9;
+            background: #2c3e50;
         }
         
         .location-header.hills {
@@ -235,7 +233,7 @@
         }
         
         .task-number.forest {
-            background: #2980b9;
+            background: #2c3e50;
         }
         
         .task-number.hills {
@@ -247,7 +245,7 @@
         }
         
         .task-number.completed {
-            background: #081629;
+            background: #27ae60;
         }
         
         .task-info {
@@ -267,7 +265,7 @@
         }
         
         .task-status.completed {
-            color: #081629;
+            color: #27ae60;
             font-weight: 500;
         }
         
@@ -277,10 +275,9 @@
         }
         
         .task-icon.completed {
-            color: #081629;
+            color: #27ae60;
         }
         
-        /* Детальная статистика */
         .detailed-stats {
             background: #f8f9fa;
             padding: 30px;
@@ -393,12 +390,10 @@
             }
         }
 
-        /* Стили для иконок */
         .fas, .far {
             color: inherit;
         }
 
-        /* Анимация для прогресс-баров */
         .progress-bar-fill {
             position: relative;
             overflow: hidden;
@@ -431,20 +426,16 @@
     </style>
 </head>
 <body>
-    <!-- Шапка сайта -->
     <header class="header">
         <nav class="nav">
             <div class="nav-left">
                 <a href="index.html"><i class="fas fa-home"></i> Главная</a>
                 <a href="locations.html"><i class="fas fa-map-marked-alt"></i> Карта</a>
             </div>
-            <div class="nav-right" id="navRight">
-                <!-- Навигация будет обновлена через script.js -->
-            </div>
+            <div class="nav-right" id="navRight"></div>
         </nav>
     </header>
 
-    <!-- Основной контент -->
     <main class="main-content">
         <div class="progress-container">
             <div class="progress-header">
@@ -452,7 +443,6 @@
                 <p>Отслеживайте свои достижения по всем локациям</p>
             </div>
             
-            <!-- Общая статистика -->
             <div class="overall-stats" id="overallStats">
                 <div class="overall-card">
                     <i class="fas fa-check-circle"></i>
@@ -476,9 +466,7 @@
                 </div>
             </div>
             
-            <!-- Прогресс по локациям -->
             <div class="locations-progress">
-                <!-- Лес -->
                 <div class="location-card">
                     <div class="location-header forest">
                         <i class="fas fa-tree"></i>
@@ -493,13 +481,10 @@
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill forest" id="forestProgressBar" style="width: 0%"></div>
                         </div>
-                        <div class="tasks-list" id="forestTasksList">
-                            <!-- Задания будут добавлены через JS -->
-                        </div>
+                        <div class="tasks-list" id="forestTasksList"></div>
                     </div>
                 </div>
                 
-                <!-- Холмы -->
                 <div class="location-card">
                     <div class="location-header hills">
                         <i class="fas fa-mountain"></i>
@@ -514,13 +499,10 @@
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill hills" id="hillsProgressBar" style="width: 0%"></div>
                         </div>
-                        <div class="tasks-list" id="hillsTasksList">
-                            <!-- Задания будут добавлены через JS -->
-                        </div>
+                        <div class="tasks-list" id="hillsTasksList"></div>
                     </div>
                 </div>
                 
-                <!-- Пляж -->
                 <div class="location-card">
                     <div class="location-header beach">
                         <i class="fas fa-umbrella-beach"></i>
@@ -535,14 +517,11 @@
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill beach" id="beachProgressBar" style="width: 0%"></div>
                         </div>
-                        <div class="tasks-list" id="beachTasksList">
-                            <!-- Задания будут добавлены через JS -->
-                        </div>
+                        <div class="tasks-list" id="beachTasksList"></div>
                     </div>
                 </div>
             </div>
             
-            <!-- Детальная статистика -->
             <div class="detailed-stats">
                 <h2><i class="fas fa-chart-pie"></i> Детальная статистика</h2>
                 <div class="stats-grid">
@@ -573,7 +552,6 @@
                 </div>
             </div>
             
-            <!-- Кнопка возврата -->
             <div style="text-align: center;">
                 <a href="index.html" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Вернуться на главную
@@ -582,7 +560,6 @@
         </div>
     </main>
 
-    <!-- Подвал сайта -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
@@ -598,7 +575,6 @@
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Названия заданий
             const taskTitles = {
                 forest: [
                     "Медитация под деревом",
@@ -617,7 +593,6 @@
                 ]
             };
             
-            // Загрузка прогресса из localStorage
             function loadProgress() {
                 const saved = localStorage.getItem('tasksProgress');
                 if (saved) {
@@ -632,7 +607,6 @@
             
             const tasks = loadProgress();
             
-            // Функция для создания списка заданий
             function renderTasksList(location, tasksArray, containerId) {
                 const container = document.getElementById(containerId);
                 if (!container) return;
@@ -664,7 +638,6 @@
                 });
             }
             
-            // Подсчет статистики
             const forestCompleted = tasks.forest.filter(v => v).length;
             const hillsCompleted = tasks.hills.filter(v => v).length;
             const beachCompleted = tasks.beach.filter(v => v).length;
@@ -686,12 +659,10 @@
             const averageProgress = Math.round((forestPercent + hillsPercent + beachPercent) / 3);
             const remainingTasks = totalTasks - totalCompleted;
             
-            // Обновление общей статистики
             document.getElementById('totalCompleted').textContent = totalCompleted;
             document.getElementById('totalPercent').textContent = totalPercent + '%';
             document.getElementById('completedLocations').textContent = completedLocationsCount;
             
-            // Обновление прогресса по локациям
             document.getElementById('forestPercent').textContent = forestPercent + '%';
             document.getElementById('forestProgressBar').style.width = forestPercent + '%';
             
@@ -701,7 +672,6 @@
             document.getElementById('beachPercent').textContent = beachPercent + '%';
             document.getElementById('beachProgressBar').style.width = beachPercent + '%';
             
-            // Обновление детальной статистики
             document.getElementById('forestDetailed').textContent = `${forestCompleted}/3 заданий`;
             document.getElementById('hillsDetailed').textContent = `${hillsCompleted}/3 заданий`;
             document.getElementById('beachDetailed').textContent = `${beachCompleted}/3 заданий`;
@@ -717,7 +687,6 @@
             
             document.getElementById('fullyCompleted').textContent = fullyCompletedText;
             
-            // Отрисовка списков заданий
             renderTasksList('forest', tasks.forest, 'forestTasksList');
             renderTasksList('hills', tasks.hills, 'hillsTasksList');
             renderTasksList('beach', tasks.beach, 'beachTasksList');
