@@ -428,33 +428,33 @@
                  class="map-image"
                  onerror="this.onerror=null; this.src='https://via.placeholder.com/800x600?text=Карта+локаций'">
             
-            <div class="task-dot dot-forest forest-1" id="forest-task-1" onclick="openTaskModal('forest', 0)">
+            <div class="task-dot dot-forest forest-1" id="forest-task-1" onclick="openTaskModal(1)">
                 <span>1</span>
             </div>
-            <div class="task-dot dot-forest forest-2" id="forest-task-2" onclick="openTaskModal('forest', 1)">
+            <div class="task-dot dot-forest forest-2" id="forest-task-2" onclick="openTaskModal(2)">
                 <span>2</span>
             </div>
-            <div class="task-dot dot-forest forest-3" id="forest-task-3" onclick="openTaskModal('forest', 2)">
+            <div class="task-dot dot-forest forest-3" id="forest-task-3" onclick="openTaskModal(3)">
                 <span>3</span>
             </div>
             
-            <div class="task-dot dot-hills hills-1" id="hills-task-1" onclick="openTaskModal('hills', 0)">
+            <div class="task-dot dot-hills hills-1" id="hills-task-4" onclick="openTaskModal(4)">
                 <span>4</span>
             </div>
-            <div class="task-dot dot-hills hills-2" id="hills-task-2" onclick="openTaskModal('hills', 1)">
+            <div class="task-dot dot-hills hills-2" id="hills-task-5" onclick="openTaskModal(5)">
                 <span>5</span>
             </div>
-            <div class="task-dot dot-hills hills-3" id="hills-task-3" onclick="openTaskModal('hills', 2)">
+            <div class="task-dot dot-hills hills-3" id="hills-task-6" onclick="openTaskModal(6)">
                 <span>6</span>
             </div>
             
-            <div class="task-dot dot-beach beach-1" id="beach-task-1" onclick="openTaskModal('beach', 0)">
+            <div class="task-dot dot-beach beach-1" id="beach-task-7" onclick="openTaskModal(7)">
                 <span>7</span>
             </div>
-            <div class="task-dot dot-beach beach-2" id="beach-task-2" onclick="openTaskModal('beach', 1)">
+            <div class="task-dot dot-beach beach-2" id="beach-task-8" onclick="openTaskModal(8)">
                 <span>8</span>
             </div>
-            <div class="task-dot dot-beach beach-3" id="beach-task-3" onclick="openTaskModal('beach', 2)">
+            <div class="task-dot dot-beach beach-3" id="beach-task-9" onclick="openTaskModal(9)">
                 <span>9</span>
             </div>
         </div>
@@ -533,15 +533,6 @@
                 Описание задания будет здесь...
             </div>
             
-            <div class="task-meta">
-                <div class="task-meta-item">
-                    <i class="fas fa-clock"></i> <span id="modalTaskTime">5-10 минут</span>
-                </div>
-                <div class="task-meta-item">
-                    <i class="fas fa-star"></i> <span id="modalTaskDifficulty">Средняя сложность</span>
-                </div>
-            </div>
-            
             <div class="task-actions">
                 <button class="task-btn complete" id="completeBtn" onclick="completeTask()">
                     <i class="fas fa-check-circle"></i> Отметить выполненным
@@ -567,194 +558,148 @@
 
     <script src="script.js"></script>
     <script>
-        let completedTasks = {
-            forest: [false, false, false],
-            hills: [false, false, false],
-            beach: [false, false, false]
+        // Состояние заданий
+        let tasksData = {
+            level1: { title: '', task: '', completed: false },
+            level2: { title: '', task: '', completed: false },
+            level3: { title: '', task: '', completed: false },
+            level4: { title: '', task: '', completed: false },
+            level5: { title: '', task: '', completed: false },
+            level6: { title: '', task: '', completed: false },
+            level7: { title: '', task: '', completed: false },
+            level8: { title: '', task: '', completed: false },
+            level9: { title: '', task: '', completed: false }
         };
 
-        let currentLocation = 'forest';
-        let currentTaskIndex = 0;
+        let currentLevel = 1;
 
-        const aiTasks = {
-            forest: [
-                {
-                    title: "Медитация под деревом",
-                    description: "Найдите уединенное место, сядьте под деревом и закройте глаза. Слушайте звуки природы в течение 10 минут. Почувствуйте связь с природой.",
-                    time: "10 минут",
-                    difficulty: "Легкая"
-                },
-                {
-                    title: "Лесной дневник",
-                    description: "Запишите все, что вы видите вокруг: деревья, растения, звуки, запахи. Найдите 3 вещи, за которые вы благодарны природе.",
-                    time: "15 минут",
-                    difficulty: "Средняя"
-                },
-                {
-                    title: "Дыхательная практика",
-                    description: "Сделайте глубокий вдох. На вдохе представьте, что вдыхаете энергию леса. На выдохе отпускайте тревоги. Повторите 10 раз.",
-                    time: "5-7 минут",
-                    difficulty: "Легкая"
-                }
-            ],
-            hills: [
-                {
-                    title: "Восхождение на холм",
-                    description: "Найдите холм и поднимитесь на его вершину. Во время подъема концентрируйтесь на дыхании. На вершине задержитесь на 5 минут.",
-                    time: "30 минут",
-                    difficulty: "Средняя"
-                },
-                {
-                    title: "Энергетическая практика",
-                    description: "Встаньте на вершине лицом к ветру. Раскиньте руки и закройте глаза. Представьте, что ветер наполняет вас новой энергией.",
-                    time: "10 минут",
-                    difficulty: "Легкая"
-                },
-                {
-                    title: "Дневник достижений",
-                    description: "Запишите 5 своих самых больших достижений. Почувствуйте гордость за себя. Напишите одну цель на ближайший месяц.",
-                    time: "15 минут",
-                    difficulty: "Легкая"
-                }
-            ],
-            beach: [
-                {
-                    title: "Медитация у воды",
-                    description: "Сядьте на берегу, слушайте шум волн. Следите за дыханием в ритме прибоя. Проведите так 15 минут.",
-                    time: "15 минут",
-                    difficulty: "Легкая"
-                },
-                {
-                    title: "Рисунок на песке",
-                    description: "Нарисуйте на песке мандалу или символ, отражающий ваше внутреннее состояние. Сфотографируйте и позвольте волне смыть его.",
-                    time: "20 минут",
-                    difficulty: "Средняя"
-                },
-                {
-                    title: "Сбор природных материалов",
-                    description: "Соберите 5 красивых камней или ракушек. Для каждого найдите качество, которое вы хотите развить в себе.",
-                    time: "15 минут",
-                    difficulty: "Легкая"
-                }
-            ]
-        };
-
-        function loadProgress() {
-            const saved = localStorage.getItem('tasksProgress');
-            if (saved) {
-                completedTasks = JSON.parse(saved);
+        // Загрузка заданий с сервера
+        async function loadAllTasks() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
             }
-            updateAllDots();
-            updateAllProgress();
+
+            try {
+                // Загружаем задания для всех уровней (с 1 по 9)
+                for (let level = 1; level <= 9; level++) {
+                    const response = await fetch(`http://localhost:3000/api/levels/${level}/task`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            localStorage.removeItem('token');
+                            window.location.href = 'login.html';
+                            return;
+                        }
+                        continue;
+                    }
+
+                    const data = await response.json();
+                    tasksData[`level${level}`] = {
+                        title: data.title || `Уровень ${level}`,
+                        task: data.task || 'Задание не найдено',
+                        completed: data.completed || false
+                    };
+                }
+
+                updateAllDots();
+                updateAllProgress();
+
+            } catch (error) {
+                console.error('Ошибка загрузки заданий:', error);
+            }
         }
 
-        function saveProgress() {
-            localStorage.setItem('tasksProgress', JSON.stringify(completedTasks));
-        }
-
+        // Обновление внешнего вида точек
         function updateAllDots() {
-            for (let i = 0; i < 3; i++) {
-                const forestDot = document.getElementById(`forest-task-${i+1}`);
-                if (forestDot) {
-                    if (completedTasks.forest[i]) {
-                        forestDot.classList.add('completed');
-                        forestDot.innerHTML = '<i class="fas fa-check"></i>';
-                    } else {
-                        forestDot.classList.remove('completed');
-                        forestDot.innerHTML = `<span>${i+1}</span>`;
-                    }
-                }
+            for (let level = 1; level <= 9; level++) {
+                const dot = document.getElementById(
+                    level <= 3 ? `forest-task-${level}` :
+                    level <= 6 ? `hills-task-${level}` :
+                    `beach-task-${level}`
+                );
                 
-                const hillsDot = document.getElementById(`hills-task-${i+1}`);
-                if (hillsDot) {
-                    if (completedTasks.hills[i]) {
-                        hillsDot.classList.add('completed');
-                        hillsDot.innerHTML = '<i class="fas fa-check"></i>';
+                if (dot) {
+                    const completed = tasksData[`level${level}`].completed;
+                    if (completed) {
+                        dot.classList.add('completed');
+                        dot.innerHTML = '<i class="fas fa-check"></i>';
                     } else {
-                        hillsDot.classList.remove('completed');
-                        hillsDot.innerHTML = `<span>${i+4}</span>`;
-                    }
-                }
-                
-                const beachDot = document.getElementById(`beach-task-${i+1}`);
-                if (beachDot) {
-                    if (completedTasks.beach[i]) {
-                        beachDot.classList.add('completed');
-                        beachDot.innerHTML = '<i class="fas fa-check"></i>';
-                    } else {
-                        beachDot.classList.remove('completed');
-                        beachDot.innerHTML = `<span>${i+7}</span>`;
+                        dot.classList.remove('completed');
+                        dot.innerHTML = `<span>${level}</span>`;
                     }
                 }
             }
         }
 
+        // Обновление прогресса
         function updateAllProgress() {
-            const forestCompleted = completedTasks.forest.filter(v => v).length;
+            // Лес (1-3)
+            const forestCompleted = [1,2,3].filter(l => tasksData[`level${l}`].completed).length;
             const forestPercent = (forestCompleted / 3) * 100;
             document.getElementById('forestProgress').style.width = forestPercent + '%';
             document.getElementById('forestPercent').textContent = Math.round(forestPercent) + '%';
             document.getElementById('forestCount').textContent = forestCompleted + '/3';
-            
-            const hillsCompleted = completedTasks.hills.filter(v => v).length;
+
+            // Холмы (4-6)
+            const hillsCompleted = [4,5,6].filter(l => tasksData[`level${l}`].completed).length;
             const hillsPercent = (hillsCompleted / 3) * 100;
             document.getElementById('hillsProgress').style.width = hillsPercent + '%';
             document.getElementById('hillsPercent').textContent = Math.round(hillsPercent) + '%';
             document.getElementById('hillsCount').textContent = hillsCompleted + '/3';
-            
-            const beachCompleted = completedTasks.beach.filter(v => v).length;
+
+            // Пляж (7-9)
+            const beachCompleted = [7,8,9].filter(l => tasksData[`level${l}`].completed).length;
             const beachPercent = (beachCompleted / 3) * 100;
             document.getElementById('beachProgress').style.width = beachPercent + '%';
             document.getElementById('beachPercent').textContent = Math.round(beachPercent) + '%';
             document.getElementById('beachCount').textContent = beachCompleted + '/3';
         }
 
-        function openTaskModal(location, taskIndex) {
-            if (completedTasks[location][taskIndex]) {
+        // Открытие модалки с заданием
+        function openTaskModal(level) {
+            const task = tasksData[`level${level}`];
+            
+            if (task.completed) {
                 alert('✅ Это задание уже выполнено!');
                 return;
             }
-            
-            currentLocation = location;
-            currentTaskIndex = taskIndex;
-            
-            const task = aiTasks[location][taskIndex];
-            
-            const modalIcon = document.getElementById('modalIcon');
-            const completeBtn = document.getElementById('completeBtn');
-            
-            if (location === 'forest') {
-                modalIcon.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
-                completeBtn.style.background = 'linear-gradient(to right, #27ae60, #2ecc71)';
-                document.querySelector('.task-description').style.borderLeftColor = '#27ae60';
-            } else if (location === 'hills') {
-                modalIcon.style.background = 'linear-gradient(135deg, #e67e22, #d35400)';
-                completeBtn.style.background = 'linear-gradient(to right, #e67e22, #d35400)';
-                document.querySelector('.task-description').style.borderLeftColor = '#e67e22';
-            } else if (location === 'beach') {
-                modalIcon.style.background = 'linear-gradient(135deg, #3498db, #f1c40f)';
-                completeBtn.style.background = 'linear-gradient(to right, #3498db, #f1c40f)';
-                document.querySelector('.task-description').style.borderLeftColor = '#3498db';
+
+            currentLevel = level;
+
+            // Определяем локацию
+            let location = 'forest';
+            let locationName = 'Лес';
+            let color = '#27ae60';
+            let icon = 'fa-tree';
+
+            if (level >= 4 && level <= 6) {
+                location = 'hills';
+                locationName = 'Холмы';
+                color = '#e67e22';
+                icon = 'fa-mountain';
+            } else if (level >= 7 && level <= 9) {
+                location = 'beach';
+                locationName = 'Пляж';
+                color = '#3498db';
+                icon = 'fa-umbrella-beach';
             }
-            
-            const iconMap = {
-                forest: 'fa-tree',
-                hills: 'fa-mountain',
-                beach: 'fa-umbrella-beach'
-            };
-            modalIcon.innerHTML = `<i class="fas ${iconMap[location]}"></i>`;
-            
-            const taskNumber = location === 'forest' ? taskIndex + 1 : 
-                              location === 'hills' ? taskIndex + 4 : 
-                              taskIndex + 7;
-            
-            document.getElementById('modalTaskTitle').textContent = `Задание ${taskNumber}: ${task.title}`;
-            document.getElementById('modalTaskLocation').textContent = 'Локация: ' + 
-                (location === 'forest' ? 'Лес' : location === 'hills' ? 'Холмы' : 'Пляж');
-            document.getElementById('modalTaskDescription').textContent = task.description;
-            document.getElementById('modalTaskTime').textContent = task.time;
-            document.getElementById('modalTaskDifficulty').textContent = task.difficulty + ' сложность';
-            
+
+            // Настраиваем модалку
+            document.getElementById('modalIcon').style.background = `linear-gradient(135deg, ${color}, ${color}dd)`;
+            document.getElementById('modalIcon').innerHTML = `<i class="fas ${icon}"></i>`;
+            document.getElementById('completeBtn').style.background = `linear-gradient(to right, ${color}, ${color}dd)`;
+            document.querySelector('.task-description').style.borderLeftColor = color;
+
+            document.getElementById('modalTaskTitle').textContent = `Уровень ${level}: ${task.title}`;
+            document.getElementById('modalTaskLocation').textContent = `Локация: ${locationName}`;
+            document.getElementById('modalTaskDescription').textContent = task.task;
+
             document.getElementById('taskModal').style.display = 'flex';
         }
 
@@ -762,47 +707,79 @@
             document.getElementById('taskModal').style.display = 'none';
         }
 
-        function completeTask() {
-            if (!completedTasks[currentLocation][currentTaskIndex]) {
-                completedTasks[currentLocation][currentTaskIndex] = true;
-                saveProgress();
+        // Отметка выполнения
+        async function completeTask() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/levels/${currentLevel}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    throw new Error('Ошибка при выполнении задания');
+                }
+
+                // Обновляем локальное состояние
+                tasksData[`level${currentLevel}`].completed = true;
+                
+                // Обновляем интерфейс
                 updateAllDots();
                 updateAllProgress();
-                
-                const taskNumber = currentLocation === 'forest' ? currentTaskIndex + 1 : 
-                                  currentLocation === 'hills' ? currentTaskIndex + 4 : 
-                                  currentTaskIndex + 7;
-                
-                alert(`✅ Задание ${taskNumber} выполнено!`);
+
+                alert(`✅ Задание уровня ${currentLevel} выполнено!`);
                 closeTaskModal();
-                
-                const allInLocation = completedTasks[currentLocation].every(v => v);
-                if (allInLocation) {
-                    setTimeout(() => {
-                        alert(`🎉 Поздравляем! Вы выполнили все задания в локации ${
-                            currentLocation === 'forest' ? 'Лес' : 
-                            currentLocation === 'hills' ? 'Холмы' : 'Пляж'
-                        }!`);
-                    }, 300);
+
+                // Проверяем, все ли задания в локации выполнены
+                const level = currentLevel;
+                if (level <= 3) {
+                    if ([1,2,3].every(l => tasksData[`level${l}`].completed)) {
+                        setTimeout(() => alert('🎉 Поздравляем! Вы выполнили все задания в Лесу!'), 300);
+                    }
+                } else if (level <= 6) {
+                    if ([4,5,6].every(l => tasksData[`level${l}`].completed)) {
+                        setTimeout(() => alert('🎉 Поздравляем! Вы выполнили все задания на Холмах!'), 300);
+                    }
+                } else {
+                    if ([7,8,9].every(l => tasksData[`level${l}`].completed)) {
+                        setTimeout(() => alert('🎉 Поздравляем! Вы выполнили все задания на Пляже!'), 300);
+                    }
                 }
-                
-                const allTasks = [
-                    ...completedTasks.forest,
-                    ...completedTasks.hills,
-                    ...completedTasks.beach
-                ].every(v => v);
-                
-                if (allTasks) {
-                    setTimeout(() => {
-                        alert('🏆 Грандиозно! Вы выполнили все 9 заданий на карте!');
-                    }, 600);
+
+                // Все 9 заданий
+                if ([1,2,3,4,5,6,7,8,9].every(l => tasksData[`level${l}`].completed)) {
+                    setTimeout(() => alert('🏆 Грандиозно! Вы выполнили все 9 заданий!'), 600);
                 }
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Не удалось отметить выполнение');
             }
         }
 
+        // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
-            loadProgress();
-            
+            // Проверяем авторизацию
+            if (!localStorage.getItem('token')) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            loadAllTasks();
+
             const mapImage = document.querySelector('.map-image');
             if (mapImage) {
                 mapImage.addEventListener('error', function() {
