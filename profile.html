@@ -7,6 +7,41 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Компактная сетка смайликов */
+.emoji-option {
+    font-size: 2rem;
+    text-align: center;
+    cursor: pointer;
+    padding: 8px 4px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    background: var(--stat-bg);
+    border: 1px solid var(--card-border);
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emoji-option:hover {
+    background: var(--primary-color);
+    transform: scale(1.05);
+    border-color: var(--primary-color);
+}
+
+/* Адаптация под мобильные */
+@media (max-width: 768px) {
+    .emoji-option {
+        font-size: 1.6rem;
+        padding: 6px 2px;
+    }
+}
+
+@media (max-width: 480px) {
+    .emoji-option {
+        font-size: 1.4rem;
+    }
+}
         /* 🌗 Переменные светлой и тёмной темы */
         :root {
             --bg-color: #ffffff;
@@ -1107,4 +1142,5 @@
     </script>
 </body>
 </html>
+
 
