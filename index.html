@@ -6,6 +6,419 @@
     <title>Цифровой коуч для саморазвития</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 🌗 Переменные светлой и тёмной темы */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --header-bg: #2c3e50;
+            --card-bg: #ffffff;
+            --card-border: #e0e0e0;
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --stat-bg: #f8f9fa;
+            --footer-bg: #2c3e50;
+            --footer-text: #ecf0f1;
+            --modal-bg: #ffffff;
+            --input-border: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --hover-bg: #f0f0f0;
+            --feature-bg: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --feature-text: #6c757d;
+            --title-color: #2c3e50;
+            --subtitle-color: #7f8c8d;
+            --text-content-color: #34495e;
+        }
+
+        body.dark-theme {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --header-bg: #1e1e1e;
+            --card-bg: #2d2d2d;
+            --card-border: #444444;
+            --primary-color: #4a9eff;
+            --secondary-color: #3a7bd5;
+            --stat-bg: #2d2d2d;
+            --footer-bg: #1e1e1e;
+            --footer-text: #b0b0b0;
+            --modal-bg: #2d2d2d;
+            --input-border: #555555;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --hover-bg: #3d3d3d;
+            --feature-bg: linear-gradient(135deg, #2d2d2d 0%, #3d3d3d 100%);
+            --feature-text: #b0b0b0;
+            --title-color: #ffffff;
+            --subtitle-color: #b0b0b0;
+            --text-content-color: #cccccc;
+        }
+
+        /* Применяем переменные */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            padding: 0 20px;
+            height: 70px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-left, .nav-right {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav a {
+            color: var(--footer-text);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 50px 20px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            border: 1px solid var(--card-border);
+            width: 100%;
+        }
+
+        .text-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .title {
+            font-size: 3rem;
+            color: var(--title-color);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: var(--subtitle-color);
+            margin-bottom: 40px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .text-content {
+            text-align: left;
+            column-count: 2;
+            column-gap: 50px;
+            line-height: 1.8;
+        }
+
+        .text-content p {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            color: var(--text-content-color);
+            text-align: justify;
+        }
+
+        .additional-section {
+            padding: 40px 0;
+            border-top: 2px solid var(--card-border);
+        }
+
+        .additional-section h2 {
+            font-size: 2.2rem;
+            color: var(--title-color);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .feature {
+            background: var(--feature-bg);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 20px var(--shadow-color);
+            transition: all 0.3s ease;
+            border: 1px solid var(--card-border);
+        }
+
+        .feature:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px var(--shadow-color);
+            border-color: var(--primary-color);
+        }
+
+        .feature i {
+            font-size: 2.8rem;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+        }
+
+        .feature h3 {
+            font-size: 1.5rem;
+            color: var(--title-color);
+            margin-bottom: 15px;
+        }
+
+        .feature p {
+            color: var(--feature-text);
+            line-height: 1.7;
+        }
+
+        .full-image {
+            height: 85vh;
+            min-height: 600px;
+            margin-top: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 0 0 auto;
+            transition: opacity 0.5s ease, filter 0.3s ease;
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 62, 80, 0.4);
+        }
+
+        .auth-buttons {
+            position: relative;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-btn {
+            padding: 14px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 200px;
+            background-color: white;
+            color: #2c3e50;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            letter-spacing: 0.5px;
+            text-decoration: none;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            background-color: #f8f9fa;
+        }
+
+        .auth-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .auth-btn i {
+            font-size: 1.1rem;
+        }
+
+        .login-btn {
+            border-left: 5px solid #2980b9;
+        }
+
+        .register-btn {
+            border-left: 5px solid #3498db;
+        }
+
+        .welcome-message {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: var(--stat-bg);
+            border-radius: 10px;
+            border: 1px solid var(--primary-color);
+        }
+
+        .welcome-message h2 {
+            color: var(--title-color);
+            margin-bottom: 10px;
+        }
+
+        .welcome-message p {
+            font-size: 1.1rem;
+            color: var(--text-content-color);
+        }
+
+        .welcome-message a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .welcome-message a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 25px 20px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-left span {
+            color: var(--footer-text);
+        }
+
+        .footer-right {
+            display: flex;
+            gap: 25px;
+        }
+
+        .footer-right a {
+            color: var(--footer-text);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-right a:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .text-content {
+                column-count: 1;
+            }
+            
+            .title {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .main-content {
+                padding: 30px 15px;
+                margin: 20px;
+            }
+            
+            .auth-btn {
+                width: 180px;
+                padding: 12px 30px;
+            }
+            
+            .nav-left, .nav-right {
+                gap: 15px;
+            }
+            
+            .nav a span {
+                display: none;
+            }
+            
+            .nav a i {
+                font-size: 18px;
+            }
+            
+            .full-image {
+                height: 70vh;
+                min-height: 500px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .additional-section h2 {
+                font-size: 1.8rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .footer-right {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .full-image {
+                height: 60vh;
+                min-height: 400px;
+            }
+            
+            .title {
+                font-size: 1.9rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .feature {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -77,59 +490,45 @@
             </div>
             <div class="footer-right">
                 <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+                <a href="#"><i class="fas fa-user-friends"></i> Сообщество</a>
             </div>
         </div>
     </footer>
 
     <script src="script.js"></script>
     
-    <!-- Скрипт для скрытия фона и кнопок у авторизованных пользователей -->
+    <!-- Скрипт для проверки авторизации и темы -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const token = localStorage.getItem('token');
-            const fullImage = document.getElementById('fullImage');
-            const authButtons = document.querySelector('.auth-buttons');
-            
-            if (token) {
-                // Скрываем блок с фоном и кнопками
-                if (fullImage) fullImage.style.display = 'none';
-                
-                // Добавляем приветственное сообщение
-                const mainContent = document.querySelector('.main-content');
-                if (mainContent) {
-                    // Проверим, не добавлено ли уже сообщение (чтобы не дублировать)
-                    if (!document.querySelector('.welcome-message')) {
-                        const welcomeDiv = document.createElement('div');
-                        welcomeDiv.className = 'welcome-message';
-                        welcomeDiv.style.textAlign = 'center';
-                        welcomeDiv.style.marginTop = '30px';
-                        welcomeDiv.style.padding = '20px';
-                        welcomeDiv.style.backgroundColor = '#f0f8ff';
-                        welcomeDiv.style.borderRadius = '10px';
-                        welcomeDiv.style.border = '1px solid #3498db';
-                        welcomeDiv.innerHTML = `
-                            <h2 style="color: #2c3e50; margin-bottom: 10px;">С возвращением!</h2>
-                            <p style="font-size: 1.1rem;">Вы уже вошли в систему. Перейдите к <a href="locations.html" style="color: #3498db; text-decoration: none; font-weight: bold;">карте заданий</a> или в <a href="profile.html" style="color: #3498db; text-decoration: none; font-weight: bold;">профиль</a>.</p>
-                        `;
-                        mainContent.appendChild(welcomeDiv);
-                    }
-                }
-            } else {
-                // Если не залогинен – показываем фон (на случай, если был скрыт)
-                if (fullImage) fullImage.style.display = 'flex';
-            }
-        });
-    </script>
-    <script>
-        // Применить сохранённую тему при загрузке
-        (function() {
+            // Применяем тему
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-theme');
             }
-        })();
+            
+            // Проверяем авторизацию
+            const token = localStorage.getItem('token');
+            const fullImage = document.getElementById('fullImage');
+            
+            if (token) {
+                if (fullImage) fullImage.style.display = 'none';
+                
+                // Добавляем приветственное сообщение
+                const mainContent = document.querySelector('.main-content');
+                if (mainContent && !document.querySelector('.welcome-message')) {
+                    const user = JSON.parse(localStorage.getItem('user') || '{}');
+                    const welcomeDiv = document.createElement('div');
+                    welcomeDiv.className = 'welcome-message';
+                    welcomeDiv.innerHTML = `
+                        <h2>С возвращением, ${user.name || 'Пользователь'}!</h2>
+                        <p>Вы уже вошли в систему. Перейдите к <a href="locations.html">карте заданий</a> или в <a href="profile.html">профиль</a>.</p>
+                    `;
+                    mainContent.appendChild(welcomeDiv);
+                }
+            } else {
+                if (fullImage) fullImage.style.display = 'flex';
+            }
+        });
     </script>
 </body>
 </html>
-
-
