@@ -629,8 +629,11 @@
                     }
                     
                     const data = await response.json();
+                    let title = data.title || `Уровень ${level}`;
+                    // Убираем звёздочки и другие лишние символы
+                    title = title.replace(/\*\*/g, '').replace(/\*/g, '').replace(/_/g, '').trim();
                     levels[level] = {
-                        title: data.title || `Уровень ${level}`,
+                        title: title,
                         completed: data.completed || false
                     };
                 }
@@ -738,4 +741,5 @@
     </script>
 </body>
 </html>
+
 
