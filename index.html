@@ -77,11 +77,49 @@
             </div>
             <div class="footer-right">
                 <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+                <a href="#"><i class="fas fa-user-friends"></i> Сообщество</a>
             </div>
         </div>
     </footer>
 
     <script src="script.js"></script>
+    
+    <!-- Скрипт для скрытия фона и кнопок у авторизованных пользователей -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            const fullImage = document.getElementById('fullImage');
+            const authButtons = document.querySelector('.auth-buttons');
+            
+            if (token) {
+                // Скрываем блок с фоном и кнопками
+                if (fullImage) fullImage.style.display = 'none';
+                
+                // Добавляем приветственное сообщение
+                const mainContent = document.querySelector('.main-content');
+                if (mainContent) {
+                    // Проверим, не добавлено ли уже сообщение (чтобы не дублировать)
+                    if (!document.querySelector('.welcome-message')) {
+                        const welcomeDiv = document.createElement('div');
+                        welcomeDiv.className = 'welcome-message';
+                        welcomeDiv.style.textAlign = 'center';
+                        welcomeDiv.style.marginTop = '30px';
+                        welcomeDiv.style.padding = '20px';
+                        welcomeDiv.style.backgroundColor = '#f0f8ff';
+                        welcomeDiv.style.borderRadius = '10px';
+                        welcomeDiv.style.border = '1px solid #3498db';
+                        welcomeDiv.innerHTML = `
+                            <h2 style="color: #2c3e50; margin-bottom: 10px;">С возвращением!</h2>
+                            <p style="font-size: 1.1rem;">Вы уже вошли в систему. Перейдите к <a href="locations.html" style="color: #3498db; text-decoration: none; font-weight: bold;">карте заданий</a> или в <a href="profile.html" style="color: #3498db; text-decoration: none; font-weight: bold;">профиль</a>.</p>
+                        `;
+                        mainContent.appendChild(welcomeDiv);
+                    }
+                }
+            } else {
+                // Если не залогинен – показываем фон (на случай, если был скрыт)
+                if (fullImage) fullImage.style.display = 'flex';
+            }
+        });
+    </script>
 </body>
-
 </html>
