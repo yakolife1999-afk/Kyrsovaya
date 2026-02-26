@@ -947,7 +947,33 @@
 
             loadProfile();
         });
+        // --- Логика переключения тёмной темы ---
+(function() {
+    // Применить сохранённую тему при загрузке
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+    }
+
+    // Переключение темы по клику на чекбокс
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        // Установить чекбокс в соответствии с текущей темой
+        themeToggle.checked = document.body.classList.contains('dark-theme');
+
+        themeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                document.body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    }
+})();
     </script>
 </body>
 </html>
+
 
