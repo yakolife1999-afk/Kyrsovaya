@@ -361,6 +361,20 @@
             object-fit: cover;
         }
         
+        .emoji-option {
+            font-size: 3rem;
+            text-align: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+        
+        .emoji-option:hover {
+            background: #f0f0f0;
+            transform: scale(1.1);
+        }
+        
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -544,7 +558,37 @@
         </div>
     </div>
 
-    <div class="modal" id="avatarModal">
+    <!-- Модалка выбора смайликов -->
+    <div class="modal" id="emojiModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeEmojiModal()">&times;</button>
+            <h2><i class="fas fa-smile"></i> Выберите смайлик</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin: 20px 0;">
+                <div class="emoji-option" onclick="selectEmoji('😊')">😊</div>
+                <div class="emoji-option" onclick="selectEmoji('😎')">😎</div>
+                <div class="emoji-option" onclick="selectEmoji('🌟')">🌟</div>
+                <div class="emoji-option" onclick="selectEmoji('🔥')">🔥</div>
+                <div class="emoji-option" onclick="selectEmoji('💪')">💪</div>
+                <div class="emoji-option" onclick="selectEmoji('🧠')">🧠</div>
+                <div class="emoji-option" onclick="selectEmoji('🎯')">🎯</div>
+                <div class="emoji-option" onclick="selectEmoji('🌈')">🌈</div>
+                <div class="emoji-option" onclick="selectEmoji('🍀')">🍀</div>
+                <div class="emoji-option" onclick="selectEmoji('🌱')">🌱</div>
+                <div class="emoji-option" onclick="selectEmoji('💡')">💡</div>
+                <div class="emoji-option" onclick="selectEmoji('🎨')">🎨</div>
+                <div class="emoji-option" onclick="selectEmoji('📚')">📚</div>
+                <div class="emoji-option" onclick="selectEmoji('🏆')">🏆</div>
+                <div class="emoji-option" onclick="selectEmoji('❤️')">❤️</div>
+            </div>
+            
+            <button class="modal-btn" onclick="closeEmojiModal()">
+                <i class="fas fa-check"></i> Готово
+            </button>
+        </div>
+    </div>
+
+    <div class="modal" id="avatarModal" style="display: none;">
         <div class="modal-content">
             <button class="modal-close" onclick="closeAvatarModal()">&times;</button>
             <h2><i class="fas fa-camera"></i> Загрузите аватар</h2>
@@ -616,7 +660,7 @@
 
             for (let level = 1; level <= 9; level++) {
                 try {
-                    const response = await fetch(`http://localhost:3000/api/levels/${level}/task`, {
+                    const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
@@ -706,7 +750,29 @@
             }
         }
 
-        // Модалка аватара
+        // Функции для смайликов
+        function openEmojiModal() {
+            document.getElementById('emojiModal').style.display = 'flex';
+        }
+
+        function closeEmojiModal() {
+            document.getElementById('emojiModal').style.display = 'none';
+        }
+
+        function selectEmoji(emoji) {
+            // Сохраняем выбранный смайлик
+            localStorage.setItem('userEmoji', emoji);
+            
+            // Обновляем аватар
+            const avatarDiv = document.getElementById('userAvatar');
+            avatarDiv.innerHTML = `<span style="font-size: 3rem;">${emoji}</span>`;
+            avatarDiv.style.background = 'none';
+            
+            // Закрываем модалку
+            closeEmojiModal();
+        }
+
+        // Модалка аватара (старая, не используется, но оставим)
         function openAvatarModal() {
             const previewDiv = document.getElementById('avatarPreview');
             previewDiv.innerHTML = '<i class="fas fa-user"></i>';
@@ -787,20 +853,27 @@
 
             loadProfile();
 
-            // Загружаем аватар если есть
-            const savedAvatar = localStorage.getItem('userAvatar');
-            if (savedAvatar) {
-                userData.avatar = savedAvatar;
+            // Загружаем смайлик если есть
+            const savedEmoji = localStorage.getItem('userEmoji');
+            if (savedEmoji) {
                 const avatarDiv = document.getElementById('userAvatar');
-                avatarDiv.innerHTML = '';
-                const img = document.createElement('img');
-                img.src = savedAvatar;
-                avatarDiv.appendChild(img);
+                avatarDiv.innerHTML = `<span style="font-size: 3rem;">${savedEmoji}</span>`;
                 avatarDiv.style.background = 'none';
+            }
+            // Если нет смайлика, но есть старый аватар
+            else {
+                const savedAvatar = localStorage.getItem('userAvatar');
+                if (savedAvatar) {
+                    userData.avatar = savedAvatar;
+                    const avatarDiv = document.getElementById('userAvatar');
+                    avatarDiv.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = savedAvatar;
+                    avatarDiv.appendChild(img);
+                    avatarDiv.style.background = 'none';
+                }
             }
         });
     </script>
 </body>
 </html>
-
-
