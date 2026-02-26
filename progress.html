@@ -8,252 +8,276 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* 🌗 Переменные светлой и тёмной темы */
-:root {
-    --bg-color: #ffffff;
-    --text-color: #333333;
-    --card-bg: #ffffff;
-    --card-border: #e0e0e0;
-    --stat-bg: #f8f9fa;
-}
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --header-bg: #2c3e50;
+            --card-bg: #ffffff;
+            --card-border: #e0e0e0;
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --stat-bg: #f8f9fa;
+            --footer-bg: #2c3e50;
+            --footer-text: #ecf0f1;
+            --modal-bg: #ffffff;
+            --input-border: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --hover-bg: #f0f0f0;
+        }
 
-body.dark-theme {
-    --bg-color: #1a1a1a;
-    --text-color: #e0e0e0;
-    --card-bg: #2d2d2d;
-    --card-border: #444444;
-    --stat-bg: #2d2d2d;
-}
+        body.dark-theme {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --header-bg: #1e1e1e;
+            --card-bg: #2d2d2d;
+            --card-border: #444444;
+            --primary-color: #4a9eff;
+            --secondary-color: #3a7bd5;
+            --stat-bg: #2d2d2d;
+            --footer-bg: #1e1e1e;
+            --footer-text: #b0b0b0;
+            --modal-bg: #2d2d2d;
+            --input-border: #555555;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --hover-bg: #3d3d3d;
+        }
 
-/* Применяем переменные */
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-}
-
-.progress-container,
-.location-card,
-.progress-card,
-.stat-item,
-.task-item,
-.map-container {
-    background-color: var(--card-bg);
-    border-color: var(--card-border);
-    color: var(--text-color);
-}
+        /* Применяем переменные */
         body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background: white;
+            margin: 0;
         }
-        
-        .progress-container {
+
+        .header {
+            background-color: var(--header-bg);
+            padding: 0 20px;
+            height: 70px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-left, .nav-right {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav a {
+            color: var(--footer-text);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            flex: 1;
             max-width: 1200px;
             margin: 30px auto;
-            padding: 30px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(44, 62, 80, 0.1);
-            flex: 1 0 auto;
-            border: 1px solid #ecf0f1;
+            padding: 20px;
+            width: 100%;
         }
-        
+
+        .progress-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            border: 1px solid var(--card-border);
+        }
+
         .progress-header {
             text-align: center;
             margin-bottom: 40px;
         }
-        
+
         .progress-header h1 {
             font-size: 2.5rem;
-            color: #2c3e50;
+            color: var(--text-color);
             margin-bottom: 10px;
         }
-        
+
         .progress-header p {
-            color: #7f8c8d;
+            color: var(--text-color);
+            opacity: 0.8;
             font-size: 1.1rem;
         }
-        
+
         .overall-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 40px;
         }
-        
+
         .overall-card {
-            background: #2c3e50;
-            color: white;
+            background: var(--stat-bg);
+            color: var(--text-color);
             padding: 25px;
             border-radius: 15px;
             text-align: center;
-            box-shadow: 0 10px 20px rgba(44, 62, 80, 0.2);
+            box-shadow: 0 5px 15px var(--shadow-color);
+            border: 1px solid var(--card-border);
             transition: transform 0.3s ease;
-            border: 1px solid #34495e;
         }
-        
+
         .overall-card:hover {
             transform: translateY(-5px);
-            background: #34495e;
         }
-        
-        .overall-card:nth-child(2) {
-            background: #2980b9;
-        }
-        
-        .overall-card:nth-child(2):hover {
-            background: #3498db;
-        }
-        
-        .overall-card:nth-child(3) {
-            background: #34495e;
-        }
-        
-        .overall-card:nth-child(3):hover {
-            background: #2c3e50;
-        }
-        
-        .overall-card:nth-child(4) {
-            background: #3498db;
-        }
-        
-        .overall-card:nth-child(4):hover {
-            background: #2980b9;
-        }
-        
+
         .overall-card i {
             font-size: 2.5rem;
+            color: var(--primary-color);
             margin-bottom: 15px;
         }
-        
+
         .overall-value {
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 5px;
+            color: var(--primary-color);
         }
-        
+
         .overall-label {
             font-size: 1rem;
             opacity: 0.9;
         }
-        
+
         .locations-progress {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 25px;
             margin-bottom: 40px;
         }
-        
+
         .location-card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 5px 20px rgba(44, 62, 80, 0.1);
-            border: 1px solid #ecf0f1;
+            box-shadow: 0 5px 20px var(--shadow-color);
+            border: 1px solid var(--card-border);
             transition: all 0.3s ease;
         }
-        
+
         .location-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(44, 62, 80, 0.15);
-            border-color: #3498db;
+            border-color: var(--primary-color);
         }
-        
+
         .location-header {
             padding: 20px;
             text-align: center;
             color: white;
         }
-        
+
         .location-header.forest {
             background: #2c3e50;
         }
-        
+
         .location-header.hills {
             background: #34495e;
         }
-        
+
         .location-header.beach {
             background: #2980b9;
         }
-        
+
         .location-header i {
             font-size: 2.5rem;
             margin-bottom: 10px;
         }
-        
+
         .location-header h3 {
             font-size: 1.5rem;
             margin-bottom: 5px;
         }
-        
+
         .location-progress {
             padding: 20px;
         }
-        
+
         .progress-stats {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
-            color: #2c3e50;
+            color: var(--text-color);
             font-weight: 600;
         }
-        
+
         .progress-bar-bg {
             height: 10px;
-            background: #ecf0f1;
+            background: var(--stat-bg);
             border-radius: 5px;
             overflow: hidden;
             margin-bottom: 20px;
         }
-        
+
         .progress-bar-fill {
             height: 100%;
             border-radius: 5px;
             transition: width 0.3s ease;
         }
-        
+
         .progress-bar-fill.forest {
             background: #2c3e50;
         }
-        
+
         .progress-bar-fill.hills {
             background: #34495e;
         }
-        
+
         .progress-bar-fill.beach {
             background: #2980b9;
         }
-        
+
         .tasks-list {
             margin-top: 20px;
         }
-        
+
         .task-item {
             display: flex;
             align-items: center;
             padding: 12px;
             border-radius: 10px;
             margin-bottom: 8px;
-            background: #f8f9fa;
+            background: var(--stat-bg);
             transition: all 0.3s ease;
-            border: 1px solid #ecf0f1;
+            border: 1px solid var(--card-border);
         }
-        
+
         .task-item:hover {
-            background: #ecf0f1;
+            background: var(--hover-bg);
             transform: translateX(5px);
         }
-        
+
         .task-item.completed {
-            background: #e8f4fd;
-            border-left: 4px solid #2980b9;
+            background: var(--stat-bg);
+            border-left: 4px solid var(--primary-color);
         }
-        
+
         .task-number {
             width: 32px;
             height: 32px;
-            background: #bdc3c7;
+            background: var(--primary-color);
             color: white;
             border-radius: 50%;
             display: flex;
@@ -264,136 +288,152 @@ body {
             flex-shrink: 0;
             font-size: 0.9rem;
         }
-        
-        .task-number.forest {
-            background: #2c3e50;
-        }
-        
-        .task-number.hills {
-            background: #34495e;
-        }
-        
-        .task-number.beach {
-            background: #2980b9;
-        }
-        
+
         .task-number.completed {
             background: #27ae60;
         }
-        
+
         .task-info {
             flex: 1;
         }
-        
+
         .task-title {
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-color);
             margin-bottom: 3px;
             font-size: 0.95rem;
         }
-        
+
         .task-status {
             font-size: 0.8rem;
-            color: #7f8c8d;
+            color: var(--text-color);
+            opacity: 0.7;
         }
-        
+
         .task-status.completed {
             color: #27ae60;
             font-weight: 500;
         }
-        
+
         .task-icon {
             margin-left: 10px;
-            color: #95a5a6;
+            color: var(--text-color);
+            opacity: 0.5;
         }
-        
+
         .task-icon.completed {
             color: #27ae60;
+            opacity: 1;
         }
-        
+
         .detailed-stats {
-            background: #f8f9fa;
+            background: var(--stat-bg);
             padding: 30px;
             border-radius: 15px;
             margin-top: 40px;
-            border: 1px solid #ecf0f1;
+            border: 1px solid var(--card-border);
         }
-        
+
         .detailed-stats h2 {
-            color: #2c3e50;
+            color: var(--text-color);
             margin-bottom: 25px;
             display: flex;
             align-items: center;
             gap: 10px;
             font-size: 1.8rem;
         }
-        
+
         .detailed-stats h2 i {
-            color: #3498db;
+            color: var(--primary-color);
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
         }
-        
+
         .stat-row {
             display: flex;
             justify-content: space-between;
             padding: 15px;
-            background: white;
+            background: var(--card-bg);
             border-radius: 10px;
-            border-left: 4px solid #3498db;
-            box-shadow: 0 2px 10px rgba(44, 62, 80, 0.05);
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 2px 10px var(--shadow-color);
         }
-        
-        .stat-row:hover {
-            transform: translateX(3px);
-            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.1);
-        }
-        
+
         .stat-label {
-            color: #7f8c8d;
+            color: var(--text-color);
+            opacity: 0.8;
             font-weight: 500;
         }
-        
+
         .stat-label i {
             margin-right: 8px;
-            color: #3498db;
+            color: var(--primary-color);
         }
-        
+
         .stat-value {
             font-weight: 700;
-            color: #2c3e50;
+            color: var(--text-color);
         }
-        
+
         .stat-value.highlight {
-            color: #3498db;
+            color: var(--primary-color);
         }
-        
+
         .back-btn {
             display: inline-flex;
             align-items: center;
             gap: 10px;
             padding: 12px 30px;
-            background: #2c3e50;
+            background: var(--primary-color);
             color: white;
             text-decoration: none;
             border-radius: 30px;
             font-size: 1.1rem;
             font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(44, 62, 80, 0.2);
+            box-shadow: 0 5px 15px var(--shadow-color);
             margin-top: 30px;
         }
-        
+
         .back-btn:hover {
-            background: #34495e;
+            background: var(--secondary-color);
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(44, 62, 80, 0.3);
         }
-        
+
+        .footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 25px 20px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-left span {
+            color: var(--footer-text);
+        }
+
+        .footer-right a {
+            color: var(--footer-text);
+            text-decoration: none;
+            margin-left: 25px;
+            transition: color 0.3s;
+        }
+
+        .footer-right a:hover {
+            color: var(--primary-color);
+        }
+
         @media (max-width: 900px) {
             .overall-stats {
                 grid-template-columns: repeat(2, 1fr);
@@ -407,7 +447,7 @@ body {
                 grid-template-columns: 1fr;
             }
         }
-        
+
         @media (max-width: 600px) {
             .overall-stats {
                 grid-template-columns: 1fr;
@@ -419,59 +459,17 @@ body {
             
             .progress-container {
                 padding: 20px;
-                margin: 15px;
             }
-        }
 
-        .fas, .far {
-            color: inherit;
-        }
-
-        .progress-bar-fill {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(
-                90deg,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.2) 50%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% {
-                transform: translateX(-100%);
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
             }
-            100% {
-                transform: translateX(100%);
+
+            .footer-right a {
+                margin: 0 10px;
             }
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
-            font-size: 1.2rem;
-        }
-        
-        .loading i {
-            margin-right: 10px;
-            animation: spin 1s infinite linear;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -493,117 +491,114 @@ body {
                 <p>Отслеживайте свои достижения по всем локациям</p>
             </div>
             
-            <div class="loading" id="loading">
-                <i class="fas fa-spinner fa-spin"></i> Загрузка прогресса...
+            <div class="overall-stats" id="overallStats">
+                <div class="overall-card">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="overall-value" id="totalCompleted">0</div>
+                    <div class="overall-label">Всего выполнено</div>
+                </div>
+                <div class="overall-card">
+                    <i class="fas fa-tasks"></i>
+                    <div class="overall-value" id="totalTasks">9</div>
+                    <div class="overall-label">Всего заданий</div>
+                </div>
+                <div class="overall-card">
+                    <i class="fas fa-percent"></i>
+                    <div class="overall-value" id="totalPercent">0%</div>
+                    <div class="overall-label">Общий прогресс</div>
+                </div>
+                <div class="overall-card">
+                    <i class="fas fa-flag-checkered"></i>
+                    <div class="overall-value" id="completedLocations">0</div>
+                    <div class="overall-label">Локаций пройдено</div>
+                </div>
             </div>
             
-            <div id="content" style="display: none;">
-                <div class="overall-stats" id="overallStats">
-                    <div class="overall-card">
-                        <i class="fas fa-check-circle"></i>
-                        <div class="overall-value" id="totalCompleted">0</div>
-                        <div class="overall-label">Всего выполнено</div>
+            <div class="locations-progress" id="locationsProgress">
+                <!-- Лес -->
+                <div class="location-card">
+                    <div class="location-header forest">
+                        <i class="fas fa-tree"></i>
+                        <h3>Лес</h3>
+                        <p>Задания 1-3</p>
                     </div>
-                    <div class="overall-card">
-                        <i class="fas fa-tasks"></i>
-                        <div class="overall-value" id="totalTasks">9</div>
-                        <div class="overall-label">Всего заданий</div>
-                    </div>
-                    <div class="overall-card">
-                        <i class="fas fa-percent"></i>
-                        <div class="overall-value" id="totalPercent">0%</div>
-                        <div class="overall-label">Общий прогресс</div>
-                    </div>
-                    <div class="overall-card">
-                        <i class="fas fa-flag-checkered"></i>
-                        <div class="overall-value" id="completedLocations">0</div>
-                        <div class="overall-label">Локаций пройдено</div>
+                    <div class="location-progress">
+                        <div class="progress-stats">
+                            <span>Прогресс</span>
+                            <span id="forestPercent">0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill forest" id="forestProgressBar" style="width: 0%"></div>
+                        </div>
+                        <div class="tasks-list" id="forestTasksList"></div>
                     </div>
                 </div>
                 
-                <div class="locations-progress">
-                    <div class="location-card">
-                        <div class="location-header forest">
-                            <i class="fas fa-tree"></i>
-                            <h3>Лес</h3>
-                            <p>Задания 1-3</p>
-                        </div>
-                        <div class="location-progress">
-                            <div class="progress-stats">
-                                <span>Прогресс</span>
-                                <span id="forestPercent">0%</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill forest" id="forestProgressBar" style="width: 0%"></div>
-                            </div>
-                            <div class="tasks-list" id="forestTasksList"></div>
-                        </div>
+                <!-- Холмы -->
+                <div class="location-card">
+                    <div class="location-header hills">
+                        <i class="fas fa-mountain"></i>
+                        <h3>Холмы</h3>
+                        <p>Задания 4-6</p>
                     </div>
-                    
-                    <div class="location-card">
-                        <div class="location-header hills">
-                            <i class="fas fa-mountain"></i>
-                            <h3>Холмы</h3>
-                            <p>Задания 4-6</p>
+                    <div class="location-progress">
+                        <div class="progress-stats">
+                            <span>Прогресс</span>
+                            <span id="hillsPercent">0%</span>
                         </div>
-                        <div class="location-progress">
-                            <div class="progress-stats">
-                                <span>Прогресс</span>
-                                <span id="hillsPercent">0%</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill hills" id="hillsProgressBar" style="width: 0%"></div>
-                            </div>
-                            <div class="tasks-list" id="hillsTasksList"></div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill hills" id="hillsProgressBar" style="width: 0%"></div>
                         </div>
-                    </div>
-                    
-                    <div class="location-card">
-                        <div class="location-header beach">
-                            <i class="fas fa-umbrella-beach"></i>
-                            <h3>Пляж</h3>
-                            <p>Задания 7-9</p>
-                        </div>
-                        <div class="location-progress">
-                            <div class="progress-stats">
-                                <span>Прогресс</span>
-                                <span id="beachPercent">0%</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill beach" id="beachProgressBar" style="width: 0%"></div>
-                            </div>
-                            <div class="tasks-list" id="beachTasksList"></div>
-                        </div>
+                        <div class="tasks-list" id="hillsTasksList"></div>
                     </div>
                 </div>
                 
-                <div class="detailed-stats">
-                    <h2><i class="fas fa-chart-pie"></i> Детальная статистика</h2>
-                    <div class="stats-grid">
-                        <div class="stat-row">
-                            <span class="stat-label"><i class="fas fa-tree"></i> Лес:</span>
-                            <span class="stat-value" id="forestDetailed">0/3 заданий</span>
+                <!-- Пляж -->
+                <div class="location-card">
+                    <div class="location-header beach">
+                        <i class="fas fa-umbrella-beach"></i>
+                        <h3>Пляж</h3>
+                        <p>Задания 7-9</p>
+                    </div>
+                    <div class="location-progress">
+                        <div class="progress-stats">
+                            <span>Прогресс</span>
+                            <span id="beachPercent">0%</span>
                         </div>
-                        <div class="stat-row">
-                            <span class="stat-label"><i class="fas fa-mountain"></i> Холмы:</span>
-                            <span class="stat-value" id="hillsDetailed">0/3 заданий</span>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill beach" id="beachProgressBar" style="width: 0%"></div>
                         </div>
-                        <div class="stat-row">
-                            <span class="stat-label"><i class="fas fa-umbrella-beach"></i> Пляж:</span>
-                            <span class="stat-value" id="beachDetailed">0/3 заданий</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label"><i class="fas fa-calculator"></i> Средний прогресс:</span>
-                            <span class="stat-value highlight" id="averageProgress">0%</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label"><i class="fas fa-hourglass-half"></i> Осталось заданий:</span>
-                            <span class="stat-value" id="remainingTasks">9</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label"><i class="fas fa-trophy"></i> Полностью пройдено:</span>
-                            <span class="stat-value" id="fullyCompleted">0 локаций</span>
-                        </div>
+                        <div class="tasks-list" id="beachTasksList"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detailed-stats">
+                <h2><i class="fas fa-chart-pie"></i> Детальная статистика</h2>
+                <div class="stats-grid" id="detailedStats">
+                    <div class="stat-row">
+                        <span class="stat-label"><i class="fas fa-tree"></i> Лес:</span>
+                        <span class="stat-value" id="forestDetailed">0/3 заданий</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label"><i class="fas fa-mountain"></i> Холмы:</span>
+                        <span class="stat-value" id="hillsDetailed">0/3 заданий</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label"><i class="fas fa-umbrella-beach"></i> Пляж:</span>
+                        <span class="stat-value" id="beachDetailed">0/3 заданий</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label"><i class="fas fa-calculator"></i> Средний прогресс:</span>
+                        <span class="stat-value highlight" id="averageProgress">0%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label"><i class="fas fa-hourglass-half"></i> Осталось заданий:</span>
+                        <span class="stat-value" id="remainingTasks">9</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label"><i class="fas fa-trophy"></i> Полностью пройдено:</span>
+                        <span class="stat-value" id="fullyCompleted">0 локаций</span>
                     </div>
                 </div>
             </div>
@@ -627,23 +622,22 @@ body {
         </div>
     </footer>
 
-    <script src="script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async function() {
+        // Данные для заданий (будут загружаться с сервера)
+        let tasksData = {};
+
+        // Загрузка данных с сервера
+        async function loadProgress() {
             const token = localStorage.getItem('token');
             if (!token) {
                 window.location.href = 'login.html';
                 return;
             }
 
-            const loading = document.getElementById('loading');
-            const content = document.getElementById('content');
-            
             try {
-                // Массив для хранения данных по уровням
                 const levels = [];
                 
-                // Загружаем все уровни (1-9)
+                // Загружаем все уровни
                 for (let level = 1; level <= 9; level++) {
                     const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
                         headers: {
@@ -661,9 +655,11 @@ body {
                     }
                     
                     const data = await response.json();
+                    
+                    // Очищаем название от звездочек
                     let title = data.title || `Уровень ${level}`;
-                    // Убираем звёздочки и другие лишние символы
                     title = title.replace(/\*\*/g, '').replace(/\*/g, '').replace(/_/g, '').trim();
+                    
                     levels[level] = {
                         title: title,
                         completed: data.completed || false
@@ -714,7 +710,6 @@ body {
                 document.getElementById('averageProgress').textContent = averageProgress + '%';
                 document.getElementById('remainingTasks').textContent = remainingTasks;
                 
-                // Формируем текст для полностью пройденных локаций
                 let fullyCompletedText = '';
                 if (completedLocationsCount === 0) fullyCompletedText = '0 локаций';
                 else if (completedLocationsCount === 1) fullyCompletedText = '1 локация';
@@ -728,36 +723,30 @@ body {
                 renderTasksList('hills', [4,5,6], levels, 'hillsTasksList');
                 renderTasksList('beach', [7,8,9], levels, 'beachTasksList');
                 
-                // Показываем контент, скрываем загрузку
-                loading.style.display = 'none';
-                content.style.display = 'block';
-                
             } catch (error) {
                 console.error('Ошибка загрузки прогресса:', error);
-                loading.innerHTML = '<i class="fas fa-exclamation-circle"></i> Ошибка загрузки. Попробуйте позже.';
             }
-        });
-        
+        }
+
         function renderTasksList(location, levelNumbers, levels, containerId) {
             const container = document.getElementById(containerId);
             if (!container) return;
             
             container.innerHTML = '';
             
-            levelNumbers.forEach((levelNum, index) => {
+            levelNumbers.forEach((levelNum) => {
                 const levelData = levels[levelNum];
                 if (!levelData) return;
                 
-                const taskNumber = levelNum;
                 const completed = levelData.completed;
                 
                 const taskItem = document.createElement('div');
                 taskItem.className = `task-item ${completed ? 'completed' : ''}`;
                 
                 taskItem.innerHTML = `
-                    <div class="task-number ${location} ${completed ? 'completed' : ''}">${taskNumber}</div>
+                    <div class="task-number ${completed ? 'completed' : ''}">${levelNum}</div>
                     <div class="task-info">
-                        <div class="task-title">${levelData.title || `Уровень ${taskNumber}`}</div>
+                        <div class="task-title">${levelData.title || `Уровень ${levelNum}`}</div>
                         <div class="task-status ${completed ? 'completed' : ''}">
                             ${completed ? 'Выполнено' : 'Не выполнено'}
                         </div>
@@ -770,9 +759,15 @@ body {
                 container.appendChild(taskItem);
             });
         }
+
+        // Загружаем прогресс при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgress();
+        });
     </script>
+    
+    <!-- Скрипт для применения темы -->
     <script>
-        // Применить сохранённую тему при загрузке
         (function() {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
@@ -782,8 +777,3 @@ body {
     </script>
 </body>
 </html>
-
-
-
-
-
