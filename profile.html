@@ -7,12 +7,112 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* 🌗 Переменные светлой и тёмной темы */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --header-bg: #2c3e50;
+            --card-bg: #ffffff;
+            --card-border: #e0e0e0;
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --stat-bg: #f8f9fa;
+            --footer-bg: #2c3e50;
+            --footer-text: #ecf0f1;
+            --modal-bg: #ffffff;
+            --input-border: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --hover-bg: #f0f0f0;
+            --title-color: #2c3e50;
+            --text-muted: #7f8c8d;
+            --avatar-bg: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        body.dark-theme {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --header-bg: #1e1e1e;
+            --card-bg: #2d2d2d;
+            --card-border: #444444;
+            --primary-color: #4a9eff;
+            --secondary-color: #3a7bd5;
+            --stat-bg: #2d2d2d;
+            --footer-bg: #1e1e1e;
+            --footer-text: #b0b0b0;
+            --modal-bg: #2d2d2d;
+            --input-border: #555555;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --hover-bg: #3d3d3d;
+            --title-color: #ffffff;
+            --text-muted: #b0b0b0;
+            --avatar-bg: linear-gradient(135deg, #4a9eff, #3a7bd5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            padding: 0 20px;
+            height: 70px;
+            box-shadow: 0 2px 15px var(--shadow-color);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-left, .nav-right {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav a {
+            color: var(--footer-text);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            width: 100%;
+        }
+
         .profile-container {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 20px;
         }
-        
+
         .profile-background {
             position: relative;
             min-height: 250px;
@@ -21,13 +121,14 @@
             margin-bottom: 20px;
             background-size: cover;
             background-position: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px var(--shadow-color);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 40px 20px;
+            border: 1px solid var(--card-border);
         }
-        
+
         .profile-header {
             text-align: center;
             position: relative;
@@ -39,14 +140,14 @@
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .profile-avatar-container {
             position: relative;
             display: inline-block;
             margin-bottom: 20px;
             cursor: pointer;
         }
-        
+
         .profile-avatar {
             width: 100px;
             height: 100px;
@@ -55,22 +156,26 @@
             align-items: center;
             justify-content: center;
             border: 4px solid white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 10px var(--shadow-color);
             overflow: hidden;
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: var(--avatar-bg);
         }
-        
+
         .profile-avatar i {
             font-size: 45px;
             color: white;
         }
-        
+
         .profile-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
+
+        .profile-avatar span {
+            line-height: 1;
+        }
+
         .change-avatar-btn {
             position: absolute;
             bottom: 5px;
@@ -84,13 +189,18 @@
             justify-content: center;
             border: 2px solid white;
             cursor: pointer;
+            transition: transform 0.2s;
         }
-        
+
+        .change-avatar-btn:hover {
+            transform: scale(1.1);
+        }
+
         .change-avatar-btn i {
             color: white;
             font-size: 14px;
         }
-        
+
         .profile-header h1 {
             font-size: 2rem;
             color: white;
@@ -101,7 +211,7 @@
             gap: 10px;
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
         }
-        
+
         .edit-name-btn {
             background: none;
             border: none;
@@ -110,20 +220,21 @@
             cursor: pointer;
             padding: 4px;
             border-radius: 4px;
+            transition: all 0.2s;
         }
-        
+
         .edit-name-btn:hover {
             color: white;
             background: rgba(255, 255, 255, 0.2);
         }
-        
+
         .profile-header p {
             font-size: 1.1rem;
             color: white;
             margin-bottom: 15px;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
         }
-        
+
         .current-location {
             display: inline-block;
             background: rgba(0, 0, 0, 0.4);
@@ -134,113 +245,182 @@
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .horizontal-sections {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
             margin-bottom: 20px;
         }
-        
+
         .section-card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 25px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e0e0e0;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            border: 1px solid var(--card-border);
+            transition: transform 0.3s ease;
         }
-        
+
+        .section-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow-color);
+        }
+
         .section-card h2 {
             font-size: 1.5rem;
-            color: #2c3e50;
+            color: var(--title-color);
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         .section-card h2 i {
-            color: #3498db;
+            color: var(--primary-color);
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
         }
-        
+
         .stat-item {
             text-align: center;
             padding: 15px;
-            background: #f8f9fa;
+            background: var(--stat-bg);
             border-radius: 8px;
+            border: 1px solid var(--card-border);
+            transition: transform 0.2s;
         }
-        
+
+        .stat-item:hover {
+            transform: scale(1.02);
+            border-color: var(--primary-color);
+        }
+
         .stat-value {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #3498db;
+            color: var(--primary-color);
             margin-bottom: 5px;
         }
-        
+
         .stat-label {
-            color: #7f8c8d;
+            color: var(--text-muted);
             font-size: 0.85rem;
         }
-        
+
         .achievements-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 15px;
         }
-        
+
         .achievement-item {
             display: flex;
             align-items: center;
             padding: 15px;
             border-radius: 8px;
-            background: #f8f9fa;
+            background: var(--stat-bg);
+            border: 1px solid var(--card-border);
+            transition: transform 0.2s;
         }
-        
+
+        .achievement-item:hover {
+            transform: translateX(5px);
+            border-color: var(--primary-color);
+        }
+
         .achievement-icon {
             width: 50px;
             height: 50px;
-            background: #3498db;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
             flex-shrink: 0;
+            transition: all 0.3s;
         }
-        
+
         .achievement-icon i {
             color: white;
             font-size: 1.2rem;
         }
-        
+
         .achievement-content {
             flex: 1;
         }
-        
+
         .achievement-content h4 {
-            color: #2c3e50;
+            color: var(--title-color);
             margin-bottom: 5px;
             font-size: 1.05rem;
         }
-        
+
         .achievement-content p {
-            color: #7f8c8d;
+            color: var(--text-muted);
             font-size: 0.85rem;
             line-height: 1.4;
         }
-        
+
         .achievement-date {
-            color: #95a5a6;
+            color: var(--text-muted);
             font-size: 0.8rem;
             margin-top: 5px;
         }
-        
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -253,17 +433,18 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .modal-content {
-            background: white;
+            background: var(--modal-bg);
             padding: 25px;
             border-radius: 15px;
             max-width: 500px;
             width: 95%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px var(--shadow-color);
             position: relative;
+            border: 1px solid var(--card-border);
         }
-        
+
         .modal-close {
             position: absolute;
             top: 10px;
@@ -271,50 +452,53 @@
             background: none;
             border: none;
             font-size: 1.3rem;
-            color: #7f8c8d;
+            color: var(--text-muted);
             cursor: pointer;
+            transition: color 0.3s;
         }
-        
+
         .modal-close:hover {
             color: #e74c3c;
         }
-        
+
         .modal h2 {
-            color: #2c3e50;
+            color: var(--title-color);
             margin-bottom: 20px;
             font-size: 1.4rem;
         }
-        
+
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #2c3e50;
+            color: var(--title-color);
             font-weight: 500;
             font-size: 0.95rem;
         }
-        
+
         .form-control {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--input-border);
             border-radius: 6px;
             font-size: 0.9rem;
+            background: var(--card-bg);
+            color: var(--text-color);
             transition: border-color 0.2s;
         }
-        
+
         .form-control:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: var(--primary-color);
         }
-        
+
         .modal-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(to right, #3498db, #2980b9);
+            background: var(--primary-color);
             color: white;
             border: none;
             border-radius: 8px;
@@ -325,42 +509,13 @@
             margin-top: 10px;
             box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
         }
-        
+
         .modal-btn:hover {
-            background: linear-gradient(to right, #2980b9, #3498db);
+            background: var(--secondary-color);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
         }
-        
-        .avatar-preview-container {
-            text-align: center;
-            margin: 20px 0;
-        }
-        
-        .avatar-preview {
-            width: 150px;
-            height: 150px;
-            margin: 0 auto 15px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid #e0e0e0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        }
-        
-        .avatar-preview i {
-            font-size: 60px;
-            color: #95a5a6;
-        }
-        
-        .avatar-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
+
         .emoji-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -370,7 +525,7 @@
             overflow-y: auto;
             padding: 5px;
         }
-        
+
         .emoji-option {
             font-size: 2.5rem;
             text-align: center;
@@ -382,14 +537,54 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f8f9fa;
+            background: var(--stat-bg);
+            border: 1px solid var(--card-border);
         }
-        
+
         .emoji-option:hover {
-            background: #e0e0e0;
+            background: var(--hover-bg);
             transform: scale(1.1);
+            border-color: var(--primary-color);
         }
-        
+
+        .footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 25px 20px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-left span {
+            color: var(--footer-text);
+        }
+
+        .footer-right {
+            display: flex;
+            gap: 25px;
+        }
+
+        .footer-right a {
+            color: var(--footer-text);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-right a:hover {
+            color: var(--primary-color);
+        }
+
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -412,11 +607,6 @@
                 padding: 30px 15px;
             }
             
-            .avatar-preview {
-                width: 120px;
-                height: 120px;
-            }
-            
             .emoji-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
@@ -424,8 +614,18 @@
             .emoji-option {
                 font-size: 2rem;
             }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .footer-right {
+                gap: 15px;
+            }
         }
-        
+
         @media (max-width: 480px) {
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -464,7 +664,7 @@
 
     <main class="main-content">
         <div class="profile-container">
-            <div class="profile-background" id="profileBackground" style="background-image: linear-gradient(135deg, #2c3e50, #3498db);">
+            <div class="profile-background" id="profileBackground" style="background-image: linear-gradient(135deg, var(--header-bg), var(--primary-color));">
                 <div class="profile-header">
                     <div class="profile-avatar-container" onclick="openEmojiModal()">
                         <div class="profile-avatar" id="userAvatar">
@@ -555,15 +755,18 @@
                             </div>
                         </div>
                     </div>
-                 <!-- 🌗 Блок переключения темы -->
-            <div class="section-card">
-                <h2><i class="fas fa-palette"></i> Оформление</h2>
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <span style="font-size: 1.1rem;">Тёмная тема</span>
-                    <label class="switch">
-                        <input type="checkbox" id="themeToggle">
-                        <span class="slider round"></span>
-                    </label>
+                </div>
+
+                <!-- 🌗 Блок переключения темы -->
+                <div class="section-card">
+                    <h2><i class="fas fa-palette"></i> Оформление</h2>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-size: 1.1rem; color: var(--title-color);">Тёмная тема</span>
+                        <label class="switch">
+                            <input type="checkbox" id="themeToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -640,7 +843,7 @@
                 <button class="modal-btn" onclick="document.getElementById('avatarUpload').click()">
                     <i class="fas fa-cloud-upload-alt"></i> Выбрать файл
                 </button>
-                <div class="file-info" style="margin-top: 10px; color: #7f8c8d; font-size: 0.85rem;">
+                <div class="file-info" style="margin-top: 10px; color: var(--text-muted); font-size: 0.85rem;">
                     <i class="fas fa-info-circle"></i> Поддерживаются форматы: JPG, PNG, GIF. Максимальный размер: 2 МБ
                 </div>
             </div>
@@ -677,7 +880,6 @@
             }
 
             try {
-                // Получаем данные пользователя из localStorage
                 const user = JSON.parse(localStorage.getItem('user') || '{}');
                 userData.name = user.name || 'Пользователь';
                 userData.email = user.email || '';
@@ -687,8 +889,6 @@
 
                 // Загружаем смайлик с сервера
                 await loadUserEmoji(token);
-                
-                // Загружаем прогресс заданий
                 await loadTasksProgress(token);
 
             } catch (error) {
@@ -699,7 +899,6 @@
         // Загрузка смайлика с сервера
         async function loadUserEmoji(token) {
             try {
-                // Получаем данные пользователя с сервера (нужен новый эндпоинт)
                 const response = await fetch('https://rasveta-backend.onrender.com/api/users/me', {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -709,7 +908,6 @@
                 if (response.ok) {
                     const userData = await response.json();
                     if (userData.emoji) {
-                        userData.emoji = userData.emoji;
                         updateAvatarWithEmoji(userData.emoji);
                     }
                 }
@@ -718,20 +916,13 @@
             }
         }
 
-        // Обновление аватара смайликом
-        function updateAvatarWithEmoji(emoji) {
-            const avatarDiv = document.getElementById('userAvatar');
-            avatarDiv.innerHTML = `<span style="font-size: 3rem;">${emoji}</span>`;
-            avatarDiv.style.background = 'none';
-        }
-
         // Сохранение смайлика на сервер
         async function saveEmojiToServer(emoji) {
             const token = localStorage.getItem('token');
             if (!token) return;
 
             try {
-                const response = await fetch('https://rasveta-backend.onrender.com/api/users/emoji', {
+                await fetch('https://rasveta-backend.onrender.com/api/users/emoji', {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -739,13 +930,16 @@
                     },
                     body: JSON.stringify({ emoji: emoji })
                 });
-                
-                if (!response.ok) {
-                    console.error('Ошибка сохранения смайлика');
-                }
             } catch (error) {
-                console.error('Ошибка:', error);
+                console.error('Ошибка сохранения смайлика:', error);
             }
+        }
+
+        // Обновление аватара смайликом
+        function updateAvatarWithEmoji(emoji) {
+            const avatarDiv = document.getElementById('userAvatar');
+            avatarDiv.innerHTML = `<span style="font-size: 3rem;">${emoji}</span>`;
+            avatarDiv.style.background = 'none';
         }
 
         // Загрузка прогресса заданий
@@ -778,14 +972,12 @@
             const totalCompleted = forestCount + hillsCount + beachCount;
             const totalPercent = Math.round((totalCompleted / 9) * 100);
 
-            // Обновляем статистику
             document.getElementById('totalCompleted').textContent = totalCompleted;
             document.getElementById('forestCompleted').textContent = forestCount;
             document.getElementById('hillsCompleted').textContent = hillsCount;
             document.getElementById('beachCompleted').textContent = beachCount;
             document.getElementById('totalPercent').textContent = totalPercent + '%';
 
-            // Обновляем достижения
             updateAchievements(forestCount, hillsCount, beachCount);
         }
 
@@ -795,7 +987,6 @@
             const hillsAchieved = hillsCount === 3;
             const beachAchieved = beachCount === 3;
 
-            // Лес
             const forestIcon = document.querySelector('#achievementForest .achievement-icon');
             const forestDate = document.getElementById('forestAchievementDate');
             if (forestAchieved) {
@@ -803,7 +994,6 @@
                 forestDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
             }
 
-            // Холмы
             const hillsIcon = document.querySelector('#achievementHills .achievement-icon');
             const hillsDate = document.getElementById('hillsAchievementDate');
             if (hillsAchieved) {
@@ -811,7 +1001,6 @@
                 hillsDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
             }
 
-            // Пляж
             const beachIcon = document.querySelector('#achievementBeach .achievement-icon');
             const beachDate = document.getElementById('beachAchievementDate');
             if (beachAchieved) {
@@ -836,7 +1025,6 @@
                 userData.name = newName;
                 document.getElementById('userName').firstChild.textContent = newName;
                 
-                // Обновляем в localStorage
                 const user = JSON.parse(localStorage.getItem('user') || '{}');
                 user.name = newName;
                 localStorage.setItem('user', JSON.stringify(user));
@@ -856,86 +1044,34 @@
         }
 
         async function selectEmoji(emoji) {
-            // Сохраняем на сервер
             await saveEmojiToServer(emoji);
-            
-            // Обновляем аватар
             updateAvatarWithEmoji(emoji);
-            
-            // Закрываем модалку
             closeEmojiModal();
         }
 
-        // Модалка аватара (старая, не используется)
+        // Функции для аватара (старые, не используются)
         function openAvatarModal() {
-            const previewDiv = document.getElementById('avatarPreview');
-            previewDiv.innerHTML = '<i class="fas fa-user"></i>';
-            previewDiv.style.background = 'linear-gradient(135deg, #f8f9fa, #e9ecef)';
-            
             document.getElementById('avatarModal').style.display = 'flex';
         }
 
         function closeAvatarModal() {
             document.getElementById('avatarModal').style.display = 'none';
-            document.getElementById('avatarUpload').value = '';
         }
 
-        // Загрузка аватара
-        document.getElementById('avatarUpload').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        // Тёмная тема
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            themeToggle.checked = localStorage.getItem('theme') === 'dark';
             
-            if (!file.type.startsWith('image/')) {
-                alert('Пожалуйста, выберите файл изображения');
-                return;
-            }
-            
-            if (file.size > 2 * 1024 * 1024) {
-                alert('Размер файла не должен превышать 2 МБ');
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const previewDiv = document.getElementById('avatarPreview');
-                previewDiv.innerHTML = '';
-                
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
-                
-                previewDiv.appendChild(img);
-                previewDiv.style.background = 'none';
-                
-                window.selectedAvatar = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        function saveAvatar() {
-            const newAvatar = window.selectedAvatar;
-            
-            if (!newAvatar) {
-                alert('Пожалуйста, выберите изображение для аватара');
-                return;
-            }
-            
-            userData.avatar = newAvatar;
-            
-            // Обновляем аватар
-            const avatarDiv = document.getElementById('userAvatar');
-            avatarDiv.innerHTML = '';
-            const img = document.createElement('img');
-            img.src = newAvatar;
-            avatarDiv.appendChild(img);
-            avatarDiv.style.background = 'none';
-            
-            localStorage.setItem('userAvatar', newAvatar);
-            
-            closeAvatarModal();
-            alert('Аватар успешно изменен!');
+            themeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    document.body.classList.add('dark-theme');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
         }
 
         // Инициализация
@@ -945,35 +1081,13 @@
                 return;
             }
 
+            // Применяем тему
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-theme');
+            }
+
             loadProfile();
         });
-        // --- Логика переключения тёмной темы ---
-(function() {
-    // Применить сохранённую тему при загрузке
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-theme');
-    }
-
-    // Переключение темы по клику на чекбокс
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        // Установить чекбокс в соответствии с текущей темой
-        themeToggle.checked = document.body.classList.contains('dark-theme');
-
-        themeToggle.addEventListener('change', function() {
-            if (this.checked) {
-                document.body.classList.add('dark-theme');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.body.classList.remove('dark-theme');
-                localStorage.setItem('theme', 'light');
-            }
-        });
-    }
-})();
     </script>
 </body>
 </html>
-
-
