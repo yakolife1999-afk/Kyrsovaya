@@ -7,6 +7,39 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* 🌗 Переменные светлой и тёмной темы */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --card-bg: #ffffff;
+    --card-border: #e0e0e0;
+    --stat-bg: #f8f9fa;
+}
+
+body.dark-theme {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --card-bg: #2d2d2d;
+    --card-border: #444444;
+    --stat-bg: #2d2d2d;
+}
+
+/* Применяем переменные */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.progress-container,
+.location-card,
+.progress-card,
+.stat-item,
+.task-item,
+.map-container {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    color: var(--text-color);
+}
         body {
             min-height: 100vh;
             display: flex;
@@ -811,6 +844,7 @@ async function loadAllTasks() {
     </script>
 </body>
 </html>
+
 
 
 
