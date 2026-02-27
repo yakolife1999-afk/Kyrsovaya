@@ -141,7 +141,6 @@
             font-size: 1.2rem;
         }
 
-        /* Кнопка для открытия меню завершения (появляется после 9 заданий) */
         .restart-button {
             position: fixed;
             bottom: 30px;
@@ -174,7 +173,6 @@
             100% { transform: scale(1); }
         }
 
-        /* Модалка таймера */
         .timer-modal {
             display: none;
             position: fixed;
@@ -775,12 +773,10 @@
         </div>
     </main>
 
-    <!-- Кнопка для открытия меню завершения -->
     <button class="restart-button" id="restartButton" onclick="openGameCompleteModal()">
         <i class="fas fa-trophy"></i> Новая игра
     </button>
 
-    <!-- Модалка таймера -->
     <div class="timer-modal" id="timerModal">
         <div class="modal-content">
             <i class="fas fa-hourglass-half"></i>
@@ -791,7 +787,6 @@
         </div>
     </div>
 
-    <!-- Модалка задания -->
     <div class="task-modal" id="taskModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeTaskModal()">&times;</button>
@@ -825,7 +820,6 @@
         </div>
     </div>
 
-    <!-- Модалка завершения игры -->
     <div class="task-modal" id="gameCompleteModal">
         <div class="modal-content" style="text-align: center;">
             <button class="modal-close" onclick="closeGameCompleteModal()">&times;</button>
@@ -879,7 +873,6 @@
         let cooldownInterval = null;
         let nextAvailableTime = null;
 
-        // Загрузка заданий с сервера
         async function loadAllTasks() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -917,7 +910,6 @@
                 updateAllDots();
                 updateAllProgress();
 
-                // Проверяем, все ли задания выполнены
                 const allCompleted = [1,2,3,4,5,6,7,8,9].every(lvl => tasksData[`level${lvl}`].completed);
                 if (allCompleted) {
                     document.getElementById('restartButton').style.display = 'flex';
@@ -1019,11 +1011,9 @@
             const task = tasksData[`level${level}`];
             
             if (task.completed) {
-                // Ничего не делаем, задание уже выполнено
                 return;
             }
 
-            // Проверяем таймер
             if (nextAvailableTime) {
                 updateTimerModal();
                 document.getElementById('timerModal').style.display = 'flex';
@@ -1120,7 +1110,6 @@
 
                 closeTaskModal();
 
-                // Проверяем, все ли задания выполнены
                 const allCompleted = [1,2,3,4,5,6,7,8,9].every(lvl => tasksData[`level${lvl}`].completed);
                 if (allCompleted) {
                     document.getElementById('restartButton').style.display = 'flex';
@@ -1128,7 +1117,6 @@
 
             } catch (error) {
                 console.error('Ошибка:', error);
-                // Никакого alert
             } finally {
                 completeBtn.disabled = false;
                 completeBtn.innerHTML = originalText;
