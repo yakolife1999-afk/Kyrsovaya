@@ -22,6 +22,8 @@
             --input-border: #ddd;
             --shadow-color: rgba(0, 0, 0, 0.1);
             --hover-bg: #f0f0f0;
+            --title-color: #2c3e50;
+            --text-muted: #7f8c8d;
         }
 
         body.dark-theme {
@@ -39,6 +41,8 @@
             --input-border: #555555;
             --shadow-color: rgba(0, 0, 0, 0.5);
             --hover-bg: #3d3d3d;
+            --title-color: #ffffff;
+            --text-muted: #b0b0b0;
         }
 
         * {
@@ -116,13 +120,16 @@
 
         .progress-header h1 {
             font-size: 2.5rem;
-            color: var(--text-color);
+            color: var(--title-color);
             margin-bottom: 10px;
         }
 
+        .progress-header h1 i {
+            color: var(--primary-color);
+        }
+
         .progress-header p {
-            color: var(--text-color);
-            opacity: 0.8;
+            color: var(--text-muted);
             font-size: 1.1rem;
         }
 
@@ -146,6 +153,7 @@
 
         .overall-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 25px var(--shadow-color);
         }
 
         .overall-card i {
@@ -310,8 +318,7 @@
 
         .task-status {
             font-size: 0.8rem;
-            color: var(--text-color);
-            opacity: 0.7;
+            color: var(--text-muted);
         }
 
         .task-status.completed {
@@ -321,13 +328,11 @@
 
         .task-icon {
             margin-left: 10px;
-            color: var(--text-color);
-            opacity: 0.5;
+            color: var(--text-muted);
         }
 
         .task-icon.completed {
             color: #27ae60;
-            opacity: 1;
         }
 
         .detailed-stats {
@@ -339,7 +344,7 @@
         }
 
         .detailed-stats h2 {
-            color: var(--text-color);
+            color: var(--title-color);
             margin-bottom: 25px;
             display: flex;
             align-items: center;
@@ -368,8 +373,7 @@
         }
 
         .stat-label {
-            color: var(--text-color);
-            opacity: 0.8;
+            color: var(--text-muted);
             font-weight: 500;
         }
 
@@ -406,6 +410,7 @@
         .back-btn:hover {
             background: var(--secondary-color);
             transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--shadow-color);
         }
 
         .footer {
@@ -508,7 +513,7 @@
                 <div class="overall-card">
                     <i class="fas fa-check-circle"></i>
                     <div class="overall-value" id="totalCompleted">0</div>
-                    <div class="overall-label">Всего выполнено</div>
+                    <div class="overall-label">Выполнено заданий</div>
                 </div>
                 <div class="overall-card">
                     <i class="fas fa-tasks"></i>
@@ -528,6 +533,7 @@
             </div>
             
             <div class="locations-progress" id="locationsProgress">
+                <!-- Лес -->
                 <div class="location-card">
                     <div class="location-header forest">
                         <i class="fas fa-tree"></i>
@@ -546,6 +552,7 @@
                     </div>
                 </div>
                 
+                <!-- Холмы -->
                 <div class="location-card">
                     <div class="location-header hills">
                         <i class="fas fa-mountain"></i>
@@ -564,6 +571,7 @@
                     </div>
                 </div>
                 
+                <!-- Пляж -->
                 <div class="location-card">
                     <div class="location-header beach">
                         <i class="fas fa-umbrella-beach"></i>
@@ -598,6 +606,17 @@
                         <span class="stat-label"><i class="fas fa-umbrella-beach"></i> Пляж:</span>
                         <span class="stat-value" id="beachDetailed">0/3 заданий</span>
                     </div>
+                    
+                    <!-- 👇 НОВЫЕ СТРОКИ ДЛЯ ВЕЧНОЙ СТАТИСТИКИ -->
+                    <div class="stat-row">
+                        <span class="stat-label"><i class="fas fa-infinity"></i> Всего заданий выполнено:</span>
+                        <span class="stat-value highlight" id="lifetimeCompleted">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label"><i class="fas fa-redo-alt"></i> Игр пройдено:</span>
+                        <span class="stat-value highlight" id="gameCycles">0</span>
+                    </div>
+                    
                     <div class="stat-row">
                         <span class="stat-label"><i class="fas fa-calculator"></i> Средний прогресс:</span>
                         <span class="stat-value highlight" id="averageProgress">0%</span>
@@ -633,8 +652,7 @@
     </footer>
 
     <script>
-        let tasksData = {};
-
+        // Загрузка прогресса заданий
         async function loadProgress() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -645,6 +663,7 @@
             try {
                 const levels = [];
                 
+                // Загружаем все уровни
                 for (let level = 1; level <= 9; level++) {
                     const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
                         headers: { 'Authorization': `Bearer ${token}` }
@@ -670,6 +689,7 @@
                     };
                 }
                 
+                // Подсчет статистики текущего прохождения
                 const forestCompleted = [1,2,3].filter(l => levels[l]?.completed).length;
                 const hillsCompleted = [4,5,6].filter(l => levels[l]?.completed).length;
                 const beachCompleted = [7,8,9].filter(l => levels[l]?.completed).length;
@@ -690,10 +710,12 @@
                 const averageProgress = Math.round((forestPercent + hillsPercent + beachPercent) / 3);
                 const remainingTasks = 9 - totalCompleted;
                 
+                // Обновляем общую статистику
                 document.getElementById('totalCompleted').textContent = totalCompleted;
                 document.getElementById('totalPercent').textContent = totalPercent + '%';
                 document.getElementById('completedLocations').textContent = completedLocationsCount;
                 
+                // Обновляем прогресс по локациям
                 document.getElementById('forestPercent').textContent = forestPercent + '%';
                 document.getElementById('forestProgressBar').style.width = forestPercent + '%';
                 
@@ -703,6 +725,7 @@
                 document.getElementById('beachPercent').textContent = beachPercent + '%';
                 document.getElementById('beachProgressBar').style.width = beachPercent + '%';
                 
+                // Детальная статистика текущего прохождения
                 document.getElementById('forestDetailed').textContent = `${forestCompleted}/3 заданий`;
                 document.getElementById('hillsDetailed').textContent = `${hillsCompleted}/3 заданий`;
                 document.getElementById('beachDetailed').textContent = `${beachCompleted}/3 заданий`;
@@ -718,6 +741,7 @@
                 
                 document.getElementById('fullyCompleted').textContent = fullyCompletedText;
                 
+                // Отрисовываем списки заданий
                 renderTasksList('forest', [1,2,3], levels, 'forestTasksList');
                 renderTasksList('hills', [4,5,6], levels, 'hillsTasksList');
                 renderTasksList('beach', [7,8,9], levels, 'beachTasksList');
@@ -759,20 +783,41 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        // Загрузка вечной статистики (lifetime)
+        async function loadLifetimeStats() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const response = await fetch('https://rasveta-backend.onrender.com/api/users/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('lifetimeCompleted').textContent = data.lifetime_completed || 0;
+                    document.getElementById('gameCycles').textContent = data.game_cycles || 0;
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки вечной статистики:', error);
+            }
+        }
+
+        // Применение темы
+        function applyTheme() {
             if (localStorage.getItem('theme') === 'dark') {
                 document.body.classList.add('dark-theme');
             }
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            applyTheme();
             loadProgress();
+            loadLifetimeStats();
         });
 
-        (function() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-theme');
-            }
-        })();
-
+        // Обновление навигации (как в script.js)
         document.addEventListener('DOMContentLoaded', function() {
             function updateNavigation() {
                 const navRight = document.querySelector('.nav-right');
