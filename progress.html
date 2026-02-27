@@ -509,11 +509,12 @@
                 <p>Отслеживайте свои достижения по всем локациям</p>
             </div>
             
+            <!-- ТЕКУЩИЙ ПРОГРЕСС (для этого прохождения) -->
             <div class="overall-stats" id="overallStats">
                 <div class="overall-card">
                     <i class="fas fa-check-circle"></i>
                     <div class="overall-value" id="totalCompleted">0</div>
-                    <div class="overall-label">Выполнено заданий</div>
+                    <div class="overall-label">Выполнено в этом цикле</div>
                 </div>
                 <div class="overall-card">
                     <i class="fas fa-tasks"></i>
@@ -523,12 +524,12 @@
                 <div class="overall-card">
                     <i class="fas fa-percent"></i>
                     <div class="overall-value" id="totalPercent">0%</div>
-                    <div class="overall-label">Общий прогресс</div>
+                    <div class="overall-label">Прогресс цикла</div>
                 </div>
                 <div class="overall-card">
                     <i class="fas fa-flag-checkered"></i>
                     <div class="overall-value" id="completedLocations">0</div>
-                    <div class="overall-label">Локаций пройдено</div>
+                    <div class="overall-label">Локаций в этом цикле</div>
                 </div>
             </div>
             
@@ -594,20 +595,21 @@
             <div class="detailed-stats">
                 <h2><i class="fas fa-chart-pie"></i> Детальная статистика</h2>
                 <div class="stats-grid" id="detailedStats">
+                    <!-- ТЕКУЩИЙ ЦИКЛ -->
                     <div class="stat-row">
-                        <span class="stat-label"><i class="fas fa-tree"></i> Лес:</span>
+                        <span class="stat-label"><i class="fas fa-tree"></i> Лес (текущий):</span>
                         <span class="stat-value" id="forestDetailed">0/3 заданий</span>
                     </div>
                     <div class="stat-row">
-                        <span class="stat-label"><i class="fas fa-mountain"></i> Холмы:</span>
+                        <span class="stat-label"><i class="fas fa-mountain"></i> Холмы (текущий):</span>
                         <span class="stat-value" id="hillsDetailed">0/3 заданий</span>
                     </div>
                     <div class="stat-row">
-                        <span class="stat-label"><i class="fas fa-umbrella-beach"></i> Пляж:</span>
+                        <span class="stat-label"><i class="fas fa-umbrella-beach"></i> Пляж (текущий):</span>
                         <span class="stat-value" id="beachDetailed">0/3 заданий</span>
                     </div>
                     
-                    <!-- 👇 НОВЫЕ СТРОКИ ДЛЯ ВЕЧНОЙ СТАТИСТИКИ -->
+                    <!-- ВЕЧНАЯ СТАТИСТИКА (НЕ СБРАСЫВАЕТСЯ) -->
                     <div class="stat-row">
                         <span class="stat-label"><i class="fas fa-infinity"></i> Всего заданий выполнено:</span>
                         <span class="stat-value highlight" id="lifetimeCompleted">0</span>
@@ -652,7 +654,7 @@
     </footer>
 
     <script>
-        // Загрузка прогресса заданий
+        // Загрузка прогресса текущего цикла
         async function loadProgress() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -783,7 +785,7 @@
             });
         }
 
-        // Загрузка вечной статистики (lifetime)
+        // Загрузка вечной статистики (НЕ СБРАСЫВАЕТСЯ)
         async function loadLifetimeStats() {
             const token = localStorage.getItem('token');
             if (!token) return;
@@ -817,7 +819,7 @@
             loadLifetimeStats();
         });
 
-        // Обновление навигации (как в script.js)
+        // Обновление навигации
         document.addEventListener('DOMContentLoaded', function() {
             function updateNavigation() {
                 const navRight = document.querySelector('.nav-right');
