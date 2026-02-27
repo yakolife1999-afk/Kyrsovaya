@@ -26,7 +26,6 @@
             --text-muted: #7f8c8d;
             --dot-shadow: rgba(255, 255, 255, 0.9);
             --map-border: #ffffff;
-            --cooldown-bg: #ff9800;
         }
 
         body.dark-theme {
@@ -48,7 +47,6 @@
             --text-muted: #b0b0b0;
             --dot-shadow: rgba(255, 255, 255, 0.3);
             --map-border: #444444;
-            --cooldown-bg: #ff9800;
         }
 
         * {
@@ -171,72 +169,6 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
-        }
-
-        .timer-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .timer-modal .modal-content {
-            background: var(--modal-bg);
-            padding: 30px;
-            border-radius: 20px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            border: 2px solid var(--cooldown-bg);
-            box-shadow: 0 20px 50px var(--shadow-color);
-        }
-
-        .timer-modal i {
-            font-size: 4rem;
-            color: var(--cooldown-bg);
-            margin-bottom: 20px;
-        }
-
-        .timer-modal h3 {
-            font-size: 1.8rem;
-            color: var(--title-color);
-            margin-bottom: 15px;
-        }
-
-        .timer-modal p {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-        }
-
-        .timer-display {
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: var(--cooldown-bg);
-            margin: 20px 0;
-        }
-
-        .timer-modal button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .timer-modal button:hover {
-            background: var(--secondary-color);
-            transform: scale(1.05);
         }
 
         .map-wrapper {
@@ -665,14 +597,6 @@
                 padding: 12px 25px;
                 font-size: 1rem;
             }
-
-            .timer-modal .modal-content {
-                padding: 20px;
-            }
-
-            .timer-display {
-                font-size: 1.8rem;
-            }
         }
 
         @media (max-width: 480px) {
@@ -777,16 +701,6 @@
         <i class="fas fa-trophy"></i> Новая игра
     </button>
 
-    <div class="timer-modal" id="timerModal">
-        <div class="modal-content">
-            <i class="fas fa-hourglass-half"></i>
-            <h3>⏳ Подождите</h3>
-            <p>Следующее задание можно будет выполнить через:</p>
-            <div class="timer-display" id="timerDisplay">0 ч 0 мин 0 сек</div>
-            <button onclick="closeTimerModal()">Понятно</button>
-        </div>
-    </div>
-
     <div class="task-modal" id="taskModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeTaskModal()">&times;</button>
@@ -870,8 +784,6 @@
         };
 
         let currentLevel = 1;
-        let cooldownInterval = null;
-        let nextAvailableTime = null;
 
         async function loadAllTasks() {
             const token = localStorage.getItem('token');
@@ -963,60 +875,10 @@
             document.getElementById('beachCount').textContent = beachCompleted + '/3';
         }
 
-        function updateTimerModal() {
-            const timerModal = document.getElementById('timerModal');
-            const timerDisplay = document.getElementById('timerDisplay');
-            
-            if (!nextAvailableTime) {
-                timerModal.style.display = 'none';
-                if (cooldownInterval) {
-                    clearInterval(cooldownInterval);
-                    cooldownInterval = null;
-                }
-                return;
-            }
-
-            const updateTimer = () => {
-                const now = new Date().getTime();
-                const target = new Date(nextAvailableTime).getTime();
-                const diff = target - now;
-
-                if (diff <= 0) {
-                    timerModal.style.display = 'none';
-                    nextAvailableTime = null;
-                    if (cooldownInterval) {
-                        clearInterval(cooldownInterval);
-                        cooldownInterval = null;
-                    }
-                    return;
-                }
-
-                const hours = Math.floor(diff / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                timerDisplay.textContent = `${hours} ч ${minutes} мин ${seconds} сек`;
-            };
-
-            updateTimer();
-            if (cooldownInterval) clearInterval(cooldownInterval);
-            cooldownInterval = setInterval(updateTimer, 1000);
-        }
-
-        function closeTimerModal() {
-            document.getElementById('timerModal').style.display = 'none';
-        }
-
         function openTaskModal(level) {
             const task = tasksData[`level${level}`];
             
             if (task.completed) {
-                return;
-            }
-
-            if (nextAvailableTime) {
-                updateTimerModal();
-                document.getElementById('timerModal').style.display = 'flex';
                 return;
             }
 
@@ -1087,14 +949,6 @@
                 const data = await response.json();
 
                 if (!response.ok) {
-                    if (response.status === 429) {
-                        if (data.nextAvailableIn) {
-                            nextAvailableTime = new Date().getTime() + data.nextAvailableIn;
-                            updateTimerModal();
-                        }
-                        closeTaskModal();
-                        return;
-                    }
                     if (response.status === 401) {
                         localStorage.removeItem('token');
                         window.location.href = 'login.html';
@@ -1117,6 +971,7 @@
 
             } catch (error) {
                 console.error('Ошибка:', error);
+                alert('❌ ' + error.message);
             } finally {
                 completeBtn.disabled = false;
                 completeBtn.innerHTML = originalText;
@@ -1148,6 +1003,7 @@
 
             } catch (error) {
                 console.error('Ошибка:', error);
+                alert('❌ ' + error.message);
             }
         }
 
@@ -1174,16 +1030,12 @@
         window.onclick = function(event) {
             const taskModal = document.getElementById('taskModal');
             const gameModal = document.getElementById('gameCompleteModal');
-            const timerModal = document.getElementById('timerModal');
             
             if (event.target === taskModal) {
                 closeTaskModal();
             }
             if (event.target === gameModal) {
                 closeGameCompleteModal();
-            }
-            if (event.target === timerModal) {
-                closeTimerModal();
             }
         };
     </script>
