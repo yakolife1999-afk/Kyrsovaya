@@ -28,6 +28,8 @@
             --map-border: #ffffff;
             --cooldown-bg: #ff9800;
             --cooldown-text: #ffffff;
+            --notification-bg: #ff9800;
+            --notification-text: #ffffff;
         }
 
         body.dark-theme {
@@ -51,6 +53,8 @@
             --map-border: #444444;
             --cooldown-bg: #ff9800;
             --cooldown-text: #ffffff;
+            --notification-bg: #ff9800;
+            --notification-text: #ffffff;
         }
 
         * {
@@ -119,6 +123,7 @@
             padding: 30px;
             box-shadow: 0 10px 30px var(--shadow-color);
             border: 1px solid var(--card-border);
+            position: relative;
         }
 
         .map-title {
@@ -142,19 +147,58 @@
             font-size: 1.2rem;
         }
 
-        .cooldown-bar {
-            background: var(--cooldown-bg);
-            color: var(--cooldown-text);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+        /* Уведомление о таймере */
+        .timer-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--notification-bg);
+            color: var(--notification-text);
+            padding: 30px;
+            border-radius: 15px;
             text-align: center;
-            font-size: 1.1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
             display: none;
+            min-width: 300px;
+            border: 2px solid white;
         }
 
-        .cooldown-bar i {
-            margin-right: 10px;
+        .timer-notification i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .timer-notification h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .timer-notification p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .timer-display {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .timer-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .timer-close:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .map-wrapper {
@@ -576,6 +620,15 @@
             .footer-right {
                 gap: 15px;
             }
+
+            .timer-notification {
+                width: 90%;
+                padding: 20px;
+            }
+
+            .timer-display {
+                font-size: 1.5rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -602,12 +655,7 @@
         <div class="map-container">
             <div class="map-title">
                 <h1><i class="fas fa-map-marked-alt"></i> Карта локаций</h1>
-                <p>Следуйте по дорожке и выполняйте задания</p>
-            </div>
-
-            <div class="cooldown-bar" id="cooldownBar">
-                <i class="fas fa-hourglass-half"></i>
-                <span id="cooldownMessage">Следующее задание можно будет выполнить через: <span id="cooldownTimer"></span></span>
+                <p>Следуйте по дорожке и выполнявайте задания</p>
             </div>
             
             <div class="map-wrapper">
@@ -680,6 +728,15 @@
             </div>
         </div>
     </main>
+
+    <!-- Уведомление о таймере (появляется вместо открытия задания) -->
+    <div class="timer-notification" id="timerNotification">
+        <i class="fas fa-hourglass-half"></i>
+        <h3>⏳ Подождите...</h3>
+        <p>Следующее задание будет доступно через:</p>
+        <div class="timer-display" id="timerDisplay">0 ч 0 мин 0 сек</div>
+        <button class="timer-close" onclick="closeTimerNotification()">Понятно</button>
+    </div>
 
     <!-- Модалка выполнения задания -->
     <div class="task-modal" id="taskModal">
@@ -773,6 +830,7 @@
 
         let currentLevel = 1;
         let cooldownInterval = null;
+        let nextAvailableTime = null;
 
         // Загрузка заданий с сервера
         async function loadAllTasks() {
@@ -860,13 +918,13 @@
             document.getElementById('beachCount').textContent = beachCompleted + '/3';
         }
 
-        // Обновление таймера обратного отсчёта
-        function updateCooldownTimer(nextAvailableTime) {
-            const cooldownBar = document.getElementById('cooldownBar');
-            const cooldownTimer = document.getElementById('cooldownTimer');
+        // Обновление таймера в уведомлении
+        function updateTimerNotification() {
+            const notification = document.getElementById('timerNotification');
+            const timerDisplay = document.getElementById('timerDisplay');
             
             if (!nextAvailableTime) {
-                cooldownBar.style.display = 'none';
+                notification.style.display = 'none';
                 if (cooldownInterval) {
                     clearInterval(cooldownInterval);
                     cooldownInterval = null;
@@ -880,7 +938,8 @@
                 const diff = target - now;
 
                 if (diff <= 0) {
-                    cooldownBar.style.display = 'none';
+                    notification.style.display = 'none';
+                    nextAvailableTime = null;
                     if (cooldownInterval) {
                         clearInterval(cooldownInterval);
                         cooldownInterval = null;
@@ -892,13 +951,16 @@
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-                cooldownTimer.textContent = `${hours} ч ${minutes} мин ${seconds} сек`;
-                cooldownBar.style.display = 'block';
+                timerDisplay.textContent = `${hours} ч ${minutes} мин ${seconds} сек`;
             };
 
             updateTimer();
             if (cooldownInterval) clearInterval(cooldownInterval);
             cooldownInterval = setInterval(updateTimer, 1000);
+        }
+
+        function closeTimerNotification() {
+            document.getElementById('timerNotification').style.display = 'none';
         }
 
         // Открытие модалки с заданием
@@ -907,6 +969,12 @@
             
             if (task.completed) {
                 alert('✅ Это задание уже выполнено!');
+                return;
+            }
+
+            // Проверяем, не активен ли таймер
+            if (nextAvailableTime) {
+                document.getElementById('timerNotification').style.display = 'block';
                 return;
             }
 
@@ -970,12 +1038,11 @@
 
                 if (!response.ok) {
                     if (response.status === 429) {
-                        // Показываем таймер обратного отсчёта
+                        // Устанавливаем таймер из ответа
                         if (data.nextAvailableIn) {
-                            const nextAvailableTime = new Date().getTime() + data.nextAvailableIn;
-                            updateCooldownTimer(nextAvailableTime);
+                            nextAvailableTime = new Date().getTime() + data.nextAvailableIn;
+                            updateTimerNotification();
                         }
-                        alert(data.error);
                         closeTaskModal();
                         return;
                     }
@@ -1058,11 +1125,16 @@
         window.onclick = function(event) {
             const taskModal = document.getElementById('taskModal');
             const gameModal = document.getElementById('gameCompleteModal');
+            const timerNotification = document.getElementById('timerNotification');
+            
             if (event.target === taskModal) {
                 closeTaskModal();
             }
             if (event.target === gameModal) {
                 closeGameCompleteModal();
+            }
+            if (event.target === timerNotification) {
+                closeTimerNotification();
             }
         };
     </script>
