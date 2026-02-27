@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 🌗 Переменные светлой и тёмной темы */
         :root {
             --bg-color: #ffffff;
             --text-color: #333333;
@@ -516,7 +515,8 @@
             gap: 8px;
         }
 
-        .footer-right a:hover {
+        .footer-right a:hover,
+        .footer-right a.active {
             color: var(--primary-color);
         }
 
@@ -581,40 +581,19 @@
             </div>
             
             <div class="map-wrapper">
-                <img src="images/karta.png" 
-                     alt="Карта локаций: Лес, Холмы, Пляж" 
-                     class="map-image"
-                     onerror="this.onerror=null; this.src='https://via.placeholder.com/800x600?text=Карта+локаций'">
+                <img src="images/karta.png" alt="Карта локаций: Лес, Холмы, Пляж" class="map-image" onerror="this.onerror=null; this.src='https://via.placeholder.com/800x600?text=Карта+локаций'">
                 
-                <div class="task-dot dot-forest forest-1" id="forest-task-1" onclick="openTaskModal(1)">
-                    <span>1</span>
-                </div>
-                <div class="task-dot dot-forest forest-2" id="forest-task-2" onclick="openTaskModal(2)">
-                    <span>2</span>
-                </div>
-                <div class="task-dot dot-forest forest-3" id="forest-task-3" onclick="openTaskModal(3)">
-                    <span>3</span>
-                </div>
+                <div class="task-dot dot-forest forest-1" id="forest-task-1" onclick="openTaskModal(1)"><span>1</span></div>
+                <div class="task-dot dot-forest forest-2" id="forest-task-2" onclick="openTaskModal(2)"><span>2</span></div>
+                <div class="task-dot dot-forest forest-3" id="forest-task-3" onclick="openTaskModal(3)"><span>3</span></div>
                 
-                <div class="task-dot dot-hills hills-1" id="hills-task-4" onclick="openTaskModal(4)">
-                    <span>4</span>
-                </div>
-                <div class="task-dot dot-hills hills-2" id="hills-task-5" onclick="openTaskModal(5)">
-                    <span>5</span>
-                </div>
-                <div class="task-dot dot-hills hills-3" id="hills-task-6" onclick="openTaskModal(6)">
-                    <span>6</span>
-                </div>
+                <div class="task-dot dot-hills hills-1" id="hills-task-4" onclick="openTaskModal(4)"><span>4</span></div>
+                <div class="task-dot dot-hills hills-2" id="hills-task-5" onclick="openTaskModal(5)"><span>5</span></div>
+                <div class="task-dot dot-hills hills-3" id="hills-task-6" onclick="openTaskModal(6)"><span>6</span></div>
                 
-                <div class="task-dot dot-beach beach-1" id="beach-task-7" onclick="openTaskModal(7)">
-                    <span>7</span>
-                </div>
-                <div class="task-dot dot-beach beach-2" id="beach-task-8" onclick="openTaskModal(8)">
-                    <span>8</span>
-                </div>
-                <div class="task-dot dot-beach beach-3" id="beach-task-9" onclick="openTaskModal(9)">
-                    <span>9</span>
-                </div>
+                <div class="task-dot dot-beach beach-1" id="beach-task-7" onclick="openTaskModal(7)"><span>7</span></div>
+                <div class="task-dot dot-beach beach-2" id="beach-task-8" onclick="openTaskModal(8)"><span>8</span></div>
+                <div class="task-dot dot-beach beach-3" id="beach-task-9" onclick="openTaskModal(9)"><span>9</span></div>
             </div>
             
             <div class="locations-progress">
@@ -708,17 +687,16 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
-                <span>© 2026 Цифровой коуч для саморазвития. Исследуйте новые локации!</span>
+                <span>© 2026 Цифровой коуч для саморазвития</span>
             </div>
             <div class="footer-right">
-                <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+                <a href="help.html"><i class="fas fa-question-circle"></i> Помощь</a>
             </div>
         </div>
     </footer>
 
     <script src="script.js"></script>
     <script>
-        // Состояние заданий
         let tasksData = {
             level1: { title: '', task: '', completed: false },
             level2: { title: '', task: '', completed: false },
@@ -733,7 +711,6 @@
 
         let currentLevel = 1;
 
-        // Загрузка заданий с сервера
         async function loadAllTasks() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -744,9 +721,7 @@
             try {
                 for (let level = 1; level <= 9; level++) {
                     const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
 
                     if (!response.ok) {
@@ -760,7 +735,6 @@
 
                     const data = await response.json();
 
-                    // Очищаем название от звездочек
                     let cleanTitle = data.title || `Уровень ${level}`;
                     cleanTitle = cleanTitle.replace(/\*\*/g, '').replace(/\*/g, '').replace(/_/g, '').trim();
 
@@ -779,7 +753,6 @@
             }
         }
 
-        // Обновление внешнего вида точек
         function updateAllDots() {
             for (let level = 1; level <= 9; level++) {
                 const dot = document.getElementById(
@@ -801,7 +774,6 @@
             }
         }
 
-        // Обновление прогресса
         function updateAllProgress() {
             const forestCompleted = [1,2,3].filter(l => tasksData[`level${l}`].completed).length;
             const forestPercent = (forestCompleted / 3) * 100;
@@ -822,14 +794,10 @@
             document.getElementById('beachCount').textContent = beachCompleted + '/3';
         }
 
-        // Открытие модалки с заданием
         function openTaskModal(level) {
             const task = tasksData[`level${level}`];
             
-            if (task.completed) {
-                alert('✅ Это задание уже выполнено!');
-                return;
-            }
+            if (task.completed) return;
 
             currentLevel = level;
 
@@ -866,7 +834,6 @@
             document.getElementById('taskModal').style.display = 'none';
         }
 
-        // Отметка выполнения
         async function completeTask() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -897,42 +864,19 @@
                 updateAllDots();
                 updateAllProgress();
 
-                alert(`✅ Задание уровня ${currentLevel} выполнено!`);
                 closeTaskModal();
-
-                const level = currentLevel;
-                if (level <= 3) {
-                    if ([1,2,3].every(l => tasksData[`level${l}`].completed)) {
-                        setTimeout(() => alert('🎉 Поздравляем! Вы выполнили все задания в Лесу!'), 300);
-                    }
-                } else if (level <= 6) {
-                    if ([4,5,6].every(l => tasksData[`level${l}`].completed)) {
-                        setTimeout(() => alert('🎉 Поздравляем! Вы выполнили все задания на Холмах!'), 300);
-                    }
-                } else {
-                    if ([7,8,9].every(l => tasksData[`level${l}`].completed)) {
-                        setTimeout(() => alert('🎉 Поздравляем! Вы выполнили все задания на Пляже!'), 300);
-                    }
-                }
-
-                if ([1,2,3,4,5,6,7,8,9].every(l => tasksData[`level${l}`].completed)) {
-                    setTimeout(() => alert('🏆 Грандиозно! Вы выполнили все 9 заданий!'), 600);
-                }
 
             } catch (error) {
                 console.error('Ошибка:', error);
-                alert('Не удалось отметить выполнение');
             }
         }
 
-        // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
             if (!localStorage.getItem('token')) {
                 window.location.href = 'login.html';
                 return;
             }
 
-            // Применяем тему
             if (localStorage.getItem('theme') === 'dark') {
                 document.body.classList.add('dark-theme');
             }

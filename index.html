@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 🌗 Переменные светлой и тёмной темы */
         :root {
             --bg-color: #ffffff;
             --text-color: #333333;
@@ -52,7 +51,6 @@
             --text-content-color: #cccccc;
         }
 
-        /* Применяем переменные */
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -61,13 +59,14 @@
             display: flex;
             flex-direction: column;
             margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .header {
             background-color: var(--header-bg);
             padding: 0 20px;
             height: 70px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 15px var(--shadow-color);
         }
 
         .nav {
@@ -231,6 +230,13 @@
             padding: 20px;
         }
 
+        .auth-buttons a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .auth-btn {
             padding: 14px 40px;
             font-size: 1.1rem;
@@ -246,14 +252,14 @@
             width: 200px;
             background-color: white;
             color: #2c3e50;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 20px var(--shadow-color);
             letter-spacing: 0.5px;
             text-decoration: none;
         }
 
         .auth-btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 25px var(--shadow-color);
             background-color: #f8f9fa;
         }
 
@@ -273,39 +279,15 @@
             border-left: 5px solid #3498db;
         }
 
-        .welcome-message {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            background-color: var(--stat-bg);
-            border-radius: 10px;
-            border: 1px solid var(--primary-color);
-        }
-
-        .welcome-message h2 {
-            color: var(--title-color);
-            margin-bottom: 10px;
-        }
-
-        .welcome-message p {
-            font-size: 1.1rem;
-            color: var(--text-content-color);
-        }
-
-        .welcome-message a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .welcome-message a:hover {
-            text-decoration: underline;
-        }
-
         .footer {
             background-color: var(--footer-bg);
             color: var(--footer-text);
             padding: 25px 20px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            width: 100%;
             margin-top: auto;
         }
 
@@ -314,11 +296,13 @@
             justify-content: space-between;
             align-items: center;
             max-width: 1200px;
+            width: 100%;
             margin: 0 auto;
         }
 
         .footer-left span {
-            color: var(--footer-text);
+            font-size: 15px;
+            color: #bdc3c7;
         }
 
         .footer-right {
@@ -327,16 +311,17 @@
         }
 
         .footer-right a {
-            color: var(--footer-text);
-            text-decoration: none;
+            color: #bdc3c7;
             font-size: 16px;
+            text-decoration: none;
             transition: color 0.3s;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .footer-right a:hover {
+        .footer-right a:hover,
+        .footer-right a.active {
             color: var(--primary-color);
         }
 
@@ -486,41 +471,37 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
-                <span>© 2026 Цифровой коуч для саморазвития. Помогаем расти и развиваться.</span>
+                <span>© 2026 Цифровой коуч для саморазвития</span>
             </div>
             <div class="footer-right">
-                <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+                <a href="help.html"><i class="fas fa-question-circle"></i> Помощь</a>
             </div>
         </div>
     </footer>
 
     <script src="script.js"></script>
-    
-    <!-- Скрипт для проверки авторизации и темы -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Применяем тему
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-theme');
             }
             
-            // Проверяем авторизацию
             const token = localStorage.getItem('token');
             const fullImage = document.getElementById('fullImage');
             
             if (token) {
                 if (fullImage) fullImage.style.display = 'none';
                 
-                // Добавляем приветственное сообщение
                 const mainContent = document.querySelector('.main-content');
                 if (mainContent && !document.querySelector('.welcome-message')) {
                     const user = JSON.parse(localStorage.getItem('user') || '{}');
                     const welcomeDiv = document.createElement('div');
                     welcomeDiv.className = 'welcome-message';
+                    welcomeDiv.style.cssText = 'text-align: center; margin-top: 30px; padding: 20px; background-color: var(--stat-bg); border-radius: 10px; border: 1px solid var(--primary-color);';
                     welcomeDiv.innerHTML = `
-                        <h2>С возвращением, ${user.name || 'Пользователь'}!</h2>
-                        <p>Вы уже вошли в систему. Перейдите к <a href="locations.html">карте заданий</a> или в <a href="profile.html">профиль</a>.</p>
+                        <h2 style="color: var(--title-color); margin-bottom: 10px;">С возвращением, ${user.name || 'Пользователь'}!</h2>
+                        <p style="font-size: 1.1rem; color: var(--text-content-color);">Вы уже вошли в систему. Перейдите к <a href="locations.html" style="color: var(--primary-color); text-decoration: none; font-weight: bold;">карте заданий</a> или в <a href="profile.html" style="color: var(--primary-color); text-decoration: none; font-weight: bold;">профиль</a>.</p>
                     `;
                     mainContent.appendChild(welcomeDiv);
                 }
@@ -531,4 +512,3 @@
     </script>
 </body>
 </html>
-

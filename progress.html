@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 🌗 Переменные светлой и тёмной темы */
         :root {
             --bg-color: #ffffff;
             --text-color: #333333;
@@ -42,7 +41,12 @@
             --hover-bg: #3d3d3d;
         }
 
-        /* Применяем переменные */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -50,14 +54,14 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .header {
             background-color: var(--header-bg);
             padding: 0 20px;
             height: 70px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 15px var(--shadow-color);
         }
 
         .nav {
@@ -423,14 +427,23 @@
             color: var(--footer-text);
         }
 
+        .footer-right {
+            display: flex;
+            gap: 25px;
+        }
+
         .footer-right a {
             color: var(--footer-text);
             text-decoration: none;
-            margin-left: 25px;
+            font-size: 16px;
             transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .footer-right a:hover {
+        .footer-right a:hover,
+        .footer-right a.active {
             color: var(--primary-color);
         }
 
@@ -467,8 +480,8 @@
                 text-align: center;
             }
 
-            .footer-right a {
-                margin: 0 10px;
+            .footer-right {
+                gap: 15px;
             }
         }
     </style>
@@ -515,7 +528,6 @@
             </div>
             
             <div class="locations-progress" id="locationsProgress">
-                <!-- Лес -->
                 <div class="location-card">
                     <div class="location-header forest">
                         <i class="fas fa-tree"></i>
@@ -534,7 +546,6 @@
                     </div>
                 </div>
                 
-                <!-- Холмы -->
                 <div class="location-card">
                     <div class="location-header hills">
                         <i class="fas fa-mountain"></i>
@@ -553,7 +564,6 @@
                     </div>
                 </div>
                 
-                <!-- Пляж -->
                 <div class="location-card">
                     <div class="location-header beach">
                         <i class="fas fa-umbrella-beach"></i>
@@ -617,16 +627,14 @@
                 <span>© 2026 Цифровой коуч для саморазвития</span>
             </div>
             <div class="footer-right">
-                <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+                <a href="help.html"><i class="fas fa-question-circle"></i> Помощь</a>
             </div>
         </div>
     </footer>
 
     <script>
-        // Данные для заданий (будут загружаться с сервера)
         let tasksData = {};
 
-        // Загрузка данных с сервера
         async function loadProgress() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -637,12 +645,9 @@
             try {
                 const levels = [];
                 
-                // Загружаем все уровни
                 for (let level = 1; level <= 9; level++) {
                     const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
                     
                     if (!response.ok) {
@@ -656,7 +661,6 @@
                     
                     const data = await response.json();
                     
-                    // Очищаем название от звездочек
                     let title = data.title || `Уровень ${level}`;
                     title = title.replace(/\*\*/g, '').replace(/\*/g, '').replace(/_/g, '').trim();
                     
@@ -666,7 +670,6 @@
                     };
                 }
                 
-                // Подсчет статистики
                 const forestCompleted = [1,2,3].filter(l => levels[l]?.completed).length;
                 const hillsCompleted = [4,5,6].filter(l => levels[l]?.completed).length;
                 const beachCompleted = [7,8,9].filter(l => levels[l]?.completed).length;
@@ -687,12 +690,10 @@
                 const averageProgress = Math.round((forestPercent + hillsPercent + beachPercent) / 3);
                 const remainingTasks = 9 - totalCompleted;
                 
-                // Обновляем общую статистику
                 document.getElementById('totalCompleted').textContent = totalCompleted;
                 document.getElementById('totalPercent').textContent = totalPercent + '%';
                 document.getElementById('completedLocations').textContent = completedLocationsCount;
                 
-                // Обновляем прогресс по локациям
                 document.getElementById('forestPercent').textContent = forestPercent + '%';
                 document.getElementById('forestProgressBar').style.width = forestPercent + '%';
                 
@@ -702,7 +703,6 @@
                 document.getElementById('beachPercent').textContent = beachPercent + '%';
                 document.getElementById('beachProgressBar').style.width = beachPercent + '%';
                 
-                // Детальная статистика
                 document.getElementById('forestDetailed').textContent = `${forestCompleted}/3 заданий`;
                 document.getElementById('hillsDetailed').textContent = `${hillsCompleted}/3 заданий`;
                 document.getElementById('beachDetailed').textContent = `${beachCompleted}/3 заданий`;
@@ -718,7 +718,6 @@
                 
                 document.getElementById('fullyCompleted').textContent = fullyCompletedText;
                 
-                // Отрисовываем списки заданий
                 renderTasksList('forest', [1,2,3], levels, 'forestTasksList');
                 renderTasksList('hills', [4,5,6], levels, 'hillsTasksList');
                 renderTasksList('beach', [7,8,9], levels, 'beachTasksList');
@@ -760,62 +759,56 @@
             });
         }
 
-        // Загружаем прогресс при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-theme');
+            }
             loadProgress();
         });
-    </script>
-    
-    <!-- Скрипт для применения темы -->
-    <script>
+
         (function() {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-theme');
             }
         })();
-    </script>
-    <script>
-    // Принудительно обновляем навигацию
-    document.addEventListener('DOMContentLoaded', function() {
-        // Функция обновления навигации (копия из script.js)
-        function updateNavigation() {
-            const navRight = document.querySelector('.nav-right');
-            if (!navRight) return;
-            
-            const token = localStorage.getItem('token');
-            const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-            
-            if (token) {
-                const user = JSON.parse(localStorage.getItem('user') || '{}');
-                navRight.innerHTML = `
-                    <a href="progress.html" class="${currentPath === 'progress.html' ? 'active' : ''}"><i class="fas fa-chart-line"></i> Прогресс</a>
-                    <a href="profile.html" class="${currentPath === 'profile.html' ? 'active' : ''}"><i class="fas fa-user"></i> ${user?.name || 'Профиль'}</a>
-                    <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
-                `;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateNavigation() {
+                const navRight = document.querySelector('.nav-right');
+                if (!navRight) return;
                 
-                const logoutBtn = document.getElementById('logoutBtn');
-                if (logoutBtn) {
-                    logoutBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('user');
-                        window.location.href = 'index.html';
-                    });
+                const token = localStorage.getItem('token');
+                const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+                
+                if (token) {
+                    const user = JSON.parse(localStorage.getItem('user') || '{}');
+                    navRight.innerHTML = `
+                        <a href="progress.html" class="${currentPath === 'progress.html' ? 'active' : ''}"><i class="fas fa-chart-line"></i> Прогресс</a>
+                        <a href="profile.html" class="${currentPath === 'profile.html' ? 'active' : ''}"><i class="fas fa-user"></i> ${user?.name || 'Профиль'}</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                    `;
+                    
+                    const logoutBtn = document.getElementById('logoutBtn');
+                    if (logoutBtn) {
+                        logoutBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                            window.location.href = 'index.html';
+                        });
+                    }
+                } else {
+                    navRight.innerHTML = `
+                        <a href="progress.html" class="${currentPath === 'progress.html' ? 'active' : ''}"><i class="fas fa-chart-line"></i> Прогресс</a>
+                        <a href="login.html" class="${currentPath === 'login.html' ? 'active' : ''}"><i class="fas fa-sign-in-alt"></i> Вход</a>
+                        <a href="register.html" class="${currentPath === 'register.html' ? 'active' : ''}"><i class="fas fa-user-plus"></i> Регистрация</a>
+                    `;
                 }
-            } else {
-                navRight.innerHTML = `
-                    <a href="progress.html" class="${currentPath === 'progress.html' ? 'active' : ''}"><i class="fas fa-chart-line"></i> Прогресс</a>
-                    <a href="login.html" class="${currentPath === 'login.html' ? 'active' : ''}"><i class="fas fa-sign-in-alt"></i> Вход</a>
-                    <a href="register.html" class="${currentPath === 'register.html' ? 'active' : ''}"><i class="fas fa-user-plus"></i> Регистрация</a>
-                `;
             }
-        }
-        
-        // Вызываем обновление
-        updateNavigation();
-    });
-</script>
+            
+            updateNavigation();
+        });
+    </script>
 </body>
 </html>
-

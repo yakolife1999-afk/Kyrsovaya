@@ -1,13 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // ========== ФУНКЦИИ ДЛЯ АВТОРИЗАЦИИ (РЕАЛЬНЫЕ) ==========
-    
     function getUser() {
         const userStr = localStorage.getItem('user');
         return userStr ? JSON.parse(userStr) : null;
-    }
-    
-    function getToken() {
-        return localStorage.getItem('token');
     }
     
     function isUserLoggedIn() {
@@ -54,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     updateNavigation();
     
-    // ========== КОД ДЛЯ КАРТИНОК НА ГЛАВНОЙ ==========
     const fullImage = document.querySelector('.full-image');
     if (fullImage) {
         const imagePaths = [
@@ -171,14 +164,27 @@ document.addEventListener('DOMContentLoaded', function() {
         if (loginBtn) {
             loginBtn.addEventListener('mouseenter', startForwardSequence);
             loginBtn.addEventListener('mouseleave', startBackwardSequence);
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                startForwardSequence();
+                setTimeout(() => {
+                    window.location.href = this.getAttribute('href');
+                }, 300);
+            });
         }
         
         if (registerBtn) {
             registerBtn.addEventListener('mouseenter', startForwardSequence);
             registerBtn.addEventListener('mouseleave', startBackwardSequence);
+            registerBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                startForwardSequence();
+                setTimeout(() => {
+                    window.location.href = this.getAttribute('href');
+                }, 300);
+            });
         }
         
-        // Анимация при скролле
         window.addEventListener('scroll', function() {
             const textSection = document.querySelector('.text-section');
             if (!textSection) return;
@@ -204,7 +210,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Инициализация анимаций
         const textSection = document.querySelector('.text-section');
         if (textSection) {
             textSection.style.opacity = '0';

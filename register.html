@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 🌗 Переменные светлой и тёмной темы */
         :root {
             --bg-color: #ffffff;
             --text-color: #333333;
@@ -354,7 +353,8 @@
             gap: 8px;
         }
 
-        .footer-right a:hover {
+        .footer-right a:hover,
+        .footer-right a.active {
             color: var(--primary-color);
         }
 
@@ -493,10 +493,10 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
-                <span>© 2026 Цифровой коуч для саморазвития. Помогаем расти и развиваться.</span>
+                <span>© 2026 Цифровой коуч для саморазвития</span>
             </div>
             <div class="footer-right">
-                <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+                <a href="help.html"><i class="fas fa-question-circle"></i> Помощь</a>
             </div>
         </div>
     </footer>
@@ -504,12 +504,10 @@
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Применяем тему
             if (localStorage.getItem('theme') === 'dark') {
                 document.body.classList.add('dark-theme');
             }
 
-            // Код для карусели изображений
             const imagePaths = [
                 'images/ne_gorit.png',
                 'images/ne_gorit2.png',
@@ -592,7 +590,6 @@
                 startAutoSlide();
             }, 500);
             
-            // Логика регистрации
             const registerForm = document.getElementById('registerForm');
             const errorMessage = document.getElementById('errorMessage');
             const submitBtn = document.getElementById('submitBtn');
@@ -675,8 +672,6 @@
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
                     
-                    alert('Регистрация прошла успешно!\n\nДобро пожаловать, ' + data.user.name);
-                    
                     window.location.href = 'locations.html';
                     
                 } catch (error) {
@@ -700,7 +695,6 @@
                 }
             });
             
-            // Если уже залогинен - кидаем сразу на карту
             if (localStorage.getItem('token')) {
                 window.location.href = 'locations.html';
             }
