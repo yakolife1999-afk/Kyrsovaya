@@ -732,10 +732,6 @@
                     <i class="fas fa-file-excel"></i> Текущие задания
                 </button>
                 
-                <button class="history-btn" onclick="exportAllHistory()" style="margin: 5px;">
-                    <i class="fas fa-history"></i> Вся история
-                </button>
-                
                 <!-- Кнопка перезапуска (появляется после 9 заданий) -->
                 <button class="restart-btn" onclick="document.getElementById('gameCompleteModal').style.display='flex'" id="restartButton" style="display: none;">
                     <i class="fas fa-redo-alt"></i> Начать сначала
@@ -783,35 +779,36 @@
         </div>
     </div>
 
-    <div class="task-modal" id="gameCompleteModal">
-        <div class="modal-content" style="text-align: center;">
-            <button class="modal-close" onclick="closeGameCompleteModal()">&times;</button>
-            
-            <div style="font-size: 5rem; margin-bottom: 20px;">🏆</div>
-            
-            <h2 style="color: var(--title-color); margin-bottom: 15px; font-size: 2rem;">Великое достижение!</h2>
-            
-            <p style="color: var(--text-color); font-size: 1.2rem; margin-bottom: 20px;">
-                Вы выполнили все 9 заданий!<br>
-                Хотите начать новое путешествие?
-            </p>
-            
-            <!-- Загрузка -->
-            <div class="loading-spinner" id="restartLoading" style="display: none;">
-                <i class="fas fa-spinner fa-spin fa-3x"></i>
-                <p style="margin-top: 10px;">Генерируем новые задания...</p>
-            </div>
-            
-            <div class="task-actions" id="restartActions">
-                <button class="task-btn complete" onclick="restartGame()" style="flex: 0 1 auto; padding: 15px 30px;">
-                    <i class="fas fa-redo-alt"></i> Начать заново
-                </button>
-                <button class="task-btn later" onclick="closeGameCompleteModal()" style="flex: 0 1 auto; padding: 15px 30px;">
-                    <i class="fas fa-clock"></i> Позже
-                </button>
-            </div>
+   <div class="task-modal" id="gameCompleteModal">
+    <div class="modal-content" style="text-align: center;">
+        <button class="modal-close" onclick="closeGameCompleteModal()">&times;</button>
+        
+        <div style="font-size: 5rem; margin-bottom: 20px;">🏆</div>
+        
+        <h2 style="color: var(--title-color); margin-bottom: 15px; font-size: 2rem;">Великое достижение!</h2>
+        
+        <p style="color: var(--text-color); font-size: 1.2rem; margin-bottom: 20px;">
+            Вы выполнили все 9 заданий!<br>
+            Хотите начать новое путешествие?
+        </p>
+        
+        <!-- Загрузка -->
+        <div class="loading-spinner" id="restartLoading" style="display: none;">
+            <i class="fas fa-spinner fa-spin fa-3x"></i>
+            <p style="margin-top: 10px;">Генерируем новые задания...</p>
+        </div>
+        
+        <!-- Кнопки по центру -->
+        <div class="task-actions" id="restartActions" style="display: flex; justify-content: center; gap: 15px;">
+            <button class="task-btn complete" onclick="restartGame()" style="flex: 0 1 auto; min-width: 150px; padding: 15px 30px;">
+                <i class="fas fa-redo-alt"></i> Начать заново
+            </button>
+            <button class="task-btn later" onclick="closeGameCompleteModal()" style="flex: 0 1 auto; min-width: 150px; padding: 15px 30px;">
+                <i class="fas fa-clock"></i> Позже
+            </button>
         </div>
     </div>
+</div>
 
     <footer class="footer">
         <div class="footer-content">
@@ -1202,3 +1199,4 @@
     </script>
 </body>
 </html>
+
