@@ -25,6 +25,8 @@
             --title-color: #2c3e50;
             --text-muted: #7f8c8d;
             --avatar-bg: linear-gradient(135deg, #3498db, #2980b9);
+            --delete-color: #e74c3c;
+            --delete-hover: #c0392b;
         }
 
         body.dark-theme {
@@ -45,6 +47,8 @@
             --title-color: #ffffff;
             --text-muted: #b0b0b0;
             --avatar-bg: linear-gradient(135deg, #4a9eff, #3a7bd5);
+            --delete-color: #e74c3c;
+            --delete-hover: #c0392b;
         }
 
         * {
@@ -415,6 +419,36 @@
             transform: translateX(26px);
         }
 
+        /* Красная кнопка удаления */
+        .delete-btn {
+            background-color: transparent;
+            border: 2px solid var(--delete-color);
+            color: var(--delete-color);
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .delete-btn:hover {
+            background-color: var(--delete-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .delete-btn i {
+            font-size: 1.1rem;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -461,6 +495,47 @@
             font-size: 1.4rem;
         }
 
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-btn.confirm {
+            background: var(--delete-color);
+            color: white;
+        }
+
+        .modal-btn.confirm:hover {
+            background: var(--delete-hover);
+            transform: translateY(-2px);
+        }
+
+        .modal-btn.cancel {
+            background: var(--stat-bg);
+            color: var(--text-color);
+            border: 1px solid var(--card-border);
+        }
+
+        .modal-btn.cancel:hover {
+            background: var(--hover-bg);
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
@@ -487,27 +562,6 @@
         .form-control:focus {
             outline: none;
             border-color: var(--primary-color);
-        }
-
-        .modal-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
-        }
-
-        .modal-btn:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
         }
 
         .emoji-grid {
@@ -691,7 +745,7 @@
                     <div class="stats-grid">
                         <div class="stat-item">
                             <div class="stat-value" id="totalCompleted">0</div>
-                            <div class="stat-label">Выполнено заданий</div>
+                            <div class="stat-label">Выполнено в этом цикле</div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-value" id="totalTasks">9</div>
@@ -699,7 +753,7 @@
                         </div>
                         <div class="stat-item">
                             <div class="stat-value" id="totalPercent">0%</div>
-                            <div class="stat-label">Прогресс</div>
+                            <div class="stat-label">Прогресс цикла</div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-value" id="forestCompleted">0</div>
@@ -754,13 +808,18 @@
 
                 <div class="section-card">
                     <h2><i class="fas fa-palette"></i> Оформление</h2>
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
                         <span style="font-size: 1.1rem; color: var(--title-color);">Тёмная тема</span>
                         <label class="switch">
                             <input type="checkbox" id="themeToggle">
                             <span class="slider round"></span>
                         </label>
                     </div>
+                    
+                    <!-- КРАСНАЯ КНОПКА УДАЛЕНИЯ -->
+                    <button class="delete-btn" onclick="openDeleteModal()">
+                        <i class="fas fa-trash-alt"></i> Удалить аккаунт
+                    </button>
                 </div>
             </div>
         </div>
@@ -777,6 +836,7 @@
         </div>
     </footer>
 
+    <!-- Модалка имени -->
     <div class="modal" id="nameModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeNameModal()">&times;</button>
@@ -785,12 +845,13 @@
                 <label for="newName">Новое имя:</label>
                 <input type="text" id="newName" class="form-control" placeholder="Введите ваше имя">
             </div>
-            <button class="modal-btn" onclick="saveName()">
-                <i class="fas fa-save"></i> Сохранить изменения
+            <button class="modal-btn confirm" onclick="saveName()" style="background: var(--primary-color); color: white;">
+                <i class="fas fa-save"></i> Сохранить
             </button>
         </div>
     </div>
 
+    <!-- Модалка смайликов -->
     <div class="modal" id="emojiModal">
         <div class="modal-content" style="max-width: 600px;">
             <button class="modal-close" onclick="closeEmojiModal()">&times;</button>
@@ -831,8 +892,36 @@
                 <div class="emoji-option" onclick="selectEmoji('🎵')">🎵</div>
                 <div class="emoji-option" onclick="selectEmoji('⚡')">⚡</div>
                 <div class="emoji-option" onclick="selectEmoji('💎')">💎</div>
-                <div class="emoji-option" onclick="selectEmoji('🌟')">🌟</div>
                 <div class="emoji-option" onclick="selectEmoji('⭐')">⭐</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка подтверждения удаления -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content" style="text-align: center;">
+            <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            
+            <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--delete-color); margin-bottom: 15px;"></i>
+            
+            <h2 style="color: var(--delete-color); margin-bottom: 15px;">Удаление аккаунта</h2>
+            
+            <p style="color: var(--text-color); margin-bottom: 20px; font-size: 1.1rem;">
+                Вы уверены, что хотите удалить свой аккаунт?
+            </p>
+            
+            <p style="color: var(--delete-color); font-weight: 600; margin-bottom: 20px;">
+                ⚠️ Это действие нельзя отменить!<br>
+                Все ваши данные будут безвозвратно удалены.
+            </p>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" onclick="deleteAccount()">
+                    <i class="fas fa-trash-alt"></i> Да, удалить
+                </button>
+                <button class="modal-btn cancel" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i> Отмена
+                </button>
             </div>
         </div>
     </div>
@@ -846,6 +935,7 @@
             emoji: ''
         };
 
+        // Загрузка данных профиля
         async function loadProfile() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -869,6 +959,7 @@
             }
         }
 
+        // Загрузка смайлика с сервера
         async function loadUserEmoji(token) {
             try {
                 const response = await fetch('https://rasveta-backend.onrender.com/api/users/me', {
@@ -886,6 +977,7 @@
             }
         }
 
+        // Сохранение смайлика на сервер
         async function saveEmojiToServer(emoji) {
             const token = localStorage.getItem('token');
             if (!token) return;
@@ -910,6 +1002,7 @@
             avatarDiv.style.background = 'none';
         }
 
+        // Загрузка прогресса заданий
         async function loadTasksProgress(token) {
             let forestCount = 0;
             let hillsCount = 0;
@@ -973,6 +1066,7 @@
             }
         }
 
+        // Модалка имени
         function openNameModal() {
             document.getElementById('newName').value = userData.name;
             document.getElementById('nameModal').style.display = 'flex';
@@ -995,6 +1089,7 @@
             closeNameModal();
         }
 
+        // Функции для смайликов
         function openEmojiModal() {
             document.getElementById('emojiModal').style.display = 'flex';
         }
@@ -1009,6 +1104,57 @@
             closeEmojiModal();
         }
 
+        // Функции для удаления аккаунта
+        function openDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        async function deleteAccount() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const deleteBtn = document.querySelector('#deleteModal .confirm');
+            const originalText = deleteBtn.innerHTML;
+            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Удаление...';
+            deleteBtn.disabled = true;
+
+            try {
+                const response = await fetch('https://rasveta-backend.onrender.com/api/users/me', {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка при удалении');
+                }
+
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('userEmoji');
+                localStorage.removeItem('userAvatar');
+                
+                alert('Ваш аккаунт был удалён.');
+                window.location.href = 'index.html';
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Не удалось удалить аккаунт.');
+                deleteBtn.innerHTML = originalText;
+                deleteBtn.disabled = false;
+                closeDeleteModal();
+            }
+        }
+
+        // Тёмная тема
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
             themeToggle.checked = localStorage.getItem('theme') === 'dark';
@@ -1024,6 +1170,7 @@
             });
         }
 
+        // Инициализация
         document.addEventListener('DOMContentLoaded', function() {
             if (!localStorage.getItem('token')) {
                 window.location.href = 'login.html';
