@@ -26,6 +26,8 @@
             --text-muted: #7f8c8d;
             --dot-shadow: rgba(255, 255, 255, 0.9);
             --map-border: #ffffff;
+            --export-color: #27ae60;
+            --export-hover: #2ecc71;
         }
 
         body.dark-theme {
@@ -47,6 +49,8 @@
             --text-muted: #b0b0b0;
             --dot-shadow: rgba(255, 255, 255, 0.3);
             --map-border: #444444;
+            --export-color: #27ae60;
+            --export-hover: #2ecc71;
         }
 
         * {
@@ -115,7 +119,6 @@
             padding: 30px;
             box-shadow: 0 10px 30px var(--shadow-color);
             border: 1px solid var(--card-border);
-            position: relative;
         }
 
         .map-title {
@@ -139,36 +142,27 @@
             font-size: 1.2rem;
         }
 
-        .restart-button {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--primary-color);
+        /* Кнопка экспорта */
+        .export-btn {
+            background: var(--export-color);
             color: white;
             border: none;
-            border-radius: 60px;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            display: none;
+            transition: all 0.3s;
+            display: inline-flex;
             align-items: center;
             gap: 10px;
-            z-index: 1000;
-            animation: pulse 2s infinite;
-            border: 2px solid white;
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
         }
 
-        .restart-button:hover {
-            transform: scale(1.05);
-            background: var(--secondary-color);
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .export-btn:hover {
+            background: var(--export-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
         }
 
         .map-wrapper {
@@ -591,10 +585,8 @@
                 gap: 15px;
             }
 
-            .restart-button {
-                bottom: 20px;
-                right: 20px;
-                padding: 12px 25px;
+            .export-btn {
+                padding: 10px 25px;
                 font-size: 1rem;
             }
         }
@@ -688,6 +680,13 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Кнопка экспорта в Excel -->
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="export-btn" onclick="exportTasksToExcel()">
+                    <i class="fas fa-file-excel"></i> Скачать задания (Excel)
+                </button>
+            </div>
             
             <div style="text-align: center;">
                 <a href="index.html" class="back-btn">
@@ -696,10 +695,6 @@
             </div>
         </div>
     </main>
-
-    <button class="restart-button" id="restartButton" onclick="openGameCompleteModal()">
-        <i class="fas fa-trophy"></i> Новая игра
-    </button>
 
     <div class="task-modal" id="taskModal">
         <div class="modal-content">
@@ -785,6 +780,7 @@
 
         let currentLevel = 1;
 
+        // Загрузка заданий с сервера
         async function loadAllTasks() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -822,6 +818,7 @@
                 updateAllDots();
                 updateAllProgress();
 
+                // Проверяем, все ли задания выполнены
                 const allCompleted = [1,2,3,4,5,6,7,8,9].every(lvl => tasksData[`level${lvl}`].completed);
                 if (allCompleted) {
                     document.getElementById('restartButton').style.display = 'flex';
@@ -875,6 +872,36 @@
             document.getElementById('beachCount').textContent = beachCompleted + '/3';
         }
 
+        // Экспорт заданий в Excel (CSV) - БЕЗ УВЕДОМЛЕНИЙ
+        function exportTasksToExcel() {
+            const tasks = [];
+            for (let level = 1; level <= 9; level++) {
+                const taskData = tasksData[`level${level}`];
+                if (taskData) {
+                    tasks.push({
+                        'Уровень': level,
+                        'Название': taskData.title || '',
+                        'Задание': taskData.task || '',
+                        'Статус': taskData.completed ? 'Выполнено' : 'Не выполнено'
+                    });
+                }
+            }
+
+            // Создаем CSV с разделителем ;
+            const headers = Object.keys(tasks[0]).join(';');
+            const rows = tasks.map(t => 
+                Object.values(t).map(v => `"${v}"`).join(';')
+            ).join('\n');
+            const csv = headers + '\n' + rows;
+
+            // Скачиваем файл
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `задания_${new Date().toLocaleDateString().replace(/\./g, '-')}.csv`;
+            link.click();
+        }
+
         function openTaskModal(level) {
             const task = tasksData[`level${level}`];
             
@@ -921,10 +948,6 @@
             document.getElementById('gameCompleteModal').style.display = 'none';
         }
 
-        function openGameCompleteModal() {
-            document.getElementById('gameCompleteModal').style.display = 'flex';
-        }
-
         async function completeTask() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -966,12 +989,11 @@
 
                 const allCompleted = [1,2,3,4,5,6,7,8,9].every(lvl => tasksData[`level${lvl}`].completed);
                 if (allCompleted) {
-                    document.getElementById('restartButton').style.display = 'flex';
+                    document.getElementById('gameCompleteModal').style.display = 'flex';
                 }
 
             } catch (error) {
                 console.error('Ошибка:', error);
-                alert('❌ ' + error.message);
             } finally {
                 completeBtn.disabled = false;
                 completeBtn.innerHTML = originalText;
@@ -998,12 +1020,10 @@
                 }
 
                 closeGameCompleteModal();
-                document.getElementById('restartButton').style.display = 'none';
                 await loadAllTasks();
 
             } catch (error) {
                 console.error('Ошибка:', error);
-                alert('❌ ' + error.message);
             }
         }
 
