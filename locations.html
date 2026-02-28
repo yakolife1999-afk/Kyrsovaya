@@ -719,7 +719,7 @@
                 </button>
                 
                 <!-- Кнопка перезапуска (появляется после 9 заданий) -->
-                <button class="restart-btn" onclick="openGameCompleteModal()" id="restartButton" style="display: none;">
+                <button class="restart-btn" onclick="document.getElementById('gameCompleteModal').style.display='flex'" id="restartButton" style="display: none;">
                     <i class="fas fa-redo-alt"></i> Начать сначала
                 </button>
             </div>
@@ -1100,3 +1100,4 @@
     </script>
 </body>
 </html>
+
