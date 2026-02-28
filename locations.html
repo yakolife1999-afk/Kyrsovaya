@@ -6,6 +6,8 @@
     <title>Карта локаций - Цифровой коуч</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Библиотека для создания Excel-файлов -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --bg-color: #ffffff;
@@ -872,7 +874,7 @@
             document.getElementById('beachCount').textContent = beachCompleted + '/3';
         }
 
-        // Экспорт заданий в Excel (CSV) - БЕЗ УВЕДОМЛЕНИЙ
+        // Экспорт в настоящий Excel с шириной колонок
         function exportTasksToExcel() {
             const tasks = [];
             for (let level = 1; level <= 9; level++) {
@@ -881,25 +883,29 @@
                     tasks.push({
                         'Уровень': level,
                         'Название': taskData.title || '',
-                        'Задание': taskData.task || '',
+                        'Описание': taskData.task || '',
                         'Статус': taskData.completed ? 'Выполнено' : 'Не выполнено'
                     });
                 }
             }
 
-            // Создаем CSV с разделителем ;
-            const headers = '"Уровень (№)";"Название задания";"Полное описание задания";"Текущий статус выполнения"';
-            const rows = tasks.map(t => 
-                Object.values(t).map(v => `"${v}"`).join(';')
-            ).join('\n');
-            const csv = headers + '\n' + rows;
+            // Создаем рабочий лист из данных
+            const ws = XLSX.utils.json_to_sheet(tasks);
 
-            // Скачиваем файл
-            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `задания_${new Date().toLocaleDateString().replace(/\./g, '-')}.csv`;
-            link.click();
+            // Устанавливаем ширину колонок (wch = ширина в символах)
+            ws['!cols'] = [
+                { wch: 10 },  // Уровень
+                { wch: 50 },  // Название
+                { wch: 100 }, // Описание
+                { wch: 15 }   // Статус
+            ];
+
+            // Создаем книгу и добавляем лист
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Задания');
+
+            // Сохраняем файл
+            XLSX.writeFile(wb, `задания_${new Date().toLocaleDateString().replace(/\./g, '-')}.xlsx`);
         }
 
         function openTaskModal(level) {
@@ -1061,4 +1067,3 @@
     </script>
 </body>
 </html>
-
