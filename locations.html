@@ -30,6 +30,8 @@
             --map-border: #ffffff;
             --export-color: #27ae60;
             --export-hover: #2ecc71;
+            --restart-color: #3498db;
+            --restart-hover: #2980b9;
         }
 
         body.dark-theme {
@@ -53,6 +55,8 @@
             --map-border: #444444;
             --export-color: #27ae60;
             --export-hover: #2ecc71;
+            --restart-color: #4a9eff;
+            --restart-hover: #3a7bd5;
         }
 
         * {
@@ -165,6 +169,29 @@
             background: var(--export-hover);
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+        }
+
+        /* Кнопка перезапуска */
+        .restart-btn {
+            background: var(--restart-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .restart-btn:hover {
+            background: var(--restart-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
         }
 
         .map-wrapper {
@@ -587,9 +614,11 @@
                 gap: 15px;
             }
 
-            .export-btn {
+            .export-btn, .restart-btn {
                 padding: 10px 25px;
                 font-size: 1rem;
+                width: 100%;
+                margin: 5px 0;
             }
         }
 
@@ -683,10 +712,15 @@
                 </div>
             </div>
 
-            <!-- Кнопка экспорта в Excel -->
+            <!-- Кнопки действий -->
             <div style="text-align: center; margin: 30px 0;">
-                <button class="export-btn" onclick="exportTasksToExcel()">
-                    <i class="fas fa-file-excel"></i> Скачать задания (Excel)
+                <button class="export-btn" onclick="exportTasksToExcel()" style="margin-right: 15px;">
+                    <i class="fas fa-file-excel"></i> Скачать задания
+                </button>
+                
+                <!-- Кнопка перезапуска (появляется после 9 заданий) -->
+                <button class="restart-btn" onclick="openGameCompleteModal()" id="restartButton" style="display: none;">
+                    <i class="fas fa-redo-alt"></i> Начать сначала
                 </button>
             </div>
             
@@ -820,14 +854,6 @@
                 updateAllDots();
                 updateAllProgress();
 
-                // Проверяем, все ли задания выполнены
-                const allCompleted = [1,2,3,4,5,6,7,8,9].every(lvl => tasksData[`level${lvl}`].completed);
-                if (allCompleted) {
-                    document.getElementById('restartButton').style.display = 'flex';
-                } else {
-                    document.getElementById('restartButton').style.display = 'none';
-                }
-
             } catch (error) {
                 console.error('Ошибка загрузки заданий:', error);
             }
@@ -872,6 +898,13 @@
             document.getElementById('beachProgress').style.width = beachPercent + '%';
             document.getElementById('beachPercent').textContent = Math.round(beachPercent) + '%';
             document.getElementById('beachCount').textContent = beachCompleted + '/3';
+
+            // Показываем кнопку перезапуска если все задания выполнены
+            const allCompleted = [1,2,3,4,5,6,7,8,9].every(lvl => tasksData[`level${lvl}`].completed);
+            const restartBtn = document.getElementById('restartButton');
+            if (restartBtn) {
+                restartBtn.style.display = allCompleted ? 'inline-flex' : 'none';
+            }
         }
 
         // Экспорт в настоящий Excel с шириной колонок
@@ -895,8 +928,8 @@
             // Устанавливаем ширину колонок (wch = ширина в символах)
             ws['!cols'] = [
                 { wch: 10 },  // Уровень
-                { wch: 30 },  // Название
-                { wch: 150 }, // Описание
+                { wch: 50 },  // Название
+                { wch: 100 }, // Описание
                 { wch: 15 }   // Статус
             ];
 
@@ -1067,4 +1100,3 @@
     </script>
 </body>
 </html>
-
