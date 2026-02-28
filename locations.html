@@ -32,6 +32,8 @@
             --export-hover: #2ecc71;
             --restart-color: #3498db;
             --restart-hover: #2980b9;
+            --history-color: #9b59b6;
+            --history-hover: #8e44ad;
         }
 
         body.dark-theme {
@@ -57,6 +59,8 @@
             --export-hover: #2ecc71;
             --restart-color: #4a9eff;
             --restart-hover: #3a7bd5;
+            --history-color: #9b59b6;
+            --history-hover: #8e44ad;
         }
 
         * {
@@ -148,10 +152,8 @@
             font-size: 1.2rem;
         }
 
-        /* Кнопка экспорта */
-        .export-btn {
-            background: var(--export-color);
-            color: white;
+        /* Кнопки */
+        .export-btn, .history-btn, .restart-btn {
             border: none;
             padding: 12px 30px;
             border-radius: 30px;
@@ -162,6 +164,12 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
+            margin: 5px;
+        }
+
+        .export-btn {
+            background: var(--export-color);
+            color: white;
             box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
         }
 
@@ -171,20 +179,21 @@
             box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
         }
 
-        /* Кнопка перезапуска */
+        .history-btn {
+            background: var(--history-color);
+            color: white;
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+        }
+
+        .history-btn:hover {
+            background: var(--history-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(155, 89, 182, 0.4);
+        }
+
         .restart-btn {
             background: var(--restart-color);
             color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
 
@@ -614,9 +623,9 @@
                 gap: 15px;
             }
 
-            .export-btn, .restart-btn {
-                padding: 10px 25px;
-                font-size: 1rem;
+            .export-btn, .history-btn, .restart-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
                 width: 100%;
                 margin: 5px 0;
             }
@@ -628,6 +637,11 @@
                 height: 35px;
                 font-size: 1rem;
             }
+        }
+
+        .loading-spinner {
+            text-align: center;
+            margin: 20px 0;
         }
     </style>
 </head>
@@ -714,8 +728,12 @@
 
             <!-- Кнопки действий -->
             <div style="text-align: center; margin: 30px 0;">
-                <button class="export-btn" onclick="exportTasksToExcel()" style="margin-right: 15px;">
-                    <i class="fas fa-file-excel"></i> Скачать задания
+                <button class="export-btn" onclick="exportCurrentTasks()" style="margin: 5px;">
+                    <i class="fas fa-file-excel"></i> Текущие задания
+                </button>
+                
+                <button class="history-btn" onclick="exportAllHistory()" style="margin: 5px;">
+                    <i class="fas fa-history"></i> Вся история
                 </button>
                 
                 <!-- Кнопка перезапуска (появляется после 9 заданий) -->
@@ -778,7 +796,13 @@
                 Хотите начать новое путешествие?
             </p>
             
-            <div style="display: flex; gap: 15px; justify-content: center;">
+            <!-- Загрузка -->
+            <div class="loading-spinner" id="restartLoading" style="display: none;">
+                <i class="fas fa-spinner fa-spin fa-3x"></i>
+                <p style="margin-top: 10px;">Генерируем новые задания...</p>
+            </div>
+            
+            <div class="task-actions" id="restartActions">
                 <button class="task-btn complete" onclick="restartGame()" style="flex: 0 1 auto; padding: 15px 30px;">
                     <i class="fas fa-redo-alt"></i> Начать заново
                 </button>
@@ -815,6 +839,7 @@
         };
 
         let currentLevel = 1;
+        let allHistory = [];
 
         // Загрузка заданий с сервера
         async function loadAllTasks() {
@@ -907,13 +932,14 @@
             }
         }
 
-        // Экспорт в настоящий Excel с шириной колонок
-        function exportTasksToExcel() {
+        // Экспорт текущих заданий
+        function exportCurrentTasks() {
             const tasks = [];
             for (let level = 1; level <= 9; level++) {
                 const taskData = tasksData[`level${level}`];
                 if (taskData) {
                     tasks.push({
+                        'Цикл': 'Текущий',
                         'Уровень': level,
                         'Название': taskData.title || '',
                         'Описание': taskData.task || '',
@@ -922,23 +948,90 @@
                 }
             }
 
-            // Создаем рабочий лист из данных
             const ws = XLSX.utils.json_to_sheet(tasks);
-
-            // Устанавливаем ширину колонок (wch = ширина в символах)
             ws['!cols'] = [
-                { wch: 10 },  // Уровень
-                { wch: 50 },  // Название
+                { wch: 10 }, // Цикл
+                { wch: 8 },  // Уровень
+                { wch: 50 }, // Название
                 { wch: 100 }, // Описание
-                { wch: 15 }   // Статус
+                { wch: 15 }  // Статус
             ];
 
-            // Создаем книгу и добавляем лист
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Задания');
+            XLSX.utils.book_append_sheet(wb, ws, 'Текущие задания');
+            XLSX.writeFile(wb, `текущие_задания_${new Date().toLocaleDateString().replace(/\./g, '-')}.xlsx`);
+        }
 
-            // Сохраняем файл
-            XLSX.writeFile(wb, `задания_${new Date().toLocaleDateString().replace(/\./g, '-')}.xlsx`);
+        // Загрузка всей истории
+        async function loadAllHistory() {
+            const token = localStorage.getItem('token');
+            if (!token) return [];
+
+            try {
+                // Временно, пока нет бэкенда, генерируем тестовые данные
+                // Когда бэкенд будет готов, замени на реальный запрос
+                const history = [];
+                for (let cycle = 1; cycle <= 3; cycle++) {
+                    for (let level = 1; level <= 9; level++) {
+                        history.push({
+                            cycle: cycle,
+                            level: level,
+                            task: `Задание ${level} из цикла ${cycle}`,
+                            completed_at: new Date(Date.now() - cycle * 86400000).toISOString()
+                        });
+                    }
+                }
+                return history;
+            } catch (error) {
+                console.error('Ошибка загрузки истории:', error);
+                return [];
+            }
+        }
+
+        // Экспорт всей истории
+        async function exportAllHistory() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Показываем загрузку (можно добавить индикатор)
+            const historyBtn = document.querySelector('.history-btn');
+            const originalText = historyBtn.innerHTML;
+            historyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
+            historyBtn.disabled = true;
+
+            try {
+                // Загружаем историю
+                const history = await loadAllHistory();
+                
+                const tasks = history.map(item => ({
+                    'Цикл': item.cycle,
+                    'Уровень': item.level,
+                    'Задание': item.task,
+                    'Дата выполнения': new Date(item.completed_at).toLocaleString()
+                }));
+
+                const ws = XLSX.utils.json_to_sheet(tasks);
+                ws['!cols'] = [
+                    { wch: 8 },  // Цикл
+                    { wch: 8 },  // Уровень
+                    { wch: 100 }, // Задание
+                    { wch: 20 }  // Дата
+                ];
+
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'История заданий');
+                XLSX.writeFile(wb, `история_заданий_${new Date().toLocaleDateString().replace(/\./g, '-')}.xlsx`);
+
+            } catch (error) {
+                console.error('Ошибка экспорта истории:', error);
+                alert('Не удалось загрузить историю');
+            } finally {
+                historyBtn.innerHTML = originalText;
+                historyBtn.disabled = false;
+            }
         }
 
         function openTaskModal(level) {
@@ -1046,6 +1139,10 @@
                 return;
             }
 
+            // Прячем кнопки, показываем загрузку
+            document.getElementById('restartActions').style.display = 'none';
+            document.getElementById('restartLoading').style.display = 'block';
+
             try {
                 const response = await fetch('https://rasveta-backend.onrender.com/api/levels/restart', {
                     method: 'POST',
@@ -1063,6 +1160,11 @@
 
             } catch (error) {
                 console.error('Ошибка:', error);
+                alert('Не удалось перезапустить игру');
+            } finally {
+                // Возвращаем кнопки
+                document.getElementById('restartActions').style.display = 'flex';
+                document.getElementById('restartLoading').style.display = 'none';
             }
         }
 
@@ -1100,4 +1202,3 @@
     </script>
 </body>
 </html>
-
