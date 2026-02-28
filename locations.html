@@ -888,7 +888,7 @@
             }
 
             // Создаем CSV с разделителем ;
-            const headers = Object.keys(tasks[0]).join(';');
+            const headers = '"Уровень (№)";"Название задания";"Полное описание задания";"Текущий статус выполнения"';
             const rows = tasks.map(t => 
                 Object.values(t).map(v => `"${v}"`).join(';')
             ).join('\n');
@@ -1061,3 +1061,4 @@
     </script>
 </body>
 </html>
+
