@@ -27,6 +27,9 @@
             --avatar-bg: linear-gradient(135deg, #3498db, #2980b9);
             --delete-color: #e74c3c;
             --delete-hover: #c0392b;
+            --progress-green: #27ae60;
+            --progress-blue: #3498db;
+            --progress-orange: #e67e22;
         }
 
         body.dark-theme {
@@ -117,21 +120,21 @@
         }
 
         /* Фон профиля с изображением локации */
-.profile-background {
-    position: relative;
-    min-height: 400px;  /* БЫЛО 300px, СТАЛО 400px */
-    border-radius: 15px;
-    overflow: hidden;
-    margin-bottom: 20px;
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0 5px 15px var(--shadow-color);
-    display: flex;
-    align-items: center;  /* Центрируем контент по вертикали */
-    justify-content: center;
-    padding: 0;
-    transition: background-image 0.5s ease;
-}
+        .profile-background {
+            position: relative;
+            min-height: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: background-image 0.5s ease;
+        }
 
         /* Пути к изображениям локаций */
         .profile-background[data-location="forest"] {
@@ -164,9 +167,9 @@
             text-align: center;
             width: 100%;
             background: rgba(255, 255, 255, 0.1);
-
+            backdrop-filter: blur(3px);
             padding: 20px;
-
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
         }
 
@@ -177,13 +180,13 @@
         .profile-avatar-container {
             position: relative;
             display: inline-block;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             cursor: pointer;
         }
 
         .profile-avatar {
-            width: 90px;
-            height: 90px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -193,16 +196,27 @@
             overflow: hidden;
             background: var(--avatar-bg);
             transition: transform 0.2s;
+            margin: 0 auto;
         }
 
         .profile-avatar:hover {
             transform: scale(1.05);
         }
 
+        .profile-avatar i {
+            font-size: 35px;
+            color: white;
+        }
+
+        .profile-avatar span {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+
         .change-avatar-btn {
             position: absolute;
-            bottom: 5px;
-            right: 5px;
+            bottom: 0px;
+            right: 0px;
             width: 28px;
             height: 28px;
             background: var(--primary-color);
@@ -225,13 +239,13 @@
         }
 
         .profile-header h1 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: white;
             margin-bottom: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
 
@@ -252,18 +266,18 @@
         }
 
         .profile-header p {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
 
         .current-location-badge {
             display: inline-block;
             background: rgba(0, 0, 0, 0.4);
-            padding: 6px 16px;
+            padding: 5px 15px;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(5px);
@@ -274,12 +288,69 @@
             margin-right: 5px;
         }
 
-        .location-info {
+        .user-email {
             font-size: 0.85rem;
             color: rgba(255, 255, 255, 0.8);
+            margin-top: 5px;
         }
 
-        .location-info span {
+        .user-email i {
+            margin-right: 5px;
+            color: var(--primary-color);
+        }
+
+        /* Отдельный блок для прогресса локации */
+        .location-progress-bar {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-top: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .location-progress-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .location-progress-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .location-progress-icon i {
+            font-size: 1rem;
+            color: white;
+        }
+
+        .location-progress-text {
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .location-progress-text span {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .location-progress-value {
+            background: var(--primary-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: 600;
             color: white;
         }
@@ -728,21 +799,26 @@
                 grid-template-columns: 1fr;
             }
             
-            .profile-header h1 {
-                font-size: 1.5rem;
-            }
-            
             .profile-avatar {
-                width: 80px;
-                height: 80px;
+                width: 70px;
+                height: 70px;
             }
             
             .profile-avatar i {
-                font-size: 35px;
+                font-size: 30px;
+            }
+            
+            .profile-header h1 {
+                font-size: 1.4rem;
             }
             
             .profile-background {
-                min-height: 280px;
+                min-height: 350px;
+            }
+            
+            .location-progress-bar {
+                max-width: 250px;
+                padding: 10px 15px;
             }
             
             .emoji-grid {
@@ -769,8 +845,17 @@
                 grid-template-columns: 1fr;
             }
             
+            .profile-avatar {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .profile-avatar i {
+                font-size: 25px;
+            }
+            
             .profile-header h1 {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
                 flex-direction: column;
                 gap: 5px;
             }
@@ -784,7 +869,13 @@
             }
             
             .profile-background {
-                min-height: 260px;
+                min-height: 320px;
+            }
+            
+            .location-progress-bar {
+                max-width: 220px;
+                flex-direction: column;
+                gap: 8px;
             }
             
             .emoji-grid {
@@ -829,14 +920,24 @@
                         </button>
                     </h1>
                     
-                    <p>Профиль саморазвития</p>
                     
-                    <div class="current-location-badge" id="currentLocationBadge">
-                        <i class="fas fa-tree"></i> Лес
+                    <div class="user-email" id="userEmail">
+                        <i class="fas fa-envelope"></i> 
                     </div>
                     
-                    <div class="location-info" id="locationInfo">
-                        <span>0/3</span> заданий выполнено
+                    <!-- Отдельный блок для прогресса локации -->
+                    <div class="location-progress-bar" id="locationProgressBar">
+                        <div class="location-progress-info">
+                            <div class="location-progress-icon" id="locationProgressIcon">
+                                <i class="fas fa-tree"></i>
+                            </div>
+                            <div class="location-progress-text" id="locationProgressText">
+                                <span>0/3</span> заданий
+                            </div>
+                        </div>
+                        <div class="location-progress-value" id="locationProgressValue">
+                            0%
+                        </div>
                     </div>
                 </div>
             </div>
@@ -933,6 +1034,8 @@
             </div>
             <div class="footer-right">
                 <a href="help.html"><i class="fas fa-question-circle"></i> Помощь</a>
+                <a href="terms.html"><i class="fas fa-file-contract"></i> Условия</a>
+                <a href="privacy.html"><i class="fas fa-shield-alt"></i> Конфиденциальность</a>
             </div>
         </div>
     </footer>
@@ -1064,7 +1167,11 @@
                 userData.email = user.email || '';
 
                 document.getElementById('userName').firstChild.textContent = userData.name;
-                document.getElementById('userEmail').innerHTML = `<i class="fas fa-envelope"></i> ${userData.email}`;
+                
+                const emailElement = document.getElementById('userEmail');
+                if (emailElement) {
+                    emailElement.innerHTML = `<i class="fas fa-envelope"></i> ${userData.email}`;
+                }
 
                 await loadUserEmoji(token);
                 await loadTasksProgress(token);
@@ -1116,34 +1223,41 @@
             userData.emoji = emoji;
         }
 
-        function setProfileBackground(location) {
-            const profileBg = document.getElementById('profileBackground');
-            const badge = document.getElementById('currentLocationBadge');
-            const locationInfo = document.getElementById('locationInfo');
-            
-            if (profileBg) {
-                profileBg.setAttribute('data-location', location);
-            }
-            
-            if (badge) {
-                if (location === 'forest') {
-                    badge.innerHTML = '<i class="fas fa-tree"></i> Лес';
-                } else if (location === 'hills') {
-                    badge.innerHTML = '<i class="fas fa-mountain"></i> Холмы';
-                } else if (location === 'beach') {
-                    badge.innerHTML = '<i class="fas fa-umbrella-beach"></i> Пляж';
-                }
-            }
-            
-            if (locationInfo) {
-                let completed = 0;
-                if (location === 'forest') completed = forestProgress;
-                else if (location === 'hills') completed = hillsProgress;
-                else if (location === 'beach') completed = beachProgress;
-                
-                locationInfo.innerHTML = `<span>${completed}/3</span> заданий выполнено`;
-            }
+function setProfileBackground(location) {
+    const profileBg = document.getElementById('profileBackground');
+    const progressBar = document.getElementById('locationProgressBar');
+    const progressIcon = document.getElementById('locationProgressIcon');
+    const progressText = document.getElementById('locationProgressText');
+    const progressValue = document.getElementById('locationProgressValue');
+    
+    if (profileBg) {
+        profileBg.setAttribute('data-location', location);
+    }
+    
+    // Обновляем иконку в прогресс-баре
+    if (progressIcon) {
+        if (location === 'forest') {
+            progressIcon.innerHTML = '<i class="fas fa-tree"></i>';
+        } else if (location === 'hills') {
+            progressIcon.innerHTML = '<i class="fas fa-mountain"></i>';
+        } else if (location === 'beach') {
+            progressIcon.innerHTML = '<i class="fas fa-umbrella-beach"></i>';
         }
+    }
+    
+    // Обновляем текст прогресса
+    if (progressText && progressValue) {
+        let completed = 0;
+        if (location === 'forest') completed = forestProgress;
+        else if (location === 'hills') completed = hillsProgress;
+        else if (location === 'beach') completed = beachProgress;
+        
+        const percent = Math.round((completed / 3) * 100);
+        
+        progressText.innerHTML = `<span>${completed}/3</span> заданий`;
+        progressValue.innerHTML = `${percent}%`;
+    }
+}
 
         async function loadTasksProgress(token) {
             forestProgress = 0;
@@ -1177,6 +1291,7 @@
             document.getElementById('hillsCompleted').textContent = hillsProgress;
             document.getElementById('beachCompleted').textContent = beachProgress;
             document.getElementById('totalPercent').textContent = totalPercent + '%';
+            document.getElementById('totalTasks').textContent = '9';
 
             // Определяем текущую локацию на основе прогресса
             if (forestProgress < 3) {
@@ -1186,9 +1301,6 @@
             } else {
                 currentLocation = 'beach';
             }
-            
-            console.log('Текущая локация:', currentLocation);
-            console.log('Прогресс:', forestProgress, hillsProgress, beachProgress);
             
             setProfileBackground(currentLocation);
             
