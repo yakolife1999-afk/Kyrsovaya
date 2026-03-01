@@ -35,6 +35,40 @@
             --history-color: #9b59b6;
             --history-hover: #8e44ad;
         }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            z-index: 9999;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
 
         body.dark-theme {
             --bg-color: #1a1a1a;
@@ -253,6 +287,13 @@
 
         .task-dot.completed i {
             font-size: 2rem;
+        }
+
+        .task-dot.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+            filter: grayscale(0.5);
         }
 
         .dot-forest {
@@ -643,6 +684,21 @@
             text-align: center;
             margin: 20px 0;
         }
+
+        .lock-icon {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
     </style>
 </head>
 <body>
@@ -660,23 +716,44 @@
         <div class="map-container">
             <div class="map-title">
                 <h1><i class="fas fa-map-marked-alt"></i> Карта локаций</h1>
-                <p>Следуйте по дорожке и выполняйте задания</p>
+                <p>Следуйте по дорожке и выполняйте задания по порядку</p>
             </div>
             
             <div class="map-wrapper">
                 <img src="images/karta.png" alt="Карта локаций: Лес, Холмы, Пляж" class="map-image" onerror="this.onerror=null; this.src='https://via.placeholder.com/800x600?text=Карта+локаций'">
                 
-                <div class="task-dot dot-forest forest-1" id="forest-task-1" onclick="openTaskModal(1)"><span>1</span></div>
-                <div class="task-dot dot-forest forest-2" id="forest-task-2" onclick="openTaskModal(2)"><span>2</span></div>
-                <div class="task-dot dot-forest forest-3" id="forest-task-3" onclick="openTaskModal(3)"><span>3</span></div>
+                <!-- Лес (задания 1-3) -->
+                <div class="task-dot dot-forest forest-1" id="task-1" onclick="openTaskModal(1)">
+                    <span>1</span>
+                </div>
+                <div class="task-dot dot-forest forest-2" id="task-2" onclick="openTaskModal(2)">
+                    <span>2</span>
+                </div>
+                <div class="task-dot dot-forest forest-3" id="task-3" onclick="openTaskModal(3)">
+                    <span>3</span>
+                </div>
                 
-                <div class="task-dot dot-hills hills-1" id="hills-task-4" onclick="openTaskModal(4)"><span>4</span></div>
-                <div class="task-dot dot-hills hills-2" id="hills-task-5" onclick="openTaskModal(5)"><span>5</span></div>
-                <div class="task-dot dot-hills hills-3" id="hills-task-6" onclick="openTaskModal(6)"><span>6</span></div>
+                <!-- Холмы (задания 4-6) -->
+                <div class="task-dot dot-hills hills-1" id="task-4" onclick="openTaskModal(4)">
+                    <span>4</span>
+                </div>
+                <div class="task-dot dot-hills hills-2" id="task-5" onclick="openTaskModal(5)">
+                    <span>5</span>
+                </div>
+                <div class="task-dot dot-hills hills-3" id="task-6" onclick="openTaskModal(6)">
+                    <span>6</span>
+                </div>
                 
-                <div class="task-dot dot-beach beach-1" id="beach-task-7" onclick="openTaskModal(7)"><span>7</span></div>
-                <div class="task-dot dot-beach beach-2" id="beach-task-8" onclick="openTaskModal(8)"><span>8</span></div>
-                <div class="task-dot dot-beach beach-3" id="beach-task-9" onclick="openTaskModal(9)"><span>9</span></div>
+                <!-- Пляж (задания 7-9) -->
+                <div class="task-dot dot-beach beach-1" id="task-7" onclick="openTaskModal(7)">
+                    <span>7</span>
+                </div>
+                <div class="task-dot dot-beach beach-2" id="task-8" onclick="openTaskModal(8)">
+                    <span>8</span>
+                </div>
+                <div class="task-dot dot-beach beach-3" id="task-9" onclick="openTaskModal(9)">
+                    <span>9</span>
+                </div>
             </div>
             
             <div class="locations-progress">
@@ -746,6 +823,7 @@
         </div>
     </main>
 
+    <!-- Модальное окно с заданием -->
     <div class="task-modal" id="taskModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeTaskModal()">&times;</button>
@@ -779,36 +857,37 @@
         </div>
     </div>
 
-   <div class="task-modal" id="gameCompleteModal">
-    <div class="modal-content" style="text-align: center;">
-        <button class="modal-close" onclick="closeGameCompleteModal()">&times;</button>
-        
-        <div style="font-size: 5rem; margin-bottom: 20px;">🏆</div>
-        
-        <h2 style="color: var(--title-color); margin-bottom: 15px; font-size: 2rem;">Великое достижение!</h2>
-        
-        <p style="color: var(--text-color); font-size: 1.2rem; margin-bottom: 20px;">
-            Вы выполнили все 9 заданий!<br>
-            Хотите начать новое путешествие?
-        </p>
-        
-        <!-- Загрузка -->
-        <div class="loading-spinner" id="restartLoading" style="display: none;">
-            <i class="fas fa-spinner fa-spin fa-3x"></i>
-            <p style="margin-top: 10px;">Генерируем новые задания...</p>
-        </div>
-        
-        <!-- Кнопки по центру -->
-        <div class="task-actions" id="restartActions" style="display: flex; justify-content: center; gap: 15px;">
-            <button class="task-btn complete" onclick="restartGame()" style="flex: 0 1 auto; min-width: 150px; padding: 15px 30px;">
-                <i class="fas fa-redo-alt"></i> Начать заново
-            </button>
-            <button class="task-btn later" onclick="closeGameCompleteModal()" style="flex: 0 1 auto; min-width: 150px; padding: 15px 30px;">
-                <i class="fas fa-clock"></i> Позже
-            </button>
+    <!-- Модальное окно завершения игры -->
+    <div class="task-modal" id="gameCompleteModal">
+        <div class="modal-content" style="text-align: center;">
+            <button class="modal-close" onclick="closeGameCompleteModal()">&times;</button>
+            
+            <div style="font-size: 5rem; margin-bottom: 20px;">🏆</div>
+            
+            <h2 style="color: var(--title-color); margin-bottom: 15px; font-size: 2rem;">Великое достижение!</h2>
+            
+            <p style="color: var(--text-color); font-size: 1.2rem; margin-bottom: 20px;">
+                Вы выполнили все 9 заданий!<br>
+                Хотите начать новое путешествие?
+            </p>
+            
+            <!-- Загрузка -->
+            <div class="loading-spinner" id="restartLoading" style="display: none;">
+                <i class="fas fa-spinner fa-spin fa-3x"></i>
+                <p style="margin-top: 10px;">Генерируем новые задания...</p>
+            </div>
+            
+            <!-- Кнопки по центру -->
+            <div class="task-actions" id="restartActions" style="display: flex; justify-content: center; gap: 15px;">
+                <button class="task-btn complete" onclick="restartGame()" style="flex: 0 1 auto; min-width: 150px; padding: 15px 30px;">
+                    <i class="fas fa-redo-alt"></i> Начать заново
+                </button>
+                <button class="task-btn later" onclick="closeGameCompleteModal()" style="flex: 0 1 auto; min-width: 150px; padding: 15px 30px;">
+                    <i class="fas fa-clock"></i> Позже
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
     <footer class="footer">
         <div class="footer-content">
@@ -883,14 +962,11 @@
 
         function updateAllDots() {
             for (let level = 1; level <= 9; level++) {
-                const dot = document.getElementById(
-                    level <= 3 ? `forest-task-${level}` :
-                    level <= 6 ? `hills-task-${level}` :
-                    `beach-task-${level}`
-                );
+                const dot = document.getElementById(`task-${level}`);
                 
                 if (dot) {
                     const completed = tasksData[`level${level}`].completed;
+                    
                     if (completed) {
                         dot.classList.add('completed');
                         dot.innerHTML = '<i class="fas fa-check"></i>';
@@ -927,6 +1003,19 @@
             if (restartBtn) {
                 restartBtn.style.display = allCompleted ? 'inline-flex' : 'none';
             }
+        }
+
+        // Проверка доступности уровня
+        function isLevelAvailable(level) {
+            if (level === 1) return true; // Первый уровень всегда доступен
+            
+            // Проверяем, выполнены ли все предыдущие уровни
+            for (let i = 1; i < level; i++) {
+                if (!tasksData[`level${i}`].completed) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         // Экспорт текущих заданий
@@ -966,7 +1055,6 @@
 
             try {
                 // Временно, пока нет бэкенда, генерируем тестовые данные
-                // Когда бэкенд будет готов, замени на реальный запрос
                 const history = [];
                 for (let cycle = 1; cycle <= 3; cycle++) {
                     for (let level = 1; level <= 9; level++) {
@@ -989,18 +1077,19 @@
         async function exportAllHistory() {
             const token = localStorage.getItem('token');
             if (!token) {
+                showNotification('Не удалось загрузить историю', 'error');
                 window.location.href = 'login.html';
                 return;
             }
 
-            // Показываем загрузку (можно добавить индикатор)
             const historyBtn = document.querySelector('.history-btn');
+            if (!historyBtn) return;
+            
             const originalText = historyBtn.innerHTML;
             historyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
             historyBtn.disabled = true;
 
             try {
-                // Загружаем историю
                 const history = await loadAllHistory();
                 
                 const tasks = history.map(item => ({
@@ -1024,17 +1113,96 @@
 
             } catch (error) {
                 console.error('Ошибка экспорта истории:', error);
-                alert('Не удалось загрузить историю');
             } finally {
                 historyBtn.innerHTML = originalText;
                 historyBtn.disabled = false;
             }
         }
 
+// Функция для показа красивых уведомлений
+            function showNotification(message, type = 'info') {
+    // Создаем элемент уведомления
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = message;
+    
+    // Стили для уведомления
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 10px;
+                color: white;
+                font-weight: 500;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            `;
+    
+    // Цвета для разных типов
+            if (type === 'success') {
+                notification.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+            } else if (type === 'warning') {
+                notification.style.background = 'linear-gradient(135deg, #e67e22, #d35400)';
+            } else if (type === 'error') {
+                notification.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+            } else {
+                notification.style.background = 'linear-gradient(135deg, #3498db, #2980b9)';
+            }
+    
+    // Добавляем на страницу
+            document.body.appendChild(notification);
+    
+    // Анимация появления
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                @keyframes slideOut {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+    
+            // Удаляем через 3 секунды
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
         function openTaskModal(level) {
             const task = tasksData[`level${level}`];
-            
+    
+            // Проверяем, выполнено ли задание
             if (task.completed) {
+                showNotification('Это задание уже выполнено!', 'info');
+                return;
+            }
+    
+            // Проверяем, доступен ли уровень (все предыдущие выполнены)
+            if (!isLevelAvailable(level)) {
+                showNotification(' Сначала выполните предыдущие задания!', 'warning');
                 return;
             }
 
@@ -1080,6 +1248,7 @@
         async function completeTask() {
             const token = localStorage.getItem('token');
             if (!token) {
+                showNotification(`Задание ${taskNumber} выполнено!`, 'success');
                 window.location.href = 'login.html';
                 return;
             }
@@ -1132,6 +1301,7 @@
         async function restartGame() {
             const token = localStorage.getItem('token');
             if (!token) {
+                showNotification('Не удалось перезапустить игру', 'error');
                 window.location.href = 'login.html';
                 return;
             }
@@ -1157,7 +1327,6 @@
 
             } catch (error) {
                 console.error('Ошибка:', error);
-                alert('Не удалось перезапустить игру');
             } finally {
                 // Возвращаем кнопки
                 document.getElementById('restartActions').style.display = 'flex';
@@ -1199,4 +1368,3 @@
     </script>
 </body>
 </html>
-

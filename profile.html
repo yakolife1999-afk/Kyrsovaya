@@ -116,71 +116,96 @@
             margin: 0 auto;
         }
 
-        .profile-background {
-            position: relative;
-            min-height: 250px;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 5px 15px var(--shadow-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            border: 1px solid var(--card-border);
-            background-image: linear-gradient(135deg, var(--header-bg), var(--primary-color));
+        /* Фон профиля с изображением локации */
+.profile-background {
+    position: relative;
+    min-height: 400px;  /* БЫЛО 300px, СТАЛО 400px */
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 5px 15px var(--shadow-color);
+    display: flex;
+    align-items: center;  /* Центрируем контент по вертикали */
+    justify-content: center;
+    padding: 0;
+    transition: background-image 0.5s ease;
+}
+
+        /* Пути к изображениям локаций */
+        .profile-background[data-location="forest"] {
+            background-image: url('images/les.png');
+        }
+
+        .profile-background[data-location="hills"] {
+            background-image: url('images/holmi.png');
+        }
+
+        .profile-background[data-location="beach"] {
+            background-image: url('images/plyazh.png');
+        }
+
+        /* Затемняющий слой */
+        .profile-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
         }
 
         .profile-header {
-            text-align: center;
             position: relative;
             z-index: 2;
+            text-align: center;
             width: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 30px;
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+
+            padding: 20px;
+
+            color: white;
+        }
+
+        body.dark-theme .profile-header {
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .profile-avatar-container {
             position: relative;
             display: inline-block;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             cursor: pointer;
         }
 
         .profile-avatar {
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 4px solid white;
-            box-shadow: 0 4px 10px var(--shadow-color);
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             background: var(--avatar-bg);
+            transition: transform 0.2s;
         }
 
-        .profile-avatar i {
-            font-size: 45px;
-            color: white;
-        }
-
-        .profile-avatar span {
-            line-height: 1;
+        .profile-avatar:hover {
+            transform: scale(1.05);
         }
 
         .change-avatar-btn {
             position: absolute;
             bottom: 5px;
             right: 5px;
-            width: 32px;
-            height: 32px;
-            background: #2ecc71;
+            width: 28px;
+            height: 28px;
+            background: var(--primary-color);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -196,18 +221,18 @@
 
         .change-avatar-btn i {
             color: white;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .profile-header h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: white;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
 
         .edit-name-btn {
@@ -227,21 +252,36 @@
         }
 
         .profile-header p {
-            font-size: 1.1rem;
-            color: white;
-            margin-bottom: 15px;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
 
-        .current-location {
+        .current-location-badge {
             display: inline-block;
             background: rgba(0, 0, 0, 0.4);
-            padding: 8px 20px;
+            padding: 6px 16px;
             border-radius: 20px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 5px;
+        }
+
+        .current-location-badge i {
+            margin-right: 5px;
+        }
+
+        .location-info {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .location-info span {
+            font-weight: 600;
+            color: white;
         }
 
         .horizontal-sections {
@@ -341,6 +381,11 @@
             margin-right: 15px;
             flex-shrink: 0;
             transition: all 0.3s;
+            background: #95a5a6;
+        }
+
+        .achievement-icon.completed {
+            background: var(--primary-color);
         }
 
         .achievement-icon i {
@@ -365,9 +410,10 @@
         }
 
         .achievement-date {
-            color: var(--text-muted);
+            color: var(--primary-color);
             font-size: 0.8rem;
             margin-top: 5px;
+            font-weight: 500;
         }
 
         .switch {
@@ -419,7 +465,6 @@
             transform: translateX(26px);
         }
 
-        /* Красная кнопка удаления */
         .delete-btn {
             background-color: transparent;
             border: 2px solid var(--delete-color);
@@ -493,6 +538,13 @@
             color: var(--title-color);
             margin-bottom: 20px;
             font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal h2 i {
+            color: var(--primary-color);
         }
 
         .modal-buttons {
@@ -536,6 +588,16 @@
             background: var(--hover-bg);
         }
 
+        .modal-btn.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .modal-btn.primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
@@ -572,6 +634,22 @@
             max-height: 300px;
             overflow-y: auto;
             padding: 5px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+        }
+
+        .emoji-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .emoji-grid::-webkit-scrollbar-track {
+            background: var(--stat-bg);
+            border-radius: 4px;
+        }
+
+        .emoji-grid::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
         }
 
         .emoji-option {
@@ -590,8 +668,15 @@
         }
 
         .emoji-option:hover {
-            background: var(--hover-bg);
+            background: var(--primary-color);
+            color: white;
             transform: scale(1.1);
+            border-color: var(--primary-color);
+        }
+
+        .emoji-option.selected {
+            background: var(--primary-color);
+            color: white;
             border-color: var(--primary-color);
         }
 
@@ -644,16 +729,20 @@
             }
             
             .profile-header h1 {
-                font-size: 1.6rem;
+                font-size: 1.5rem;
             }
             
             .profile-avatar {
-                width: 90px;
-                height: 90px;
+                width: 80px;
+                height: 80px;
+            }
+            
+            .profile-avatar i {
+                font-size: 35px;
             }
             
             .profile-background {
-                padding: 30px 15px;
+                min-height: 280px;
             }
             
             .emoji-grid {
@@ -661,7 +750,7 @@
             }
             
             .emoji-option {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
 
             .footer-content {
@@ -681,7 +770,7 @@
             }
             
             .profile-header h1 {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
                 flex-direction: column;
                 gap: 5px;
             }
@@ -691,12 +780,20 @@
             }
             
             .profile-header {
-                padding: 20px 15px;
+                padding: 15px;
+            }
+            
+            .profile-background {
+                min-height: 260px;
             }
             
             .emoji-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
+        }
+
+        body.modal-open {
+            overflow: hidden;
         }
     </style>
 </head>
@@ -713,7 +810,8 @@
 
     <main class="main-content">
         <div class="profile-container">
-            <div class="profile-background" id="profileBackground">
+            <!-- Фон с изображением текущей локации -->
+            <div class="profile-background" id="profileBackground" data-location="forest">
                 <div class="profile-header">
                     <div class="profile-avatar-container" onclick="openEmojiModal()">
                         <div class="profile-avatar" id="userAvatar">
@@ -733,8 +831,12 @@
                     
                     <p>Профиль саморазвития</p>
                     
-                    <div class="current-location" id="userEmail">
-                        <i class="fas fa-envelope"></i> Загрузка...
+                    <div class="current-location-badge" id="currentLocationBadge">
+                        <i class="fas fa-tree"></i> Лес
+                    </div>
+                    
+                    <div class="location-info" id="locationInfo">
+                        <span>0/3</span> заданий выполнено
                     </div>
                 </div>
             </div>
@@ -745,7 +847,7 @@
                     <div class="stats-grid">
                         <div class="stat-item">
                             <div class="stat-value" id="totalCompleted">0</div>
-                            <div class="stat-label">Выполнено в этом цикле</div>
+                            <div class="stat-label">Выполнено</div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-value" id="totalTasks">9</div>
@@ -753,19 +855,19 @@
                         </div>
                         <div class="stat-item">
                             <div class="stat-value" id="totalPercent">0%</div>
-                            <div class="stat-label">Прогресс цикла</div>
+                            <div class="stat-label">Прогресс</div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-value" id="forestCompleted">0</div>
-                            <div class="stat-label">Лес (1-3)</div>
+                            <div class="stat-label">Лес</div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-value" id="hillsCompleted">0</div>
-                            <div class="stat-label">Холмы (4-6)</div>
+                            <div class="stat-label">Холмы</div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-value" id="beachCompleted">0</div>
-                            <div class="stat-label">Пляж (7-9)</div>
+                            <div class="stat-label">Пляж</div>
                         </div>
                     </div>
                 </div>
@@ -774,7 +876,7 @@
                     <h2><i class="fas fa-trophy"></i> Достижения</h2>
                     <div class="achievements-container" id="achievementsList">
                         <div class="achievement-item" id="achievementForest">
-                            <div class="achievement-icon" style="background: #95a5a6;">
+                            <div class="achievement-icon" id="forestIcon">
                                 <i class="fas fa-tree"></i>
                             </div>
                             <div class="achievement-content">
@@ -784,7 +886,7 @@
                             </div>
                         </div>
                         <div class="achievement-item" id="achievementHills">
-                            <div class="achievement-icon" style="background: #95a5a6;">
+                            <div class="achievement-icon" id="hillsIcon">
                                 <i class="fas fa-mountain"></i>
                             </div>
                             <div class="achievement-content">
@@ -794,7 +896,7 @@
                             </div>
                         </div>
                         <div class="achievement-item" id="achievementBeach">
-                            <div class="achievement-icon" style="background: #95a5a6;">
+                            <div class="achievement-icon" id="beachIcon">
                                 <i class="fas fa-umbrella-beach"></i>
                             </div>
                             <div class="achievement-content">
@@ -816,7 +918,6 @@
                         </label>
                     </div>
                     
-                    <!-- КРАСНАЯ КНОПКА УДАЛЕНИЯ -->
                     <button class="delete-btn" onclick="openDeleteModal()">
                         <i class="fas fa-trash-alt"></i> Удалить аккаунт
                     </button>
@@ -845,19 +946,19 @@
                 <label for="newName">Новое имя:</label>
                 <input type="text" id="newName" class="form-control" placeholder="Введите ваше имя">
             </div>
-            <button class="modal-btn confirm" onclick="saveName()" style="background: var(--primary-color); color: white;">
+            <button class="modal-btn primary" onclick="saveName()">
                 <i class="fas fa-save"></i> Сохранить
             </button>
         </div>
     </div>
 
     <!-- Модалка смайликов -->
-    <div class="modal" id="emojiModal">
+    <div class="modal" id="emojiModal" onclick="if(event.target === this) closeEmojiModal()">
         <div class="modal-content" style="max-width: 600px;">
             <button class="modal-close" onclick="closeEmojiModal()">&times;</button>
             <h2><i class="fas fa-smile"></i> Выберите смайлик</h2>
             
-            <div class="emoji-grid">
+            <div class="emoji-grid" id="emojiGrid">
                 <div class="emoji-option" onclick="selectEmoji('😊')">😊</div>
                 <div class="emoji-option" onclick="selectEmoji('😎')">😎</div>
                 <div class="emoji-option" onclick="selectEmoji('🌟')">🌟</div>
@@ -893,12 +994,22 @@
                 <div class="emoji-option" onclick="selectEmoji('⚡')">⚡</div>
                 <div class="emoji-option" onclick="selectEmoji('💎')">💎</div>
                 <div class="emoji-option" onclick="selectEmoji('⭐')">⭐</div>
+                <div class="emoji-option" onclick="selectEmoji('✨')">✨</div>
+                <div class="emoji-option" onclick="selectEmoji('🌙')">🌙</div>
+                <div class="emoji-option" onclick="selectEmoji('☀️')">☀️</div>
+                <div class="emoji-option" onclick="selectEmoji('🍃')">🍃</div>
+                <div class="emoji-option" onclick="selectEmoji('🌿')">🌿</div>
+                <div class="emoji-option" onclick="selectEmoji('🍄')">🍄</div>
+                <div class="emoji-option" onclick="selectEmoji('🐚')">🐚</div>
+                <div class="emoji-option" onclick="selectEmoji('🐠')">🐠</div>
+                <div class="emoji-option" onclick="selectEmoji('🦋')">🦋</div>
+                <div class="emoji-option" onclick="selectEmoji('🐞')">🐞</div>
             </div>
         </div>
     </div>
 
     <!-- Модалка подтверждения удаления -->
-    <div class="modal" id="deleteModal">
+    <div class="modal" id="deleteModal" onclick="if(event.target === this) closeDeleteModal()">
         <div class="modal-content" style="text-align: center;">
             <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
             
@@ -935,7 +1046,11 @@
             emoji: ''
         };
 
-        // Загрузка данных профиля
+        let forestProgress = 0;
+        let hillsProgress = 0;
+        let beachProgress = 0;
+        let currentLocation = 'forest';
+
         async function loadProfile() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -959,7 +1074,6 @@
             }
         }
 
-        // Загрузка смайлика с сервера
         async function loadUserEmoji(token) {
             try {
                 const response = await fetch('https://rasveta-backend.onrender.com/api/users/me', {
@@ -977,7 +1091,6 @@
             }
         }
 
-        // Сохранение смайлика на сервер
         async function saveEmojiToServer(emoji) {
             const token = localStorage.getItem('token');
             if (!token) return;
@@ -998,15 +1111,44 @@
 
         function updateAvatarWithEmoji(emoji) {
             const avatarDiv = document.getElementById('userAvatar');
-            avatarDiv.innerHTML = `<span style="font-size: 3rem;">${emoji}</span>`;
+            avatarDiv.innerHTML = `<span>${emoji}</span>`;
             avatarDiv.style.background = 'none';
+            userData.emoji = emoji;
         }
 
-        // Загрузка прогресса заданий
+        function setProfileBackground(location) {
+            const profileBg = document.getElementById('profileBackground');
+            const badge = document.getElementById('currentLocationBadge');
+            const locationInfo = document.getElementById('locationInfo');
+            
+            if (profileBg) {
+                profileBg.setAttribute('data-location', location);
+            }
+            
+            if (badge) {
+                if (location === 'forest') {
+                    badge.innerHTML = '<i class="fas fa-tree"></i> Лес';
+                } else if (location === 'hills') {
+                    badge.innerHTML = '<i class="fas fa-mountain"></i> Холмы';
+                } else if (location === 'beach') {
+                    badge.innerHTML = '<i class="fas fa-umbrella-beach"></i> Пляж';
+                }
+            }
+            
+            if (locationInfo) {
+                let completed = 0;
+                if (location === 'forest') completed = forestProgress;
+                else if (location === 'hills') completed = hillsProgress;
+                else if (location === 'beach') completed = beachProgress;
+                
+                locationInfo.innerHTML = `<span>${completed}/3</span> заданий выполнено`;
+            }
+        }
+
         async function loadTasksProgress(token) {
-            let forestCount = 0;
-            let hillsCount = 0;
-            let beachCount = 0;
+            forestProgress = 0;
+            hillsProgress = 0;
+            beachProgress = 0;
 
             for (let level = 1; level <= 9; level++) {
                 try {
@@ -1017,9 +1159,9 @@
                     if (response.ok) {
                         const data = await response.json();
                         if (data.completed) {
-                            if (level <= 3) forestCount++;
-                            else if (level <= 6) hillsCount++;
-                            else beachCount++;
+                            if (level <= 3) forestProgress++;
+                            else if (level <= 6) hillsProgress++;
+                            else beachProgress++;
                         }
                     }
                 } catch (error) {
@@ -1027,16 +1169,30 @@
                 }
             }
 
-            const totalCompleted = forestCount + hillsCount + beachCount;
+            const totalCompleted = forestProgress + hillsProgress + beachProgress;
             const totalPercent = Math.round((totalCompleted / 9) * 100);
 
             document.getElementById('totalCompleted').textContent = totalCompleted;
-            document.getElementById('forestCompleted').textContent = forestCount;
-            document.getElementById('hillsCompleted').textContent = hillsCount;
-            document.getElementById('beachCompleted').textContent = beachCount;
+            document.getElementById('forestCompleted').textContent = forestProgress;
+            document.getElementById('hillsCompleted').textContent = hillsProgress;
+            document.getElementById('beachCompleted').textContent = beachProgress;
             document.getElementById('totalPercent').textContent = totalPercent + '%';
 
-            updateAchievements(forestCount, hillsCount, beachCount);
+            // Определяем текущую локацию на основе прогресса
+            if (forestProgress < 3) {
+                currentLocation = 'forest';
+            } else if (hillsProgress < 3) {
+                currentLocation = 'hills';
+            } else {
+                currentLocation = 'beach';
+            }
+            
+            console.log('Текущая локация:', currentLocation);
+            console.log('Прогресс:', forestProgress, hillsProgress, beachProgress);
+            
+            setProfileBackground(currentLocation);
+            
+            updateAchievements(forestProgress, hillsProgress, beachProgress);
         }
 
         function updateAchievements(forestCount, hillsCount, beachCount) {
@@ -1044,36 +1200,46 @@
             const hillsAchieved = hillsCount === 3;
             const beachAchieved = beachCount === 3;
 
-            const forestIcon = document.querySelector('#achievementForest .achievement-icon');
+            const forestIcon = document.getElementById('forestIcon');
             const forestDate = document.getElementById('forestAchievementDate');
             if (forestAchieved) {
-                forestIcon.style.background = '#27ae60';
+                forestIcon.classList.add('completed');
                 forestDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+            } else {
+                forestIcon.classList.remove('completed');
+                forestDate.innerHTML = '';
             }
 
-            const hillsIcon = document.querySelector('#achievementHills .achievement-icon');
+            const hillsIcon = document.getElementById('hillsIcon');
             const hillsDate = document.getElementById('hillsAchievementDate');
             if (hillsAchieved) {
-                hillsIcon.style.background = '#e67e22';
+                hillsIcon.classList.add('completed');
                 hillsDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+            } else {
+                hillsIcon.classList.remove('completed');
+                hillsDate.innerHTML = '';
             }
 
-            const beachIcon = document.querySelector('#achievementBeach .achievement-icon');
+            const beachIcon = document.getElementById('beachIcon');
             const beachDate = document.getElementById('beachAchievementDate');
             if (beachAchieved) {
-                beachIcon.style.background = '#3498db';
+                beachIcon.classList.add('completed');
                 beachDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+            } else {
+                beachIcon.classList.remove('completed');
+                beachDate.innerHTML = '';
             }
         }
 
-        // Модалка имени
         function openNameModal() {
             document.getElementById('newName').value = userData.name;
             document.getElementById('nameModal').style.display = 'flex';
+            document.body.classList.add('modal-open');
         }
 
         function closeNameModal() {
             document.getElementById('nameModal').style.display = 'none';
+            document.body.classList.remove('modal-open');
         }
 
         function saveName() {
@@ -1089,13 +1255,14 @@
             closeNameModal();
         }
 
-        // Функции для смайликов
         function openEmojiModal() {
             document.getElementById('emojiModal').style.display = 'flex';
+            document.body.classList.add('modal-open');
         }
 
         function closeEmojiModal() {
             document.getElementById('emojiModal').style.display = 'none';
+            document.body.classList.remove('modal-open');
         }
 
         async function selectEmoji(emoji) {
@@ -1104,13 +1271,14 @@
             closeEmojiModal();
         }
 
-        // Функции для удаления аккаунта
         function openDeleteModal() {
             document.getElementById('deleteModal').style.display = 'flex';
+            document.body.classList.add('modal-open');
         }
 
         function closeDeleteModal() {
             document.getElementById('deleteModal').style.display = 'none';
+            document.body.classList.remove('modal-open');
         }
 
         async function deleteAccount() {
@@ -1139,8 +1307,6 @@
 
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
-                localStorage.removeItem('userEmoji');
-                localStorage.removeItem('userAvatar');
                 
                 window.location.href = 'index.html';
 
@@ -1153,7 +1319,6 @@
             }
         }
 
-        // Тёмная тема
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
             themeToggle.checked = localStorage.getItem('theme') === 'dark';
@@ -1169,7 +1334,6 @@
             });
         }
 
-        // Инициализация
         document.addEventListener('DOMContentLoaded', function() {
             if (!localStorage.getItem('token')) {
                 window.location.href = 'login.html';
@@ -1182,7 +1346,22 @@
 
             loadProfile();
         });
+
+        window.onclick = function(event) {
+            const nameModal = document.getElementById('nameModal');
+            const emojiModal = document.getElementById('emojiModal');
+            const deleteModal = document.getElementById('deleteModal');
+            
+            if (event.target === nameModal) {
+                closeNameModal();
+            }
+            if (event.target === emojiModal) {
+                closeEmojiModal();
+            }
+            if (event.target === deleteModal) {
+                closeDeleteModal();
+            }
+        };
     </script>
 </body>
 </html>
-
