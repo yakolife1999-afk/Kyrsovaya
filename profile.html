@@ -1215,28 +1215,35 @@
         </div>
     </div>
 
-    <!-- Модалка подтверждения удаления - УПРОЩЁННАЯ -->
-<div class="modal" id="deleteModal">
-    <div class="modal-content" style="background: var(--modal-bg); border-radius: 15px; max-width: 400px; width: 90%; margin: 0 auto; padding: 30px 20px; text-align: center; box-shadow: 0 10px 30px var(--shadow-color);">
+    <!-- МОДАЛКА УДАЛЕНИЯ - АБСОЛЮТНЫЙ ЦЕНТР -->
+<div id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999999; align-items: center; justify-content: center; margin: 0; padding: 0;" onclick="if(event.target === this) closeDeleteModal()">
+    
+    <div style="background: var(--modal-bg); max-width: 420px; width: 90%; margin: 0 auto; padding: 30px 20px; border-radius: 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 1px solid var(--card-border); position: relative;">
         
-        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--delete-color); margin-bottom: 15px; display: block;"></i>
+        <!-- Крестик закрытия -->
+        <div style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-muted);" onclick="closeDeleteModal()">&times;</div>
         
-        <h2 style="color: var(--delete-color); margin-bottom: 15px; font-size: 1.8rem;">Удаление аккаунта</h2>
+        <!-- Иконка -->
+        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--delete-color); margin: 10px 0 15px; display: block;"></i>
         
-        <p style="color: var(--text-color); margin-bottom: 20px; font-size: 1.1rem;">
-            Вы уверены, что хотите удалить свой аккаунт?
-        </p>
+        <!-- Заголовок -->
+        <h2 style="color: var(--delete-color); font-size: 1.8rem; margin-bottom: 15px; font-weight: 600;">Удаление аккаунта</h2>
         
-        <p style="color: var(--delete-color); font-weight: 600; margin-bottom: 25px;">
+        <!-- Текст -->
+        <p style="color: var(--text-color); font-size: 1.1rem; margin-bottom: 15px;">Вы уверены, что хотите удалить свой аккаунт?</p>
+        
+        <!-- Предупреждение -->
+        <p style="color: var(--delete-color); font-weight: 700; margin-bottom: 25px; font-size: 1rem;">
             ⚠️ Это действие нельзя отменить!<br>
             Все ваши данные будут безвозвратно удалены.
         </p>
         
-        <div style="display: flex; justify-content: center; gap: 15px;">
-            <button onclick="deleteAccount()" style="background: var(--delete-color); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; min-width: 130px;">
+        <!-- Кнопки -->
+        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+            <button onclick="deleteAccount()" style="background: var(--delete-color); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; min-width: 140px; box-shadow: 0 4px 10px rgba(231,76,60,0.3);">
                 <i class="fas fa-trash-alt"></i> Да, удалить
             </button>
-            <button onclick="closeDeleteModal()" style="background: var(--stat-bg); color: var(--text-color); border: 1px solid var(--card-border); padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; min-width: 130px;">
+            <button onclick="closeDeleteModal()" style="background: var(--stat-bg); color: var(--text-color); border: 1px solid var(--card-border); padding: 12px 30px; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; min-width: 140px;">
                 <i class="fas fa-times"></i> Отмена
             </button>
         </div>
@@ -1622,5 +1629,6 @@
     </script>
 </body>
 </html>
+
 
 
