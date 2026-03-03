@@ -943,46 +943,57 @@
 
         // Загрузка заданий с сервера
         async function loadAllTasks() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'login.html';
-                return;
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        for (let level = 1; level <= 9; level++) {
+            const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.status === 403) {
+                // ⏳ Таймер — задание не выполнено, но оно существует
+                const data = await response.json();
+                tasksData[`level${level}`] = {
+                    title: `Уровень ${level}`,
+                    task: 'Задание временно недоступно',
+                    completed: false
+                };
+                continue;
             }
 
-            try {
-                for (let level = 1; level <= 9; level++) {
-                    const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-
-                    if (!response.ok) {
-                        if (response.status === 401) {
-                            localStorage.removeItem('token');
-                            window.location.href = 'login.html';
-                            return;
-                        }
-                        continue;
-                    }
-
-                    const data = await response.json();
-
-                    let cleanTitle = data.title || `Уровень ${level}`;
-                    cleanTitle = cleanTitle.replace(/\*\*/g, '').replace(/\*/g, '').replace(/_/g, '').trim();
-
-                    tasksData[`level${level}`] = {
-                        title: cleanTitle,
-                        task: data.task || 'Задание не найдено',
-                        completed: data.completed || false
-                    };
+            if (!response.ok) {
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                    return;
                 }
-
-                updateAllDots();
-                updateAllProgress();
-
-            } catch (error) {
-                console.error('Ошибка загрузки заданий:', error);
+                continue;
             }
+
+            const data = await response.json();
+
+            let cleanTitle = data.title || `Уровень ${level}`;
+            cleanTitle = cleanTitle.replace(/\*\*/g, '').replace(/\*/g, '').replace(/_/g, '').trim();
+
+            tasksData[`level${level}`] = {
+                title: cleanTitle,
+                task: data.task || 'Задание не найдено',
+                completed: data.completed || false
+            };
         }
+
+        updateAllDots();
+        updateAllProgress();
+
+    } catch (error) {
+        console.error('Ошибка загрузки заданий:', error);
+    }
+}
 
         function updateAllDots() {
             for (let level = 1; level <= 9; level++) {
@@ -1351,4 +1362,5 @@
     </script>
 </body>
 </html>
+
 
