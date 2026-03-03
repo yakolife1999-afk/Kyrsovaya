@@ -1149,77 +1149,76 @@
 
         // ОТКРЫТИЕ МОДАЛКИ ЗАДАНИЯ (С ПРОВЕРКОЙ ТАЙМЕРА)
         async function openTaskModal(level) {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'login.html';
-                return;
-            }
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
 
-            try {
-                const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+    try {
+        const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
 
-                // ЕСЛИ ТАЙМЕР НЕ ПРОШЁЛ
-                if (response.status === 403) {
-                    const data = await response.json();
-                    if (data.error === 'timeout') {
-                        openTimerModal(data.remainingHours, data.remainingMinutes);
-                        return;
-                    }
-                }
+        const data = await response.json();
 
-                if (!response.ok) {
-                    throw new Error('Ошибка загрузки');
-                }
-
-                const data = await response.json();
-
-                if (data.completed) {
-                    showNotification('Это задание уже выполнено!', 'info');
-                    return;
-                }
-
-                if (!isLevelAvailable(level)) {
-                    showNotification('Сначала выполните предыдущие задания!', 'warning');
-                    return;
-                }
-
-                currentLevel = level;
-
-                let location = 'forest';
-                let locationName = 'Лес';
-                let color = '#27ae60';
-                let icon = 'fa-tree';
-
-                if (level >= 4 && level <= 6) {
-                    location = 'hills';
-                    locationName = 'Холмы';
-                    color = '#e67e22';
-                    icon = 'fa-mountain';
-                } else if (level >= 7 && level <= 9) {
-                    location = 'beach';
-                    locationName = 'Пляж';
-                    color = '#3498db';
-                    icon = 'fa-umbrella-beach';
-                }
-
-                document.getElementById('modalIcon').style.background = `linear-gradient(135deg, ${color}, ${color}dd)`;
-                document.getElementById('modalIcon').innerHTML = `<i class="fas ${icon}"></i>`;
-                document.getElementById('completeBtn').style.background = `linear-gradient(to right, ${color}, ${color}dd)`;
-                document.querySelector('.task-description').style.borderLeftColor = color;
-
-                document.getElementById('modalTaskTitle').textContent = `Уровень ${level}: ${data.title}`;
-                document.getElementById('modalTaskLocation').textContent = `Локация: ${locationName}`;
-                document.getElementById('modalTaskDescription').textContent = data.task;
-
-                document.getElementById('taskModal').style.display = 'flex';
-
-            } catch (error) {
-                console.error('Ошибка:', error);
-                showNotification('Ошибка загрузки задания', 'error');
-            }
+        // ✅ ЕСЛИ ЗАДАНИЕ УЖЕ ВЫПОЛНЕНО
+        if (data.completed) {
+            showNotification('Это задание уже выполнено!', 'info');
+            return;
         }
+
+        // ⏳ ЕСЛИ ТАЙМЕР НЕ ПРОШЁЛ
+        if (response.status === 403 && data.error === 'timeout') {
+            openTimerModal(data.remainingHours, data.remainingMinutes);
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error('Ошибка загрузки');
+        }
+
+        if (!isLevelAvailable(level)) {
+            showNotification('Сначала выполните предыдущие задания!', 'warning');
+            return;
+        }
+
+        // ДАЛЬШЕ ТВОЙ КОД ОТКРЫТИЯ МОДАЛКИ...
+        currentLevel = level;
+
+        let location = 'forest';
+        let locationName = 'Лес';
+        let color = '#27ae60';
+        let icon = 'fa-tree';
+
+        if (level >= 4 && level <= 6) {
+            location = 'hills';
+            locationName = 'Холмы';
+            color = '#e67e22';
+            icon = 'fa-mountain';
+        } else if (level >= 7 && level <= 9) {
+            location = 'beach';
+            locationName = 'Пляж';
+            color = '#3498db';
+            icon = 'fa-umbrella-beach';
+        }
+
+        document.getElementById('modalIcon').style.background = `linear-gradient(135deg, ${color}, ${color}dd)`;
+        document.getElementById('modalIcon').innerHTML = `<i class="fas ${icon}"></i>`;
+        document.getElementById('completeBtn').style.background = `linear-gradient(to right, ${color}, ${color}dd)`;
+        document.querySelector('.task-description').style.borderLeftColor = color;
+
+        document.getElementById('modalTaskTitle').textContent = `Уровень ${level}: ${data.title}`;
+        document.getElementById('modalTaskLocation').textContent = `Локация: ${locationName}`;
+        document.getElementById('modalTaskDescription').textContent = data.task;
+
+        document.getElementById('taskModal').style.display = 'flex';
+
+    } catch (error) {
+        console.error('Ошибка:', error);
+        showNotification('Ошибка загрузки задания', 'error');
+    }
+}
 
         function closeTaskModal() {
             document.getElementById('taskModal').style.display = 'none';
@@ -1352,3 +1351,4 @@
     </script>
 </body>
 </html>
+
