@@ -530,12 +530,13 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            display: inline-flex;
+            display: inline-flex;  /* вместо flex */
             align-items: center;
             justify-content: center;
             gap: 10px;
-            width: 100%;
-            margin-top: 15px;
+            width: auto;  /* вместо 100% */
+            min-width: 200px;  /* фиксированная минимальная ширина */
+            margin: 15px auto 0;  /* авто-отступы по бокам */
         }
 
         .delete-btn:hover {
@@ -1573,4 +1574,5 @@
     </script>
 </body>
 </html>
+
 
