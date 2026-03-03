@@ -1167,33 +1167,33 @@
     </div>
 
     <!-- Модалка подтверждения удаления -->
-    <div class="modal" id="deleteModal" onclick="if(event.target === this) closeDeleteModal()">
-        <div class="modal-content" style="text-align: center;">
-            <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
-            
-            <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--delete-color); margin-bottom: 15px;"></i>
-            
-            <h2 style="color: var(--delete-color); margin-bottom: 15px;">Удаление аккаунта</h2>
-            
-            <p style="color: var(--text-color); margin-bottom: 20px; font-size: 1.1rem;">
-                Вы уверены, что хотите удалить свой аккаунт?
-            </p>
-            
-            <p style="color: var(--delete-color); font-weight: 600; margin-bottom: 20px;">
-                ⚠️ Это действие нельзя отменить!<br>
-                Все ваши данные будут безвозвратно удалены.
-            </p>
-            
-            <div class="modal-buttons">
-                <button class="modal-btn confirm" onclick="deleteAccount()">
-                    <i class="fas fa-trash-alt"></i> Да, удалить
-                </button>
-                <button class="modal-btn cancel" onclick="closeDeleteModal()">
-                    <i class="fas fa-times"></i> Отмена
-                </button>
-            </div>
+<div class="modal" id="deleteModal" onclick="if(event.target === this) closeDeleteModal()">
+    <div class="modal-content" style="text-align: center;">
+        <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+        
+        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--delete-color); margin-bottom: 15px;"></i>
+        
+        <h2 style="color: var(--delete-color); margin-bottom: 15px; text-align: center; width: 100%;">Удаление аккаунта</h2>
+        
+        <p style="color: var(--text-color); margin-bottom: 20px; font-size: 1.1rem; text-align: center;">
+            Вы уверены, что хотите удалить свой аккаунт?
+        </p>
+        
+        <p style="color: var(--delete-color); font-weight: 600; margin-bottom: 20px; text-align: center;">
+            ⚠️ Это действие нельзя отменить!<br>
+            Все ваши данные будут безвозвратно удалены.
+        </p>
+        
+        <div class="modal-buttons" style="justify-content: center;">
+            <button class="modal-btn confirm" onclick="deleteAccount()">
+                <i class="fas fa-trash-alt"></i> Да, удалить
+            </button>
+            <button class="modal-btn cancel" onclick="closeDeleteModal()">
+                <i class="fas fa-times"></i> Отмена
+            </button>
         </div>
     </div>
+</div>
 
     <script src="script.js"></script>
     <script>
@@ -1574,5 +1574,6 @@
     </script>
 </body>
 </html>
+
 
 
