@@ -1208,15 +1208,6 @@
         let beachProgress = 0;
         let currentLocation = 'forest';
 
-        // Вечная статистика (сохраняется навсегда)
-        let lifetimeStats = {
-            totalCompleted: 0,
-            gamesCompleted: 0,
-            forestCompleted: false,
-            hillsCompleted: false,
-            beachCompleted: false
-        };
-
         // Загрузка достижений с сервера
         async function loadAchievements() {
             const token = localStorage.getItem('token');
@@ -1299,30 +1290,6 @@
             }
         }
 
-        // Загрузка вечной статистики с сервера
-        async function loadLifetimeStats() {
-            const token = localStorage.getItem('token');
-            if (!token) return;
-
-            try {
-                const response = await fetch('https://rasveta-backend.onrender.com/api/users/lifetime-stats', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    lifetimeStats.totalCompleted = data.total_completed || 0;
-                    lifetimeStats.gamesCompleted = data.games_completed || 0;
-                    lifetimeStats.forestCompleted = data.forest_completed || false;
-                    lifetimeStats.hillsCompleted = data.hills_completed || false;
-                    lifetimeStats.beachCompleted = data.beach_completed || false;
-                }
-            } catch (error) {
-                console.error('Ошибка загрузки вечной статистики:', error);
-            }
-        }
-
         async function loadProfile() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -1343,7 +1310,6 @@
                 }
 
                 await loadUserEmoji(token);
-                await loadLifetimeStats();
                 await loadTasksProgress(token);
                 await loadAchievements();
 
