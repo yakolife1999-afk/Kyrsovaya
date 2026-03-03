@@ -35,6 +35,7 @@
             --history-color: #9b59b6;
             --history-hover: #8e44ad;
         }
+
         .notification {
             position: fixed;
             top: 20px;
@@ -186,7 +187,6 @@
             font-size: 1.2rem;
         }
 
-        /* Кнопки */
         .export-btn, .history-btn, .restart-btn {
             border: none;
             padding: 12px 30px;
@@ -889,6 +889,29 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА ТАЙМЕРА 12 ЧАСОВ -->
+    <div class="task-modal" id="timerModal">
+        <div class="modal-content" style="text-align: center;">
+            <button class="modal-close" onclick="closeTimerModal()">&times;</button>
+            
+            <i class="fas fa-hourglass-half" style="font-size: 4rem; color: var(--primary-color); margin-bottom: 20px;"></i>
+            
+            <h2 style="color: var(--title-color); margin-bottom: 15px;">Подождите</h2>
+            
+            <p style="color: var(--text-color); font-size: 1.2rem; margin-bottom: 10px;">
+                Следующее задание будет доступно через
+            </p>
+            
+            <div id="timerDisplay" style="font-size: 2.5rem; font-weight: 700; color: var(--primary-color); margin-bottom: 25px;">
+                12:00
+            </div>
+            
+            <button class="task-btn later" onclick="closeTimerModal()" style="margin: 0 auto;">
+                <i class="fas fa-clock"></i> Закрыть
+            </button>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
@@ -916,6 +939,7 @@
 
         let currentLevel = 1;
         let allHistory = [];
+        let timerInterval;
 
         // Загрузка заданий с сервера
         async function loadAllTasks() {
@@ -1007,15 +1031,90 @@
 
         // Проверка доступности уровня
         function isLevelAvailable(level) {
-            if (level === 1) return true; // Первый уровень всегда доступен
+            if (level === 1) return true;
             
-            // Проверяем, выполнены ли все предыдущие уровни
             for (let i = 1; i < level; i++) {
                 if (!tasksData[`level${i}`].completed) {
                     return false;
                 }
             }
             return true;
+        }
+
+        // Функция для показа красивых уведомлений
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = message;
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 10px;
+                color: white;
+                font-weight: 500;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            `;
+            
+            if (type === 'success') {
+                notification.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+            } else if (type === 'warning') {
+                notification.style.background = 'linear-gradient(135deg, #e67e22, #d35400)';
+            } else if (type === 'error') {
+                notification.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+            } else {
+                notification.style.background = 'linear-gradient(135deg, #3498db, #2980b9)';
+            }
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // ФУНКЦИИ ТАЙМЕРА
+        function openTimerModal(hours, minutes) {
+            const modal = document.getElementById('timerModal');
+            const display = document.getElementById('timerDisplay');
+            
+            let totalMinutes = hours * 60 + minutes;
+            
+            if (timerInterval) clearInterval(timerInterval);
+            
+            const h = Math.floor(totalMinutes / 60);
+            const m = totalMinutes % 60;
+            display.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+            modal.style.display = 'flex';
+            
+            timerInterval = setInterval(() => {
+                totalMinutes--;
+                
+                if (totalMinutes <= 0) {
+                    clearInterval(timerInterval);
+                    modal.style.display = 'none';
+                    return;
+                }
+                
+                const hoursLeft = Math.floor(totalMinutes / 60);
+                const minutesLeft = totalMinutes % 60;
+                
+                display.textContent = `${hoursLeft.toString().padStart(2, '0')}:${minutesLeft.toString().padStart(2, '0')}`;
+            }, 60000);
+        }
+
+        function closeTimerModal() {
+            document.getElementById('timerModal').style.display = 'none';
+            if (timerInterval) clearInterval(timerInterval);
         }
 
         // Экспорт текущих заданий
@@ -1036,11 +1135,11 @@
 
             const ws = XLSX.utils.json_to_sheet(tasks);
             ws['!cols'] = [
-                { wch: 10 }, // Цикл
-                { wch: 8 },  // Уровень
-                { wch: 50 }, // Название
-                { wch: 100 }, // Описание
-                { wch: 15 }  // Статус
+                { wch: 10 },
+                { wch: 8 },
+                { wch: 50 },
+                { wch: 100 },
+                { wch: 15 }
             ];
 
             const wb = XLSX.utils.book_new();
@@ -1048,193 +1147,78 @@
             XLSX.writeFile(wb, `текущие_задания_${new Date().toLocaleDateString().replace(/\./g, '-')}.xlsx`);
         }
 
-        // Загрузка всей истории
-        async function loadAllHistory() {
-            const token = localStorage.getItem('token');
-            if (!token) return [];
-
-            try {
-                // Временно, пока нет бэкенда, генерируем тестовые данные
-                const history = [];
-                for (let cycle = 1; cycle <= 3; cycle++) {
-                    for (let level = 1; level <= 9; level++) {
-                        history.push({
-                            cycle: cycle,
-                            level: level,
-                            task: `Задание ${level} из цикла ${cycle}`,
-                            completed_at: new Date(Date.now() - cycle * 86400000).toISOString()
-                        });
-                    }
-                }
-                return history;
-            } catch (error) {
-                console.error('Ошибка загрузки истории:', error);
-                return [];
-            }
-        }
-
-        // Экспорт всей истории
-        async function exportAllHistory() {
+        // ОТКРЫТИЕ МОДАЛКИ ЗАДАНИЯ (С ПРОВЕРКОЙ ТАЙМЕРА)
+        async function openTaskModal(level) {
             const token = localStorage.getItem('token');
             if (!token) {
-                showNotification('Не удалось загрузить историю', 'error');
                 window.location.href = 'login.html';
                 return;
             }
 
-            const historyBtn = document.querySelector('.history-btn');
-            if (!historyBtn) return;
-            
-            const originalText = historyBtn.innerHTML;
-            historyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
-            historyBtn.disabled = true;
-
             try {
-                const history = await loadAllHistory();
-                
-                const tasks = history.map(item => ({
-                    'Цикл': item.cycle,
-                    'Уровень': item.level,
-                    'Задание': item.task,
-                    'Дата выполнения': new Date(item.completed_at).toLocaleString()
-                }));
+                const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
 
-                const ws = XLSX.utils.json_to_sheet(tasks);
-                ws['!cols'] = [
-                    { wch: 8 },  // Цикл
-                    { wch: 8 },  // Уровень
-                    { wch: 100 }, // Задание
-                    { wch: 20 }  // Дата
-                ];
+                // ЕСЛИ ТАЙМЕР НЕ ПРОШЁЛ
+                if (response.status === 403) {
+                    const data = await response.json();
+                    if (data.error === 'timeout') {
+                        openTimerModal(data.remainingHours, data.remainingMinutes);
+                        return;
+                    }
+                }
 
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, 'История заданий');
-                XLSX.writeFile(wb, `история_заданий_${new Date().toLocaleDateString().replace(/\./g, '-')}.xlsx`);
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки');
+                }
+
+                const data = await response.json();
+
+                if (data.completed) {
+                    showNotification('Это задание уже выполнено!', 'info');
+                    return;
+                }
+
+                if (!isLevelAvailable(level)) {
+                    showNotification('Сначала выполните предыдущие задания!', 'warning');
+                    return;
+                }
+
+                currentLevel = level;
+
+                let location = 'forest';
+                let locationName = 'Лес';
+                let color = '#27ae60';
+                let icon = 'fa-tree';
+
+                if (level >= 4 && level <= 6) {
+                    location = 'hills';
+                    locationName = 'Холмы';
+                    color = '#e67e22';
+                    icon = 'fa-mountain';
+                } else if (level >= 7 && level <= 9) {
+                    location = 'beach';
+                    locationName = 'Пляж';
+                    color = '#3498db';
+                    icon = 'fa-umbrella-beach';
+                }
+
+                document.getElementById('modalIcon').style.background = `linear-gradient(135deg, ${color}, ${color}dd)`;
+                document.getElementById('modalIcon').innerHTML = `<i class="fas ${icon}"></i>`;
+                document.getElementById('completeBtn').style.background = `linear-gradient(to right, ${color}, ${color}dd)`;
+                document.querySelector('.task-description').style.borderLeftColor = color;
+
+                document.getElementById('modalTaskTitle').textContent = `Уровень ${level}: ${data.title}`;
+                document.getElementById('modalTaskLocation').textContent = `Локация: ${locationName}`;
+                document.getElementById('modalTaskDescription').textContent = data.task;
+
+                document.getElementById('taskModal').style.display = 'flex';
 
             } catch (error) {
-                console.error('Ошибка экспорта истории:', error);
-            } finally {
-                historyBtn.innerHTML = originalText;
-                historyBtn.disabled = false;
+                console.error('Ошибка:', error);
+                showNotification('Ошибка загрузки задания', 'error');
             }
-        }
-
-// Функция для показа красивых уведомлений
-            function showNotification(message, type = 'info') {
-    // Создаем элемент уведомления
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            notification.innerHTML = message;
-    
-    // Стили для уведомления
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 25px;
-                border-radius: 10px;
-                color: white;
-                font-weight: 500;
-                z-index: 9999;
-                animation: slideIn 0.3s ease;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            `;
-    
-    // Цвета для разных типов
-            if (type === 'success') {
-                notification.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
-            } else if (type === 'warning') {
-                notification.style.background = 'linear-gradient(135deg, #e67e22, #d35400)';
-            } else if (type === 'error') {
-                notification.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
-            } else {
-                notification.style.background = 'linear-gradient(135deg, #3498db, #2980b9)';
-            }
-    
-    // Добавляем на страницу
-            document.body.appendChild(notification);
-    
-    // Анимация появления
-            const style = document.createElement('style');
-            style.innerHTML = `
-                @keyframes slideIn {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                }
-                @keyframes slideOut {
-                    from {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                    to {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                }
-            `;
-            document.head.appendChild(style);
-    
-            // Удаляем через 3 секунды
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }, 3000);
-        }
-
-        function openTaskModal(level) {
-            const task = tasksData[`level${level}`];
-    
-            // Проверяем, выполнено ли задание
-            if (task.completed) {
-                showNotification('Это задание уже выполнено!', 'info');
-                return;
-            }
-    
-            // Проверяем, доступен ли уровень (все предыдущие выполнены)
-            if (!isLevelAvailable(level)) {
-                showNotification(' Сначала выполните предыдущие задания!', 'warning');
-                return;
-            }
-
-            currentLevel = level;
-
-            let location = 'forest';
-            let locationName = 'Лес';
-            let color = '#27ae60';
-            let icon = 'fa-tree';
-
-            if (level >= 4 && level <= 6) {
-                location = 'hills';
-                locationName = 'Холмы';
-                color = '#e67e22';
-                icon = 'fa-mountain';
-            } else if (level >= 7 && level <= 9) {
-                location = 'beach';
-                locationName = 'Пляж';
-                color = '#3498db';
-                icon = 'fa-umbrella-beach';
-            }
-
-            document.getElementById('modalIcon').style.background = `linear-gradient(135deg, ${color}, ${color}dd)`;
-            document.getElementById('modalIcon').innerHTML = `<i class="fas ${icon}"></i>`;
-            document.getElementById('completeBtn').style.background = `linear-gradient(to right, ${color}, ${color}dd)`;
-            document.querySelector('.task-description').style.borderLeftColor = color;
-
-            document.getElementById('modalTaskTitle').textContent = `Уровень ${level}: ${task.title}`;
-            document.getElementById('modalTaskLocation').textContent = `Локация: ${locationName}`;
-            document.getElementById('modalTaskDescription').textContent = task.task;
-
-            document.getElementById('taskModal').style.display = 'flex';
         }
 
         function closeTaskModal() {
@@ -1248,7 +1232,6 @@
         async function completeTask() {
             const token = localStorage.getItem('token');
             if (!token) {
-                showNotification(`Задание ${taskNumber} выполнено!`, 'success');
                 window.location.href = 'login.html';
                 return;
             }
@@ -1301,12 +1284,10 @@
         async function restartGame() {
             const token = localStorage.getItem('token');
             if (!token) {
-                showNotification('Не удалось перезапустить игру', 'error');
                 window.location.href = 'login.html';
                 return;
             }
 
-            // Прячем кнопки, показываем загрузку
             document.getElementById('restartActions').style.display = 'none';
             document.getElementById('restartLoading').style.display = 'block';
 
@@ -1328,7 +1309,6 @@
             } catch (error) {
                 console.error('Ошибка:', error);
             } finally {
-                // Возвращаем кнопки
                 document.getElementById('restartActions').style.display = 'flex';
                 document.getElementById('restartLoading').style.display = 'none';
             }
@@ -1357,12 +1337,16 @@
         window.onclick = function(event) {
             const taskModal = document.getElementById('taskModal');
             const gameModal = document.getElementById('gameCompleteModal');
+            const timerModal = document.getElementById('timerModal');
             
             if (event.target === taskModal) {
                 closeTaskModal();
             }
             if (event.target === gameModal) {
                 closeGameCompleteModal();
+            }
+            if (event.target === timerModal) {
+                closeTimerModal();
             }
         };
     </script>
