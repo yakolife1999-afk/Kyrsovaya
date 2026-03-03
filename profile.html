@@ -1210,18 +1210,94 @@
 
         // Вечная статистика (сохраняется навсегда)
         let lifetimeStats = {
-            totalCompleted: 0,      // всего заданий выполнено за все время
-            gamesCompleted: 0,       // сколько раз пройдена вся игра
-            forestCompleted: false,  // лес был пройден хотя бы раз
-            hillsCompleted: false,   // холмы были пройдены хотя бы раз
-            beachCompleted: false,   // пляж был пройден хотя бы раз
-            firstStep: false,        // первое задание выполнено
-            halfWay: false,          // 5 заданий выполнено
-            master: false,           // все 9 заданий в одном цикле
-            explorer: false,         // 3 игры пройдено
-            veteran: false,          // 50 заданий всего
-            legend: false            // все локации пройдены 5 раз
+            totalCompleted: 0,
+            gamesCompleted: 0,
+            forestCompleted: false,
+            hillsCompleted: false,
+            beachCompleted: false
         };
+
+        // Загрузка достижений с сервера
+        async function loadAchievements() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const response = await fetch('https://rasveta-backend.onrender.com/api/users/achievements', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const achievements = await response.json();
+                    const earned = achievements.map(a => a.achievement_id);
+                    
+                    // Лес
+                    if (earned.includes('forest')) {
+                        document.getElementById('forestIcon').classList.add('completed');
+                        document.getElementById('achievementForest').classList.add('completed');
+                        document.getElementById('forestAchievementDate').innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+                    }
+                    
+                    // Холмы
+                    if (earned.includes('hills')) {
+                        document.getElementById('hillsIcon').classList.add('completed');
+                        document.getElementById('achievementHills').classList.add('completed');
+                        document.getElementById('hillsAchievementDate').innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+                    }
+                    
+                    // Пляж
+                    if (earned.includes('beach')) {
+                        document.getElementById('beachIcon').classList.add('completed');
+                        document.getElementById('achievementBeach').classList.add('completed');
+                        document.getElementById('beachAchievementDate').innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+                    }
+                    
+                    // Первый шаг
+                    if (earned.includes('first_step')) {
+                        document.getElementById('firstStepIcon').classList.add('completed');
+                        document.getElementById('achievementFirstStep').classList.add('completed');
+                        document.getElementById('firstStepAchievementDate').innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+                    }
+                    
+                    // На полпути
+                    if (earned.includes('half_way')) {
+                        document.getElementById('halfWayIcon').classList.add('completed');
+                        document.getElementById('achievementHalfWay').classList.add('completed');
+                        document.getElementById('halfWayAchievementDate').innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+                    }
+                    
+                    // Мастер
+                    if (earned.includes('master')) {
+                        document.getElementById('masterIcon').classList.add('completed');
+                        document.getElementById('achievementMaster').classList.add('completed');
+                        document.getElementById('masterAchievementDate').innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+                    }
+                    
+                    // Исследователь (3 игры)
+                    if (earned.includes('explorer')) {
+                        document.getElementById('explorerIcon').classList.add('completed');
+                        document.getElementById('achievementExplorer').classList.add('completed');
+                        document.getElementById('explorerAchievementDate').innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+                    }
+                    
+                    // Ветеран (50 заданий)
+                    if (earned.includes('veteran')) {
+                        document.getElementById('veteranIcon').classList.add('completed');
+                        document.getElementById('achievementVeteran').classList.add('completed');
+                        document.getElementById('veteranAchievementDate').innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+                    }
+                    
+                    // Легенда (5 игр)
+                    if (earned.includes('legend')) {
+                        document.getElementById('legendIcon').classList.add('completed');
+                        document.getElementById('achievementLegend').classList.add('completed');
+                        document.getElementById('legendAchievementDate').innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки достижений:', error);
+            }
+        }
 
         // Загрузка вечной статистики с сервера
         async function loadLifetimeStats() {
@@ -1241,170 +1317,9 @@
                     lifetimeStats.forestCompleted = data.forest_completed || false;
                     lifetimeStats.hillsCompleted = data.hills_completed || false;
                     lifetimeStats.beachCompleted = data.beach_completed || false;
-                    
-                    // Обновляем достижения на основе вечной статистики
-                    updateLifetimeAchievements();
                 }
             } catch (error) {
                 console.error('Ошибка загрузки вечной статистики:', error);
-            }
-        }
-
-        // Обновление вечных достижений
-        function updateLifetimeAchievements() {
-            // Лес
-            const forestIcon = document.getElementById('forestIcon');
-            const forestDate = document.getElementById('forestAchievementDate');
-            const forestItem = document.getElementById('achievementForest');
-            if (lifetimeStats.forestCompleted) {
-                forestIcon.classList.add('completed');
-                forestItem.classList.add('completed');
-                forestDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            // Холмы
-            const hillsIcon = document.getElementById('hillsIcon');
-            const hillsDate = document.getElementById('hillsAchievementDate');
-            const hillsItem = document.getElementById('achievementHills');
-            if (lifetimeStats.hillsCompleted) {
-                hillsIcon.classList.add('completed');
-                hillsItem.classList.add('completed');
-                hillsDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            // Пляж
-            const beachIcon = document.getElementById('beachIcon');
-            const beachDate = document.getElementById('beachAchievementDate');
-            const beachItem = document.getElementById('achievementBeach');
-            if (lifetimeStats.beachCompleted) {
-                beachIcon.classList.add('completed');
-                beachItem.classList.add('completed');
-                beachDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            // Первый шаг
-            const firstStepIcon = document.getElementById('firstStepIcon');
-            const firstStepDate = document.getElementById('firstStepAchievementDate');
-            const firstStepItem = document.getElementById('achievementFirstStep');
-            if (lifetimeStats.totalCompleted >= 1) {
-                firstStepIcon.classList.add('completed');
-                firstStepItem.classList.add('completed');
-                firstStepDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            // На полпути
-            const halfWayIcon = document.getElementById('halfWayIcon');
-            const halfWayDate = document.getElementById('halfWayAchievementDate');
-            const halfWayItem = document.getElementById('achievementHalfWay');
-            if (lifetimeStats.totalCompleted >= 5) {
-                halfWayIcon.classList.add('completed');
-                halfWayItem.classList.add('completed');
-                halfWayDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            // Мастер
-            const masterIcon = document.getElementById('masterIcon');
-            const masterDate = document.getElementById('masterAchievementDate');
-            const masterItem = document.getElementById('achievementMaster');
-            if (lifetimeStats.gamesCompleted >= 1) {
-                masterIcon.classList.add('completed');
-                masterItem.classList.add('completed');
-                masterDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            // Исследователь (3 игры)
-            const explorerIcon = document.getElementById('explorerIcon');
-            const explorerDate = document.getElementById('explorerAchievementDate');
-            const explorerItem = document.getElementById('achievementExplorer');
-            if (lifetimeStats.gamesCompleted >= 3) {
-                explorerIcon.classList.add('completed');
-                explorerItem.classList.add('completed');
-                explorerDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            // Ветеран (50 заданий)
-            const veteranIcon = document.getElementById('veteranIcon');
-            const veteranDate = document.getElementById('veteranAchievementDate');
-            const veteranItem = document.getElementById('achievementVeteran');
-            if (lifetimeStats.totalCompleted >= 50) {
-                veteranIcon.classList.add('completed');
-                veteranItem.classList.add('completed');
-                veteranDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            // Легенда (все локации по 5 раз)
-            const legendIcon = document.getElementById('legendIcon');
-            const legendDate = document.getElementById('legendAchievementDate');
-            const legendItem = document.getElementById('achievementLegend');
-            if (lifetimeStats.gamesCompleted >= 5) {
-                legendIcon.classList.add('completed');
-                legendItem.classList.add('completed');
-                legendDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-        }
-
-        // Обновление обычных достижений (текущий прогресс)
-        function updateAchievements() {
-            // Лес
-            const forestIcon = document.getElementById('forestIcon');
-            const forestDate = document.getElementById('forestAchievementDate');
-            const forestItem = document.getElementById('achievementForest');
-            if (forestProgress === 3) {
-                forestIcon.classList.add('completed');
-                forestItem.classList.add('completed');
-                forestDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            // Холмы
-            const hillsIcon = document.getElementById('hillsIcon');
-            const hillsDate = document.getElementById('hillsAchievementDate');
-            const hillsItem = document.getElementById('achievementHills');
-            if (hillsProgress === 3) {
-                hillsIcon.classList.add('completed');
-                hillsItem.classList.add('completed');
-                hillsDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            // Пляж
-            const beachIcon = document.getElementById('beachIcon');
-            const beachDate = document.getElementById('beachAchievementDate');
-            const beachItem = document.getElementById('achievementBeach');
-            if (beachProgress === 3) {
-                beachIcon.classList.add('completed');
-                beachItem.classList.add('completed');
-                beachDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            const totalCompleted = forestProgress + hillsProgress + beachProgress;
-
-            // Первый шаг
-            const firstStepIcon = document.getElementById('firstStepIcon');
-            const firstStepDate = document.getElementById('firstStepAchievementDate');
-            const firstStepItem = document.getElementById('achievementFirstStep');
-            if (totalCompleted >= 1) {
-                firstStepIcon.classList.add('completed');
-                firstStepItem.classList.add('completed');
-                firstStepDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            // На полпути
-            const halfWayIcon = document.getElementById('halfWayIcon');
-            const halfWayDate = document.getElementById('halfWayAchievementDate');
-            const halfWayItem = document.getElementById('achievementHalfWay');
-            if (totalCompleted >= 5) {
-                halfWayIcon.classList.add('completed');
-                halfWayItem.classList.add('completed');
-                halfWayDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
-            }
-
-            // Мастер
-            const masterIcon = document.getElementById('masterIcon');
-            const masterDate = document.getElementById('masterAchievementDate');
-            const masterItem = document.getElementById('achievementMaster');
-            if (totalCompleted === 9) {
-                masterIcon.classList.add('completed');
-                masterItem.classList.add('completed');
-                masterDate.innerHTML = '<i class="fas fa-check-circle"></i> Выполнено';
             }
         }
 
@@ -1428,8 +1343,9 @@
                 }
 
                 await loadUserEmoji(token);
-                await loadLifetimeStats(); // Загружаем вечную статистику
+                await loadLifetimeStats();
                 await loadTasksProgress(token);
+                await loadAchievements();
 
             } catch (error) {
                 console.error('Ошибка загрузки профиля:', error);
@@ -1555,9 +1471,6 @@
             }
             
             setProfileBackground(currentLocation);
-            
-            // Обновляем достижения
-            updateAchievements();
         }
 
         function openNameModal() {
