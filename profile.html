@@ -136,7 +136,6 @@
             transition: background-image 0.5s ease;
         }
 
-        /* Пути к изображениям локаций */
         .profile-background[data-location="forest"] {
             background-image: url('images/les.png');
         }
@@ -149,7 +148,6 @@
             background-image: url('images/plyazh.png');
         }
 
-        /* Затемняющий слой */
         .profile-background::before {
             content: '';
             position: absolute;
@@ -276,7 +274,6 @@
             color: var(--primary-color);
         }
 
-        /* Отдельный блок для прогресса локации */
         .location-progress-bar {
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(5px);
@@ -530,13 +527,13 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            display: inline-flex;  /* вместо flex */
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            width: auto;  /* вместо 100% */
-            min-width: 200px;  /* фиксированная минимальная ширина */
-            margin: 15px auto 0;  /* авто-отступы по бокам */
+            width: auto;
+            min-width: 200px;
+            margin: 15px auto 0;
         }
 
         .delete-btn:hover {
@@ -550,6 +547,7 @@
             font-size: 1.1rem;
         }
 
+        /* Модальные окна */
         .modal {
             display: none;
             position: fixed;
@@ -1065,19 +1063,19 @@
                 </div>
 
                 <div class="section-card" style="display: block; text-align: center;">
-    <h2><i class="fas fa-palette"></i> Оформление</h2>
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-        <span style="font-size: 1.1rem; color: var(--title-color);">Тёмная тема</span>
-        <label class="switch">
-            <input type="checkbox" id="themeToggle">
-            <span class="slider round"></span>
-        </label>
-    </div>
-    
-    <button class="delete-btn" onclick="openDeleteModal()">
-        <i class="fas fa-trash-alt"></i> Удалить аккаунт
-    </button>
-</div>
+                    <h2><i class="fas fa-palette"></i> Оформление</h2>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                        <span style="font-size: 1.1rem; color: var(--title-color);">Тёмная тема</span>
+                        <label class="switch">
+                            <input type="checkbox" id="themeToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    
+                    <button class="delete-btn" onclick="openDeleteModal()">
+                        <i class="fas fa-trash-alt"></i> Удалить аккаунт
+                    </button>
+                </div>
             </div>
         </div>
     </main>
@@ -1166,34 +1164,34 @@
         </div>
     </div>
 
-    <!-- Модалка подтверждения удаления -->
-<div class="modal" id="deleteModal" onclick="if(event.target === this) closeDeleteModal()">
-    <div class="modal-content" style="text-align: center;">
-        <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
-        
-        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--delete-color); margin-bottom: 15px;"></i>
-        
-        <h2 style="color: var(--delete-color); margin-bottom: 15px; text-align: center; width: 100%;">Удаление аккаунта</h2>
-        
-        <p style="color: var(--text-color); margin-bottom: 20px; font-size: 1.1rem; text-align: center;">
-            Вы уверены, что хотите удалить свой аккаунт?
-        </p>
-        
-        <p style="color: var(--delete-color); font-weight: 600; margin-bottom: 20px; text-align: center;">
-            ⚠️ Это действие нельзя отменить!<br>
-            Все ваши данные будут безвозвратно удалены.
-        </p>
-        
-        <div class="modal-buttons" style="justify-content: center;">
-            <button class="modal-btn confirm" onclick="deleteAccount()">
-                <i class="fas fa-trash-alt"></i> Да, удалить
-            </button>
-            <button class="modal-btn cancel" onclick="closeDeleteModal()">
-                <i class="fas fa-times"></i> Отмена
-            </button>
+    <!-- Модалка подтверждения удаления (полностью центрированная) -->
+    <div class="modal" id="deleteModal" onclick="if(event.target === this) closeDeleteModal()">
+        <div class="modal-content" style="text-align: center;">
+            <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            
+            <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--delete-color); margin-bottom: 15px;"></i>
+            
+            <h2 style="color: var(--delete-color); margin-bottom: 15px; text-align: center; width: 100%;">Удаление аккаунта</h2>
+            
+            <p style="color: var(--text-color); margin-bottom: 20px; font-size: 1.1rem; text-align: center;">
+                Вы уверены, что хотите удалить свой аккаунт?
+            </p>
+            
+            <p style="color: var(--delete-color); font-weight: 600; margin-bottom: 20px; text-align: center;">
+                ⚠️ Это действие нельзя отменить!<br>
+                Все ваши данные будут безвозвратно удалены.
+            </p>
+            
+            <div class="modal-buttons" style="display: flex; justify-content: center; gap: 15px;">
+                <button class="modal-btn confirm" onclick="deleteAccount()" style="flex: 0 1 auto; min-width: 120px;">
+                    <i class="fas fa-trash-alt"></i> Да, удалить
+                </button>
+                <button class="modal-btn cancel" onclick="closeDeleteModal()" style="flex: 0 1 auto; min-width: 120px;">
+                    <i class="fas fa-times"></i> Отмена
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
     <script src="script.js"></script>
     <script>
@@ -1574,6 +1572,3 @@
     </script>
 </body>
 </html>
-
-
-
