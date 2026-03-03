@@ -653,65 +653,51 @@
 
     <script>
         // Загрузка прогресса текущего цикла
-        async function loadProgress() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'login.html';
-                return;
-            }
+                async function loadProgress() {
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        window.location.href = 'login.html';
+                        return;
+                    }
 
-            try {
-                const levels = [];
-                
-                // Загружаем все уровни
-                for (let level = 1; level <= 9; level++) {
                     try {
-                        const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
+        // Один запрос — все задания
+                        const response = await fetch('https://rasveta-backend.onrender.com/api/levels/all', {
                             headers: { 'Authorization': `Bearer ${token}` }
                         });
-                        
-                        if (response.status === 403) {
-                            // Таймер - задание не выполнено, но оно существует
-                            levels[level] = {
-                                title: `Уровень ${level}`,
-                                completed: false
-                            };
-                            continue;
-                        }
-                        
+
                         if (response.status === 401) {
                             localStorage.removeItem('token');
                             window.location.href = 'login.html';
                             return;
                         }
-                        
+
                         if (!response.ok) {
-                            // Если другая ошибка - всё равно показываем задание как недоступное
-                            levels[level] = {
-                                title: `Уровень ${level}`,
-                                completed: false
-                            };
-                            continue;
+                            throw new Error('Ошибка загрузки');
                         }
-                        
-                        const data = await response.json();
-                        
-                        let title = data.title || `Уровень ${level}`;
-                        title = title.replace(/\*\*/g, '').replace(/\*/g, '').replace(/_/g, '').trim();
-                        
-                        levels[level] = {
-                            title: title,
-                            completed: data.completed || false
-                        };
+
+                        const tasks = await response.json();
+        
+        // Преобразуем в удобный формат
+                        const levels = [];
+                        tasks.forEach(task => {
+                            levels[task.level] = {
+                                title: task.title || `Уровень ${task.level}`,
+                                completed: task.completed || false
+                            };
+                        });
+
+        // Подсчет статистики...
+                        const forestCompleted = [1,2,3].filter(l => levels[l]?.completed).length;
+                        const hillsCompleted = [4,5,6].filter(l => levels[l]?.completed).length;
+                        const beachCompleted = [7,8,9].filter(l => levels[l]?.completed).length;
+        
+                        // ... остальной код такой же ...
+
                     } catch (error) {
-                        // Если сеть упала - показываем заглушку
-                        console.error(`Ошибка загрузки уровня ${level}:`, error);
-                        levels[level] = {
-                            title: `Уровень ${level}`,
-                            completed: false
-                        };
+                        console.error('Ошибка загрузки прогресса:', error);
                     }
-                }
+                }    
                 
                 // Подсчет статистики текущего прохождения
                 const forestCompleted = [1,2,3].filter(l => levels[l]?.completed).length;
@@ -897,3 +883,4 @@
     </script>
 </body>
 </html>
+
