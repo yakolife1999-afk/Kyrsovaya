@@ -509,7 +509,7 @@
                 <p>Отслеживайте свои достижения по всем локациям</p>
             </div>
             
-            <!-- ТЕКУЩИЙ ПРОГРЕСС (для этого прохождения) -->
+            <!-- ТЕКУЩИЙ ПРОГРЕСС -->
             <div class="overall-stats" id="overallStats">
                 <div class="overall-card">
                     <i class="fas fa-check-circle"></i>
@@ -595,7 +595,6 @@
             <div class="detailed-stats">
                 <h2><i class="fas fa-chart-pie"></i> Детальная статистика</h2>
                 <div class="stats-grid" id="detailedStats">
-                    <!-- ТЕКУЩИЙ ЦИКЛ -->
                     <div class="stat-row">
                         <span class="stat-label"><i class="fas fa-tree"></i> Лес (текущий):</span>
                         <span class="stat-value" id="forestDetailed">0/3 заданий</span>
@@ -609,7 +608,6 @@
                         <span class="stat-value" id="beachDetailed">0/3 заданий</span>
                     </div>
                     
-                    <!-- ВЕЧНАЯ СТАТИСТИКА (НЕ СБРАСЫВАЕТСЯ) -->
                     <div class="stat-row">
                         <span class="stat-label"><i class="fas fa-infinity"></i> Всего заданий выполнено:</span>
                         <span class="stat-value highlight" id="lifetimeCompleted">0</span>
@@ -667,37 +665,52 @@
                 
                 // Загружаем все уровни
                 for (let level = 1; level <= 9; level++) {
-                    const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    
-                    if (response.status === 403) {
-                        // ⏳ Таймер — задание не выполнено, но оно существует
-                        levels[level] = {
-                            title: `Уровень ${level}`,
-                            completed: false
-                        };
-                        continue;
-                    }
-                    
-                    if (!response.ok) {
+                    try {
+                        const response = await fetch(`https://rasveta-backend.onrender.com/api/levels/${level}/task`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        
+                        if (response.status === 403) {
+                            // Таймер - задание не выполнено, но оно существует
+                            levels[level] = {
+                                title: `Уровень ${level}`,
+                                completed: false
+                            };
+                            continue;
+                        }
+                        
                         if (response.status === 401) {
                             localStorage.removeItem('token');
                             window.location.href = 'login.html';
                             return;
                         }
-                        continue;
+                        
+                        if (!response.ok) {
+                            // Если другая ошибка - всё равно показываем задание как недоступное
+                            levels[level] = {
+                                title: `Уровень ${level}`,
+                                completed: false
+                            };
+                            continue;
+                        }
+                        
+                        const data = await response.json();
+                        
+                        let title = data.title || `Уровень ${level}`;
+                        title = title.replace(/\*\*/g, '').replace(/\*/g, '').replace(/_/g, '').trim();
+                        
+                        levels[level] = {
+                            title: title,
+                            completed: data.completed || false
+                        };
+                    } catch (error) {
+                        // Если сеть упала - показываем заглушку
+                        console.error(`Ошибка загрузки уровня ${level}:`, error);
+                        levels[level] = {
+                            title: `Уровень ${level}`,
+                            completed: false
+                        };
                     }
-                    
-                    const data = await response.json();
-                    
-                    let title = data.title || `Уровень ${level}`;
-                    title = title.replace(/\*\*/g, '').replace(/\*/g, '').replace(/_/g, '').trim();
-                    
-                    levels[level] = {
-                        title: title,
-                        completed: data.completed || false
-                    };
                 }
                 
                 // Подсчет статистики текущего прохождения
@@ -770,7 +783,23 @@
             
             levelNumbers.forEach((levelNum) => {
                 const levelData = levels[levelNum];
-                if (!levelData) return;
+                if (!levelData) {
+                    // Если данных нет - показываем заглушку
+                    const taskItem = document.createElement('div');
+                    taskItem.className = 'task-item';
+                    taskItem.innerHTML = `
+                        <div class="task-number">${levelNum}</div>
+                        <div class="task-info">
+                            <div class="task-title">Уровень ${levelNum}</div>
+                            <div class="task-status">Загрузка...</div>
+                        </div>
+                        <div class="task-icon">
+                            <i class="fas fa-circle"></i>
+                        </div>
+                    `;
+                    container.appendChild(taskItem);
+                    return;
+                }
                 
                 const completed = levelData.completed;
                 
