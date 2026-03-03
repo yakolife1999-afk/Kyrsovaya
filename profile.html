@@ -118,6 +118,57 @@
             max-width: 1000px;
             margin: 0 auto;
         }
+        /* МОДАЛКА УДАЛЕНИЯ - ЖЁСТКО ПО ЦЕНТРУ */
+#deleteModal {
+    display: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    z-index: 10000 !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#deleteModal[style*="display: flex"] {
+    display: flex !important;
+}
+
+#deleteModal .modal-content {
+    position: relative !important;
+    margin: 0 auto !important;
+    max-width: 500px !important;
+    width: 95% !important;
+    background: var(--modal-bg) !important;
+    padding: 30px 25px !important;
+    border-radius: 15px !important;
+    text-align: center !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+}
+
+#deleteModal h2,
+#deleteModal p {
+    text-align: center !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+#deleteModal .modal-buttons {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 15px !important;
+    width: 100% !important;
+}
+
+#deleteModal .modal-btn {
+    flex: 0 1 auto !important;
+    min-width: 120px !important;
+}
 
         /* Фон профиля с изображением локации */
         .profile-background {
@@ -1572,3 +1623,4 @@
     </script>
 </body>
 </html>
+
