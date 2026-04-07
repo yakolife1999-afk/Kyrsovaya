@@ -662,7 +662,7 @@
 
             try {
                 // Один запрос — все 9 заданий
-                const response = await fetch('https://rasveta-backend.onrender.com/api/levels/all', {
+                const response = await fetch('https://rasveta-backend-5uj2.onrender.com/api/levels/all', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
@@ -803,7 +803,7 @@
             if (!token) return;
 
             try {
-                const response = await fetch('https://rasveta-backend.onrender.com/api/users/stats', {
+                const response = await fetch('https://rasveta-backend-5uj2.onrender.com/api/users/stats', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
